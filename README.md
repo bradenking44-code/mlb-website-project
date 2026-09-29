@@ -1,38 +1,40 @@
-# MLB Payroll Efficiency Website
+# MLB Payroll vs October Success Website
 
 This repository is for the FDA Data Website Project. It contains a two-page static website built with plain HTML, CSS, and JavaScript.
 
 ## Pages
 
-- `index.html` - report page with a title, author, summary, headline numbers, eight payroll/winning findings, charts, and dataset notes.
-- `dashboard.html` - dashboard page with season buttons, team search, payroll filters, summary numbers, chart switches, five charts, leaderboards, a data table, and a reset button.
+- `index.html` - report page with a title, author, summary, headline numbers, charted findings, and dataset notes.
+- `dashboard.html` - interactive dashboard with season filters, team filters, postseason filters, payroll filters, animated visuals, World Series winner cards, team logos, roster spotlight, SVG charts, and a team-season table.
 
 ## Data
 
-- `data/processed/mlb_team_payroll_game_results.csv` - cleaned MLB team-game payroll and result panel.
+- `data/processed/mlb_payroll_postseason_roster.csv` - full 54,851-row roster/team-season panel for the assignment.
+- `data/processed/postseason_dashboard_data.json` - compact dashboard data derived from the full roster panel.
 - `data/processed/payroll_report_summary.json` - reproducible summary data for the report charts.
-- `data/processed/payroll_dashboard_data.json` - compact team-season dashboard data derived from the full panel for fast browser rendering.
-- `data/raw/Salaries.csv` - source player salary table.
-- `data/raw/Teams.csv` - source team metadata table.
-- `data/raw/retrosheet/` - source Retrosheet season CSV downloads.
+- `data/raw/Teams2025.csv` - Lahman/SABR team-season table through 2025.
+- `data/raw/SeriesPost2025.csv` - Lahman/SABR postseason series table through 2025.
+- `data/raw/Appearances2025.csv` - Lahman/SABR player-team appearance table through 2025.
+- `data/raw/People2025.csv` - Lahman/SABR player name table.
+- `data/raw/Salaries2025.csv` - Lahman salary table. Salary coverage remains 1985-2016.
 
-Payroll data comes from the public Baseball Databank mirror at `https://github.com/cbwinslow/baseballdatabank`. Game-level results come from Retrosheet CSV downloads at `https://www.retrosheet.org/downloads/csvdownloads.html`.
+Sources come from the public Lahman/SABR CSV mirror at `https://github.com/cbwinslow/lahman-database-csv`. Team logo images are loaded from ESPN's public team logo CDN with text fallbacks.
 
 ## Scripts
 
-- `scripts/build_payroll_dataset.py` - rebuilds the cleaned payroll/team-game CSV.
-- `scripts/build_payroll_report_summary.py` - rebuilds the payroll report summary JSON from the cleaned CSV.
-- `scripts/build_dashboard_data.py` - rebuilds the compact dashboard JSON from the full CSV.
+- `scripts/build_postseason_payroll_dataset.py` - rebuilds the full roster-season CSV and compact dashboard JSON.
+- `scripts/build_payroll_report_summary.py` - rebuilds the report summary JSON from the dashboard data.
+- Earlier game-level build scripts are kept for reference, but the current website uses the postseason payroll roster dataset above.
 
 ## Project Requirements Covered
 
-- Panel/event data with one row per team-game.
-- Time columns: `date` and `year`.
-- Group columns: `team_id` and `team_name`.
-- 148,592 rows, 29 columns, 32 seasons, and 33 team IDs.
-- Report page with headline numbers and eight charted findings.
-- Dashboard page with filters for year, team, league, home/away, day/night, payroll tier, and minimum payroll.
-- Dashboard summary numbers, chart switches, five charts, leaderboards, table, and reset button.
+- Panel/event data with one row per player-team-season roster appearance.
+- Time column: `year`.
+- Group columns: `team_id`, `team_name`, `player_id`, and `player_name`.
+- 54,851 rows, 34 columns, 41 seasons, and 36 team IDs.
+- Report page with headline numbers and 9 charted findings.
+- Dashboard page with filters for year, team, league, division, postseason result, payroll tier, and minimum payroll.
+- Dashboard summary numbers, measure and breakdown switches, 5 working SVG charts, World Series timeline, roster display, table, reset button, and animation control.
 
 ## Local Preview
 
@@ -46,8 +48,8 @@ Then open `http://localhost:8000`.
 
 ## GitHub Pages
 
-After pushing this repository to GitHub, enable GitHub Pages from the `main` branch and the repository root. The live URL should look like:
+Live site:
 
 ```text
-https://YOUR-GITHUB-USERNAME.github.io/mlb-website-project/
+https://bradenking44-code.github.io/mlb-website-project/
 ```

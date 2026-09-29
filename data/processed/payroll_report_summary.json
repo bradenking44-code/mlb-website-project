@@ -1,36 +1,36 @@
 {
   "headlines": [
     {
-      "label": "Team-game rows",
-      "value": 148592
-    },
-    {
-      "label": "Seasons",
-      "value": 32
+      "label": "Roster-season rows",
+      "value": 54851
     },
     {
       "label": "Team seasons",
-      "value": 918
+      "value": 1188
     },
     {
-      "label": "Teams",
-      "value": 33
+      "label": "Seasons covered",
+      "value": 41
     },
     {
-      "label": "Total wins",
-      "value": 0
+      "label": "World Series champions tracked",
+      "value": 40
     },
     {
-      "label": "Average payroll",
-      "value": 60.04
+      "label": "Payroll seasons",
+      "value": 32
+    },
+    {
+      "label": "Teams/franchises in data",
+      "value": 36
     }
   ],
   "sections": [
     {
       "id": "payroll-growth",
-      "title": "MLB payrolls rose sharply across the salary-data era",
-      "body": "Average team payroll increased from the mid-1980s through 2016. That growth makes raw payroll a useful financial measure, but comparisons are clearest within the same season because leaguewide spending changed over time.",
-      "measure": "average payroll",
+      "title": "Payroll rose sharply during the salary-data era",
+      "body": "Average team payroll increased heavily from 1985 to 2016, so the cleanest comparisons use payroll rank or tier inside each season.",
+      "measure": "Average payroll, $M",
       "chart": [
         {
           "label": "1985",
@@ -38,15 +38,15 @@
         },
         {
           "label": "1986",
-          "value": 11.86
+          "value": 11.84
         },
         {
           "label": "1987",
-          "value": 10.47
+          "value": 10.48
         },
         {
           "label": "1988",
-          "value": 11.58
+          "value": 11.56
         },
         {
           "label": "1989",
@@ -58,325 +58,679 @@
         },
         {
           "label": "1991",
-          "value": 23.56
+          "value": 23.58
         },
         {
           "label": "1992",
-          "value": 31.05
+          "value": 30.98
         },
         {
           "label": "1993",
-          "value": 32.26
+          "value": 32.22
         },
         {
           "label": "1994",
-          "value": 33.11
+          "value": 33.14
         },
         {
           "label": "1995",
-          "value": 34.09
+          "value": 33.98
         },
         {
           "label": "1996",
-          "value": 34.37
+          "value": 34.18
         },
         {
           "label": "1997",
-          "value": 40.43
+          "value": 40.26
         },
         {
           "label": "1998",
-          "value": 42.78
+          "value": 42.61
         },
         {
           "label": "1999",
-          "value": 50.1
+          "value": 49.82
         },
         {
           "label": "2000",
-          "value": 55.72
+          "value": 55.54
         },
         {
           "label": "2001",
-          "value": 65.64
+          "value": 65.36
         },
         {
           "label": "2002",
-          "value": 67.51
+          "value": 67.47
         },
         {
           "label": "2003",
-          "value": 71.26
+          "value": 70.94
         },
         {
           "label": "2004",
-          "value": 69.58
+          "value": 69.02
         },
         {
           "label": "2005",
-          "value": 73.22
+          "value": 72.96
         },
         {
           "label": "2006",
-          "value": 77.55
+          "value": 77.38
         },
         {
           "label": "2007",
-          "value": 82.68
+          "value": 82.56
         },
         {
           "label": "2008",
-          "value": 89.6
+          "value": 89.5
         },
         {
           "label": "2009",
-          "value": 89.3
+          "value": 88.82
         },
         {
           "label": "2010",
-          "value": 90.89
+          "value": 90.71
         },
         {
           "label": "2011",
-          "value": 92.99
+          "value": 92.82
         },
         {
           "label": "2012",
-          "value": 98.03
+          "value": 97.76
         },
         {
           "label": "2013",
-          "value": 101.49
+          "value": 101.15
         },
         {
           "label": "2014",
-          "value": 106.67
+          "value": 106.41
         },
         {
           "label": "2015",
-          "value": 117.13
+          "value": 117.14
         },
         {
           "label": "2016",
-          "value": 125.35
+          "value": 125.0
         }
       ]
     },
     {
-      "id": "high-payroll-teams",
-      "title": "The largest payroll seasons were concentrated among a few big-market teams",
-      "body": "The highest payroll seasons show how much some clubs outspent the league in specific years. This creates a natural question for the dashboard: did that spending convert into wins?",
-      "measure": "payroll millions",
+      "id": "champion-rank",
+      "title": "World Series winners did not always have the highest payroll",
+      "body": "Among champions with salary coverage, 21 of 31 came from the top third of payrolls. Money helped, but it did not guarantee a parade.",
+      "measure": "Payroll rank",
       "chart": [
         {
-          "label": "New York Yankees 2013",
+          "label": "1985",
+          "value": 17
+        },
+        {
+          "label": "1986",
+          "value": 4
+        },
+        {
+          "label": "1987",
+          "value": 24
+        },
+        {
+          "label": "1988",
+          "value": 2
+        },
+        {
+          "label": "1989",
+          "value": 8
+        },
+        {
+          "label": "1990",
+          "value": 21
+        },
+        {
+          "label": "1991",
+          "value": 12
+        },
+        {
+          "label": "1992",
+          "value": 1
+        },
+        {
+          "label": "1993",
+          "value": 1
+        },
+        {
+          "label": "1995",
+          "value": 3
+        },
+        {
+          "label": "1996",
+          "value": 2
+        },
+        {
+          "label": "1997",
+          "value": 8
+        },
+        {
+          "label": "1998",
+          "value": 2
+        },
+        {
+          "label": "1999",
+          "value": 1
+        },
+        {
+          "label": "2000",
+          "value": 1
+        },
+        {
+          "label": "2001",
+          "value": 8
+        },
+        {
+          "label": "2002",
+          "value": 15
+        },
+        {
+          "label": "2003",
+          "value": 24
+        },
+        {
+          "label": "2004",
+          "value": 2
+        },
+        {
+          "label": "2005",
+          "value": 13
+        },
+        {
+          "label": "2006",
+          "value": 10
+        },
+        {
+          "label": "2007",
+          "value": 2
+        },
+        {
+          "label": "2008",
+          "value": 12
+        },
+        {
+          "label": "2009",
+          "value": 1
+        },
+        {
+          "label": "2010",
+          "value": 9
+        },
+        {
+          "label": "2011",
+          "value": 11
+        },
+        {
+          "label": "2012",
+          "value": 8
+        },
+        {
+          "label": "2013",
+          "value": 4
+        },
+        {
+          "label": "2014",
+          "value": 4
+        },
+        {
+          "label": "2015",
+          "value": 17
+        },
+        {
+          "label": "2016",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "id": "tier-playoff-rate",
+      "title": "Top payroll teams reached October more often",
+      "body": "Payroll tier has a visible relationship with playoff odds, especially when comparing the top third of spending to the bottom third.",
+      "measure": "Playoff rate",
+      "chart": [
+        {
+          "label": "Bottom third",
+          "value": 0.128
+        },
+        {
+          "label": "Middle third",
+          "value": 0.202
+        },
+        {
+          "label": "Top third",
+          "value": 0.401
+        }
+      ]
+    },
+    {
+      "id": "world-series-teams",
+      "title": "A few clubs collected most of the titles",
+      "body": "World Series wins cluster around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
+      "measure": "World Series wins",
+      "chart": [
+        {
+          "label": "New York Yankees",
+          "value": 5
+        },
+        {
+          "label": "Boston Red Sox",
+          "value": 4
+        },
+        {
+          "label": "Los Angeles Dodgers",
+          "value": 4
+        },
+        {
+          "label": "San Francisco Giants",
+          "value": 3
+        },
+        {
+          "label": "Atlanta Braves",
+          "value": 2
+        },
+        {
+          "label": "Houston Astros",
+          "value": 2
+        },
+        {
+          "label": "Kansas City Royals",
+          "value": 2
+        },
+        {
+          "label": "Minnesota Twins",
+          "value": 2
+        },
+        {
+          "label": "St. Louis Cardinals",
+          "value": 2
+        },
+        {
+          "label": "Toronto Blue Jays",
+          "value": 2
+        },
+        {
+          "label": "Florida Marlins",
+          "value": 2
+        },
+        {
+          "label": "Chicago White Sox",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "playoff-volume",
+      "title": "Playoff appearances show consistency better than championships",
+      "body": "Because a short postseason series can swing on a few games, playoff appearances are a more stable signal than World Series wins alone.",
+      "measure": "Playoff appearances",
+      "chart": [
+        {
+          "label": "New York Yankees",
+          "value": 26
+        },
+        {
+          "label": "Atlanta Braves",
+          "value": 24
+        },
+        {
+          "label": "Los Angeles Dodgers",
+          "value": 21
+        },
+        {
+          "label": "St. Louis Cardinals",
+          "value": 19
+        },
+        {
+          "label": "Boston Red Sox",
+          "value": 18
+        },
+        {
+          "label": "Houston Astros",
+          "value": 16
+        },
+        {
+          "label": "Oakland Athletics",
+          "value": 15
+        },
+        {
+          "label": "Cleveland Indians",
+          "value": 12
+        },
+        {
+          "label": "Minnesota Twins",
+          "value": 12
+        },
+        {
+          "label": "Chicago Cubs",
+          "value": 11
+        },
+        {
+          "label": "San Francisco Giants",
+          "value": 11
+        },
+        {
+          "label": "Toronto Blue Jays",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "id": "expensive-misses",
+      "title": "High payroll misses are the clearest counterexamples",
+      "body": "Several top-third payroll teams still missed the playoffs, which shows why payroll should be treated as a predictor, not a certainty.",
+      "measure": "Payroll, $M",
+      "chart": [
+        {
+          "label": "2013 New York Yankees",
           "value": 231.98
         },
         {
-          "label": "Los Angeles Dodgers 2013",
-          "value": 223.36
-        },
-        {
-          "label": "New York Yankees 2016",
+          "label": "2016 New York Yankees",
           "value": 223.0
         },
         {
-          "label": "Los Angeles Dodgers 2016",
-          "value": 221.29
-        },
-        {
-          "label": "Los Angeles Dodgers 2014",
-          "value": 217.01
-        },
-        {
-          "label": "Los Angeles Dodgers 2015",
-          "value": 215.79
-        },
-        {
-          "label": "New York Yankees 2015",
-          "value": 212.75
-        },
-        {
-          "label": "New York Yankees 2005",
-          "value": 208.31
-        },
-        {
-          "label": "New York Yankees 2008",
+          "label": "2008 New York Yankees",
           "value": 207.9
         },
         {
-          "label": "New York Yankees 2010",
-          "value": 206.33
+          "label": "2014 New York Yankees",
+          "value": 197.54
+        },
+        {
+          "label": "2016 Detroit Tigers",
+          "value": 194.88
+        },
+        {
+          "label": "2015 Boston Red Sox",
+          "value": 181.1
+        },
+        {
+          "label": "2014 Philadelphia Phillies",
+          "value": 180.94
+        },
+        {
+          "label": "2012 Philadelphia Phillies",
+          "value": 174.54
+        },
+        {
+          "label": "2012 Boston Red Sox",
+          "value": 173.19
+        },
+        {
+          "label": "2015 Detroit Tigers",
+          "value": 172.28
+        },
+        {
+          "label": "2013 Philadelphia Phillies",
+          "value": 169.86
+        },
+        {
+          "label": "2015 San Francisco Giants",
+          "value": 164.7
         }
       ]
     },
     {
-      "id": "payroll-quartiles",
-      "title": "Higher-payroll quartiles won more often, but not automatically",
-      "body": "Grouping team seasons by payroll percentile shows the broad relationship between spending and winning. The pattern is positive, but the gap is not large enough to make payroll destiny.",
-      "measure": "winning percentage",
-      "chart": []
-    },
-    {
-      "id": "best-records",
-      "title": "The best records were not always the most expensive rosters",
-      "body": "Top win-percentage seasons include both high-spending clubs and teams that converted less expensive rosters into excellent records.",
-      "measure": "winning percentage",
+      "id": "low-payroll-success",
+      "title": "Low-payroll playoff teams prove efficiency mattered",
+      "body": "Bottom-third payroll teams still reached October when player development, roster construction, and timing beat spending power.",
+      "measure": "Wins",
       "chart": [
         {
-          "label": "San Diego Padres 1985",
-          "value": 0
+          "label": "2002 Oakland Athletics",
+          "value": 103
         },
         {
-          "label": "Atlanta Braves 1985",
-          "value": 0
+          "label": "2001 Oakland Athletics",
+          "value": 102
         },
         {
-          "label": "Cincinnati Reds 1985",
-          "value": 0
+          "label": "1985 Toronto Blue Jays",
+          "value": 99
         },
         {
-          "label": "Houston Astros 1985",
-          "value": 0
+          "label": "2015 Pittsburgh Pirates",
+          "value": 98
         },
         {
-          "label": "Montreal Expos 1985",
-          "value": 0
+          "label": "1993 Philadelphia Phillies",
+          "value": 97
         },
         {
-          "label": "New York Mets 1985",
-          "value": 0
+          "label": "2008 Tampa Bay Rays",
+          "value": 97
         },
         {
-          "label": "Philadelphia Phillies 1985",
-          "value": 0
+          "label": "1986 Houston Astros",
+          "value": 96
         },
         {
-          "label": "Chicago Cubs 1985",
-          "value": 0
+          "label": "2003 Oakland Athletics",
+          "value": 96
         },
         {
-          "label": "Pittsburgh Pirates 1985",
-          "value": 0
+          "label": "2007 Cleveland Indians",
+          "value": 96
         },
         {
-          "label": "St. Louis Cardinals 1985",
-          "value": 0
+          "label": "2013 Oakland Athletics",
+          "value": 96
+        },
+        {
+          "label": "2000 Chicago White Sox",
+          "value": 95
+        },
+        {
+          "label": "1991 Atlanta Braves",
+          "value": 94
         }
       ]
     },
     {
-      "id": "efficient-winners",
-      "title": "Some winners delivered strong records at a lower cost per win",
-      "body": "Cost per win highlights efficient winning. Restricting to teams with at least 85 wins keeps the chart focused on clubs that were both successful and financially efficient.",
-      "measure": "cost per win millions",
-      "chart": []
-    },
-    {
-      "id": "expensive-losses",
-      "title": "Some expensive rosters still finished near or below .500",
-      "body": "Large payrolls reduce some constraints, but they do not remove injuries, roster imbalance, underperformance, or tough divisions.",
-      "measure": "payroll millions",
+      "id": "postseason-results",
+      "title": "The dataset separates regular-season records from postseason outcomes",
+      "body": "Each team-season is labeled as missed playoffs, playoff team, pennant winner, or World Series champion so filters can test different definitions of success.",
+      "measure": "Team seasons",
       "chart": [
         {
-          "label": "New York Yankees 2013",
-          "value": 231.98
+          "label": "Missed playoffs",
+          "value": 862
         },
         {
-          "label": "Los Angeles Dodgers 2013",
-          "value": 223.36
+          "label": "Playoff team",
+          "value": 246
         },
         {
-          "label": "New York Yankees 2016",
-          "value": 223.0
+          "label": "Won World Series",
+          "value": 40
         },
         {
-          "label": "Los Angeles Dodgers 2016",
-          "value": 221.29
-        },
-        {
-          "label": "Los Angeles Dodgers 2014",
-          "value": 217.01
-        },
-        {
-          "label": "Los Angeles Dodgers 2015",
-          "value": 215.79
-        },
-        {
-          "label": "New York Yankees 2015",
-          "value": 212.75
-        },
-        {
-          "label": "New York Yankees 2005",
-          "value": 208.31
-        },
-        {
-          "label": "New York Yankees 2008",
-          "value": 207.9
-        },
-        {
-          "label": "New York Yankees 2010",
-          "value": 206.33
+          "label": "Lost World Series",
+          "value": 40
         }
       ]
     },
     {
-      "id": "run-differential",
-      "title": "Run differential separates sustainable success from lucky records",
-      "body": "Payroll can be compared not only to wins, but also to run differential. Teams with strong run differentials usually had underlying performance to support their records.",
-      "measure": "run differential",
+      "id": "roster-size",
+      "title": "Roster records provide the player-level panel required for the project",
+      "body": "The full dataset includes every player-team-season appearance, letting the site display rosters while keeping the analysis connected to team records and payroll.",
+      "measure": "Average roster size",
       "chart": [
         {
-          "label": "New York Yankees 1998",
-          "value": 337
+          "label": "1985",
+          "value": 38.38
         },
         {
-          "label": "Seattle Mariners 2001",
-          "value": 287
+          "label": "1986",
+          "value": 39.12
         },
         {
-          "label": "Chicago Cubs 2016",
-          "value": 270
+          "label": "1987",
+          "value": 40.31
         },
         {
-          "label": "Boston Red Sox 2007",
-          "value": 263
+          "label": "1988",
+          "value": 39.81
         },
         {
-          "label": "Cleveland Indians 1995",
-          "value": 251
+          "label": "1989",
+          "value": 41.27
         },
         {
-          "label": "Atlanta Braves 1998",
-          "value": 250
+          "label": "1990",
+          "value": 42.88
         },
         {
-          "label": "Houston Astros 1998",
-          "value": 248
+          "label": "1991",
+          "value": 41.77
         },
         {
-          "label": "Oakland Athletics 2001",
-          "value": 233
+          "label": "1992",
+          "value": 41.0
         },
         {
-          "label": "Anaheim Angels 2002",
-          "value": 227
+          "label": "1993",
+          "value": 42.14
         },
         {
-          "label": "Arizona Diamondbacks 1999",
-          "value": 226
-        }
-      ]
-    },
-    {
-      "id": "home-field",
-      "title": "Home teams won more often across the game-level panel",
-      "body": "Home and away status is a useful dashboard filter because game context matters. Payroll is a season-level input, but each row still records whether the result came at home or on the road.",
-      "measure": "winning percentage",
-      "chart": [
+          "label": "1994",
+          "value": 36.79
+        },
         {
-          "label": "Away",
-          "value": 0.0
+          "label": "1995",
+          "value": 44.75
+        },
+        {
+          "label": "1996",
+          "value": 44.68
+        },
+        {
+          "label": "1997",
+          "value": 44.11
+        },
+        {
+          "label": "1998",
+          "value": 43.97
+        },
+        {
+          "label": "1999",
+          "value": 43.3
+        },
+        {
+          "label": "2000",
+          "value": 46.03
+        },
+        {
+          "label": "2001",
+          "value": 44.63
+        },
+        {
+          "label": "2002",
+          "value": 43.97
+        },
+        {
+          "label": "2003",
+          "value": 44.87
+        },
+        {
+          "label": "2004",
+          "value": 44.83
+        },
+        {
+          "label": "2005",
+          "value": 44.3
+        },
+        {
+          "label": "2006",
+          "value": 45.9
+        },
+        {
+          "label": "2007",
+          "value": 46.13
+        },
+        {
+          "label": "2008",
+          "value": 46.13
+        },
+        {
+          "label": "2009",
+          "value": 46.27
+        },
+        {
+          "label": "2010",
+          "value": 45.2
+        },
+        {
+          "label": "2011",
+          "value": 46.3
+        },
+        {
+          "label": "2012",
+          "value": 46.9
+        },
+        {
+          "label": "2013",
+          "value": 46.97
+        },
+        {
+          "label": "2014",
+          "value": 47.77
+        },
+        {
+          "label": "2015",
+          "value": 49.5
+        },
+        {
+          "label": "2016",
+          "value": 49.4
+        },
+        {
+          "label": "2017",
+          "value": 49.8
+        },
+        {
+          "label": "2018",
+          "value": 51.1
+        },
+        {
+          "label": "2019",
+          "value": 52.23
+        },
+        {
+          "label": "2020",
+          "value": 45.33
+        },
+        {
+          "label": "2021",
+          "value": 56.87
+        },
+        {
+          "label": "2022",
+          "value": 56.1
+        },
+        {
+          "label": "2023",
+          "value": 53.8
+        },
+        {
+          "label": "2024",
+          "value": 55.03
+        },
+        {
+          "label": "2025",
+          "value": 56.17
         }
       ]
     }

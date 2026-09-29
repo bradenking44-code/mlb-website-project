@@ -1,174 +1,179 @@
 #!/usr/bin/env python3
-"""Create report summary data for the payroll vs wins project."""
+"""Build report summary JSON from the postseason payroll dashboard data."""
 
 from __future__ import annotations
 
-import csv
 import json
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_FILE = ROOT / "data" / "processed" / "mlb_team_payroll_game_results.csv"
-OUT_FILE = ROOT / "data" / "processed" / "payroll_report_summary.json"
+DATA = ROOT / "data" / "processed" / "postseason_dashboard_data.json"
+OUT = ROOT / "data" / "processed" / "payroll_report_summary.json"
 
 
-def to_int(value: str) -> int:
-    return int(value) if value else 0
+def avg(values):
+    values = [value for value in values if value is not None]
+    return round(sum(values) / max(1, len(values)), 2)
 
 
-def to_float(value: str) -> float:
-    return float(value) if value else 0.0
+def pct(n, d):
+    return round(n / max(1, d), 3)
 
 
-def top(items, limit=10):
-    return sorted(items, key=lambda item: item["value"], reverse=True)[:limit]
+def top(items, n=12, reverse=True):
+    return sorted(items, key=lambda item: item["value"], reverse=reverse)[:n]
 
 
-def main() -> None:
-    rows = []
-    with DATA_FILE.open(newline="", encoding="utf-8") as handle:
-        for row in csv.DictReader(handle):
-            rows.append(row)
+def main():
+    data = json.loads(DATA.read_text(encoding="utf-8"))
+    rows = data["teamSeasons"]
+    payroll_rows = [row for row in rows if row.get("payroll_millions")]
+    ws = data["worldSeries"]
+    meta = data["metadata"]
 
-    seasons = defaultdict(lambda: Counter())
-    team_seasons = defaultdict(Counter)
-    payroll_by_year = defaultdict(list)
-    league_games = Counter()
-    home_away = defaultdict(lambda: Counter())
-
+    by_year = defaultdict(list)
+    by_team = defaultdict(list)
+    by_tier = defaultdict(list)
+    by_result = defaultdict(list)
     for row in rows:
-        key = (row["year"], row["team_id"])
-        team_seasons[key]["wins"] += to_int(row["win"])
-        team_seasons[key]["losses"] += to_int(row["loss"])
-        team_seasons[key]["runs"] += to_int(row["team_runs"])
-        team_seasons[key]["runs_allowed"] += to_int(row["opponent_runs"])
-        team_seasons[key]["run_differential"] += to_int(row["run_differential"])
-        team_seasons[key]["payroll"] = to_int(row["season_payroll"])
-        team_seasons[key]["team_name"] = row["team_name"]
-        team_seasons[key]["league"] = row["league"]
+        by_year[row["year"]].append(row)
+        by_team[row["team_name"]].append(row)
+        by_tier[row["payroll_tier"]].append(row)
+        by_result[row["postseason_result"]].append(row)
 
-        seasons[row["year"]]["games"] += 1
-        seasons[row["year"]]["payroll"] += to_int(row["season_payroll"])
-        seasons[row["year"]]["wins"] += to_int(row["win"])
-        seasons[row["year"]]["run_differential"] += to_int(row["run_differential"])
-        league_games[row["league"]] += 1
-        home_away[row["home_away"]]["wins"] += to_int(row["win"])
-        home_away[row["home_away"]]["games"] += 1
-
-    for (year, _team), values in team_seasons.items():
-        games = values["wins"] + values["losses"]
-        values["win_pct"] = values["wins"] / games if games else 0
-        values["cost_per_win"] = values["payroll"] / values["wins"] if values["wins"] else 0
-        payroll_by_year[year].append(values["payroll"])
-
-    for (year, team), values in team_seasons.items():
-        ordered = sorted(payroll_by_year[year])
-        payroll = values["payroll"]
-        values["payroll_percentile"] = ordered.index(payroll) / (len(ordered) - 1) if len(ordered) > 1 else 0
-        values["label"] = f"{values['team_name']} {year}"
-
-    ts_values = list(team_seasons.values())
-    efficient = [v for v in ts_values if v["wins"] >= 85]
-    inefficient = [v for v in ts_values if v["payroll"] > 0]
-
-    payroll_quartiles = defaultdict(lambda: Counter())
-    for values in ts_values:
-      quartile = min(4, int(values["payroll_percentile"] * 4) + 1)
-      payroll_quartiles[f"Q{quartile}"]["wins"] += values["wins"]
-      payroll_quartiles[f"Q{quartile}"]["games"] += values["wins"] + values["losses"]
-
-    sections = [
-        {
-            "id": "payroll-growth",
-            "title": "MLB payrolls rose sharply across the salary-data era",
-            "body": "Average team payroll increased from the mid-1980s through 2016. That growth makes raw payroll a useful financial measure, but comparisons are clearest within the same season because leaguewide spending changed over time.",
-            "measure": "average payroll",
-            "chart": [
-                {"label": year, "value": round(seasons[year]["payroll"] / max(1, seasons[year]["games"]) / 1_000_000, 2)}
-                for year in sorted(seasons, key=int)
-            ],
-        },
-        {
-            "id": "high-payroll-teams",
-            "title": "The largest payroll seasons were concentrated among a few big-market teams",
-            "body": "The highest payroll seasons show how much some clubs outspent the league in specific years. This creates a natural question for the dashboard: did that spending convert into wins?",
-            "measure": "payroll millions",
-            "chart": top([{"label": v["label"], "value": round(v["payroll"] / 1_000_000, 2)} for v in ts_values]),
-        },
-        {
-            "id": "payroll-quartiles",
-            "title": "Higher-payroll quartiles won more often, but not automatically",
-            "body": "Grouping team seasons by payroll percentile shows the broad relationship between spending and winning. The pattern is positive, but the gap is not large enough to make payroll destiny.",
-            "measure": "winning percentage",
-            "chart": [
-                {"label": q, "value": round(v["wins"] / v["games"], 3)}
-                for q, v in sorted(payroll_quartiles.items())
-                if v["games"]
-            ],
-        },
-        {
-            "id": "best-records",
-            "title": "The best records were not always the most expensive rosters",
-            "body": "Top win-percentage seasons include both high-spending clubs and teams that converted less expensive rosters into excellent records.",
-            "measure": "winning percentage",
-            "chart": top([{"label": v["label"], "value": round(v["win_pct"], 3)} for v in ts_values]),
-        },
-        {
-            "id": "efficient-winners",
-            "title": "Some winners delivered strong records at a lower cost per win",
-            "body": "Cost per win highlights efficient winning. Restricting to teams with at least 85 wins keeps the chart focused on clubs that were both successful and financially efficient.",
-            "measure": "cost per win millions",
-            "chart": sorted(
-                [{"label": v["label"], "value": round(v["cost_per_win"] / 1_000_000, 2)} for v in efficient],
-                key=lambda item: item["value"],
-            )[:10],
-        },
-        {
-            "id": "expensive-losses",
-            "title": "Some expensive rosters still finished near or below .500",
-            "body": "Large payrolls reduce some constraints, but they do not remove injuries, roster imbalance, underperformance, or tough divisions.",
-            "measure": "payroll millions",
-            "chart": top(
-                [
-                    {"label": v["label"], "value": round(v["payroll"] / 1_000_000, 2)}
-                    for v in inefficient
-                    if v["win_pct"] <= 0.5
-                ]
-            ),
-        },
-        {
-            "id": "run-differential",
-            "title": "Run differential separates sustainable success from lucky records",
-            "body": "Payroll can be compared not only to wins, but also to run differential. Teams with strong run differentials usually had underlying performance to support their records.",
-            "measure": "run differential",
-            "chart": top([{"label": v["label"], "value": v["run_differential"]} for v in ts_values]),
-        },
-        {
-            "id": "home-field",
-            "title": "Home teams won more often across the game-level panel",
-            "body": "Home and away status is a useful dashboard filter because game context matters. Payroll is a season-level input, but each row still records whether the result came at home or on the road.",
-            "measure": "winning percentage",
-            "chart": [
-                {"label": key, "value": round(values["wins"] / values["games"], 3)}
-                for key, values in sorted(home_away.items())
-            ],
-        },
+    payroll_by_year = [
+        {"label": str(year), "value": avg([row.get("payroll_millions") for row in group])}
+        for year, group in sorted(by_year.items())
+        if any(row.get("payroll_millions") for row in group)
     ]
 
-    headlines = [
-        {"label": "Team-game rows", "value": len(rows)},
-        {"label": "Seasons", "value": len(seasons)},
-        {"label": "Team seasons", "value": len(team_seasons)},
-        {"label": "Teams", "value": len({team for _year, team in team_seasons})},
-        {"label": "Total wins", "value": sum(v["wins"] for v in ts_values)},
-        {"label": "Average payroll", "value": round(sum(v["payroll"] for v in ts_values) / len(ts_values) / 1_000_000, 2)},
+    ws_rank = [
+        {"label": str(row["year"]), "value": row["winner_payroll_rank"]}
+        for row in ws
+        if row.get("winner_payroll_rank")
     ]
 
-    payload = {"headlines": headlines, "sections": sections}
-    OUT_FILE.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    print(f"Wrote {OUT_FILE}")
+    tier_playoff = [
+        {"label": tier, "value": pct(sum(1 for row in group if row["playoff_team"]), len(group))}
+        for tier, group in by_tier.items()
+        if tier != "Payroll unavailable"
+    ]
+
+    team_ws = [
+        {"label": team, "value": sum(1 for row in group if row["world_series_winner"])}
+        for team, group in by_team.items()
+    ]
+
+    team_playoff = [
+        {"label": team, "value": sum(1 for row in group if row["playoff_team"])}
+        for team, group in by_team.items()
+    ]
+
+    expensive_misses = [
+        {"label": f"{row['year']} {row['team_name']}", "value": row["payroll_millions"]}
+        for row in payroll_rows
+        if row["payroll_tier"] == "Top third" and not row["playoff_team"]
+    ]
+
+    low_payroll_success = [
+        {"label": f"{row['year']} {row['team_name']}", "value": row["wins"]}
+        for row in payroll_rows
+        if row["payroll_tier"] == "Bottom third" and row["playoff_team"]
+    ]
+
+    result_counts = [
+        {"label": result, "value": len(group)}
+        for result, group in by_result.items()
+    ]
+
+    roster_sizes = [
+        {"label": str(year), "value": avg([row.get("roster_count") for row in group])}
+        for year, group in sorted(by_year.items())
+    ]
+
+    recent_ws = [row for row in ws if row["year"] >= 2017]
+    payroll_ws = [row for row in ws if row.get("winner_payroll_rank")]
+    top_third_ws = sum(1 for row in payroll_ws if row["winner_payroll_rank"] <= 10)
+
+    summary = {
+        "headlines": [
+            {"label": "Roster-season rows", "value": meta["full_roster_rows"]},
+            {"label": "Team seasons", "value": meta["team_seasons"]},
+            {"label": "Seasons covered", "value": meta["latest_year"] - meta["start_year"] + 1},
+            {"label": "World Series champions tracked", "value": len(ws)},
+            {"label": "Payroll seasons", "value": meta["payroll_end_year"] - meta["payroll_start_year"] + 1},
+            {"label": "Teams/franchises in data", "value": meta["teams"]},
+        ],
+        "sections": [
+            {
+                "id": "payroll-growth",
+                "title": "Payroll rose sharply during the salary-data era",
+                "body": "Average team payroll increased heavily from 1985 to 2016, so the cleanest comparisons use payroll rank or tier inside each season.",
+                "measure": "Average payroll, $M",
+                "chart": payroll_by_year,
+            },
+            {
+                "id": "champion-rank",
+                "title": "World Series winners did not always have the highest payroll",
+                "body": f"Among champions with salary coverage, {top_third_ws} of {len(payroll_ws)} came from the top third of payrolls. Money helped, but it did not guarantee a parade.",
+                "measure": "Payroll rank",
+                "chart": ws_rank,
+            },
+            {
+                "id": "tier-playoff-rate",
+                "title": "Top payroll teams reached October more often",
+                "body": "Payroll tier has a visible relationship with playoff odds, especially when comparing the top third of spending to the bottom third.",
+                "measure": "Playoff rate",
+                "chart": sorted(tier_playoff, key=lambda item: item["label"]),
+            },
+            {
+                "id": "world-series-teams",
+                "title": "A few clubs collected most of the titles",
+                "body": "World Series wins cluster around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
+                "measure": "World Series wins",
+                "chart": top(team_ws),
+            },
+            {
+                "id": "playoff-volume",
+                "title": "Playoff appearances show consistency better than championships",
+                "body": "Because a short postseason series can swing on a few games, playoff appearances are a more stable signal than World Series wins alone.",
+                "measure": "Playoff appearances",
+                "chart": top(team_playoff),
+            },
+            {
+                "id": "expensive-misses",
+                "title": "High payroll misses are the clearest counterexamples",
+                "body": "Several top-third payroll teams still missed the playoffs, which shows why payroll should be treated as a predictor, not a certainty.",
+                "measure": "Payroll, $M",
+                "chart": top(expensive_misses),
+            },
+            {
+                "id": "low-payroll-success",
+                "title": "Low-payroll playoff teams prove efficiency mattered",
+                "body": "Bottom-third payroll teams still reached October when player development, roster construction, and timing beat spending power.",
+                "measure": "Wins",
+                "chart": top(low_payroll_success),
+            },
+            {
+                "id": "postseason-results",
+                "title": "The dataset separates regular-season records from postseason outcomes",
+                "body": "Each team-season is labeled as missed playoffs, playoff team, pennant winner, or World Series champion so filters can test different definitions of success.",
+                "measure": "Team seasons",
+                "chart": top(result_counts, n=8),
+            },
+            {
+                "id": "roster-size",
+                "title": "Roster records provide the player-level panel required for the project",
+                "body": "The full dataset includes every player-team-season appearance, letting the site display rosters while keeping the analysis connected to team records and payroll.",
+                "measure": "Average roster size",
+                "chart": roster_sizes,
+            },
+        ],
+    }
+    OUT.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(f"Wrote {OUT}")
 
 
 if __name__ == "__main__":

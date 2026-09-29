@@ -1,404 +1,392 @@
-const DATA_URL = "data/processed/payroll_dashboard_data.json";
+const DATA_URL = "data/processed/postseason_dashboard_data.json";
 
 const labels = {
-  win_rate: "Win rate",
+  world_series_wins: "World Series wins",
+  playoff_rate: "Playoff rate",
+  win_pct: "Win percentage",
   wins: "Wins",
-  run_differential: "Run differential",
-  payroll_millions: "Payroll millions",
-  cost_per_win: "Cost per win",
-  attendance: "Attendance",
-  runs: "Runs scored",
+  payroll_millions: "Payroll, $M",
+  payroll_rank: "Payroll rank",
+  roster_count: "Roster size",
   team_name: "Team",
-  league: "League",
-  payroll_tier: "Payroll tier",
   year: "Year",
+  league: "League",
+  division: "Division",
+  payroll_tier: "Payroll tier",
+  postseason_result: "Postseason result",
 };
 
-const palette = ["#c82432", "#071d3a", "#27724f", "#d7a43b", "#6f4bb3", "#1e88a8", "#9e1d29", "#5c6f82"];
-const teamLooks = {
-  Yankees: ["#0c2340", "#c4ced4", "NYY"],
-  Dodgers: ["#005a9c", "#ef3e42", "LAD"],
-  "Red Sox": ["#bd3039", "#0c2340", "BOS"],
-  Mets: ["#002d72", "#ff5910", "NYM"],
-  Cubs: ["#0e3386", "#cc3433", "CHC"],
-  Cardinals: ["#c41e3a", "#fedb00", "STL"],
-  Giants: ["#fd5a1e", "#27251f", "SF"],
-  Athletics: ["#003831", "#efb21e", "OAK"],
-  Braves: ["#13274f", "#ce1141", "ATL"],
-  Phillies: ["#e81828", "#002d72", "PHI"],
-  Tigers: ["#0c2340", "#fa4616", "DET"],
-  Mariners: ["#0c2c56", "#005c5c", "SEA"],
-  Orioles: ["#df4601", "#000000", "BAL"],
-  Royals: ["#004687", "#bd9b60", "KC"],
-  Marlins: ["#00a3e0", "#ef3340", "MIA"],
-  "Blue Jays": ["#134a8e", "#e8291c", "TOR"],
-};
-
-let allRows = [];
+const colors = ["#be1e2d", "#113b64", "#2f6f63", "#d39b2a", "#642f6c", "#0c7c90", "#8f2f1f", "#435466"];
+let teamSeasons = [];
+let worldSeries = [];
+let rosters = {};
 let metadata = {};
-let charts = {};
 let animationTimer = null;
 
-function formatNumber(value, field = "") {
-  if (field === "win_rate") return value.toLocaleString("en-US", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-  if (field === "payroll_millions" || field === "cost_per_win") return `$${value.toLocaleString("en-US", { maximumFractionDigits: 1 })}M`;
-  return Math.round(value).toLocaleString("en-US");
+const money = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const number = new Intl.NumberFormat("en-US");
+
+function fmtMoney(value) {
+  return value || value === 0 ? `$${money.format(value)}M` : "No payroll";
 }
 
-function teamStyle(label) {
-  const match = Object.keys(teamLooks).find((name) => label.includes(name));
-  const fallback = ["#071d3a", "#c82432", label.split(" ").map((part) => part[0]).join("").slice(0, 3).toUpperCase()];
-  const [primary, secondary, initials] = match ? teamLooks[match] : fallback;
-  return { primary, secondary, initials };
+function fmtValue(value, field) {
+  if (field === "playoff_rate" || field === "win_pct") return `${(value * 100).toFixed(1)}%`;
+  if (field === "payroll_millions") return fmtMoney(value);
+  if (field === "payroll_rank") return value ? `#${Math.round(value)}` : "No rank";
+  return number.format(Math.round(value || 0));
 }
 
-function teamLogo(teamName) {
-  const look = teamStyle(teamName);
-  return `<span class="team-mini-logo" style="--team-primary:${look.primary};--team-secondary:${look.secondary}">${look.initials}</span>`;
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[char]));
 }
 
-function teamNameCell(teamName) {
-  return `<span class="team-name-with-logo">${teamLogo(teamName)}<span>${teamName}</span></span>`;
+function logo(row, size = "small") {
+  const text = row.team_id || row.winner_id || "MLB";
+  if (row.logo_url || row.winner_logo_url) {
+    return `<img class="team-logo ${size}" src="${row.logo_url || row.winner_logo_url}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'team-mini-logo',textContent:'${escapeHtml(text).slice(0,3)}'}))">`;
+  }
+  return `<span class="team-mini-logo">${escapeHtml(text).slice(0, 3)}</span>`;
 }
 
-function uniqueOptions(field) {
-  return [...new Set(allRows.map((row) => row[field]).filter(Boolean))].sort((a, b) =>
-    String(a).localeCompare(String(b), undefined, { numeric: true })
-  );
+function teamCell(row) {
+  return `<span class="team-name-with-logo">${logo(row)}<span>${escapeHtml(row.team_name || row.winner)}</span></span>`;
 }
 
-function fillSelect(id, field, allLabel) {
+function unique(field) {
+  return [...new Set(teamSeasons.map((row) => row[field]).filter(Boolean))]
+    .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
+}
+
+function fillSelect(id, field, label) {
   const select = document.getElementById(id);
-  select.innerHTML = [`<option value="">${allLabel}</option>`]
-    .concat(uniqueOptions(field).map((value) => `<option value="${value}">${value}</option>`))
+  select.innerHTML = [`<option value="">${label}</option>`]
+    .concat(unique(field).map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`))
     .join("");
 }
 
-function getFilters() {
+function filters() {
+  const startYear = Number(document.getElementById("startYear").value || metadata.start_year);
+  const endYear = Number(document.getElementById("endYear").value || metadata.latest_year);
   return {
-    startYear: Number(document.getElementById("startYear").value || 1985),
-    endYear: Number(document.getElementById("endYear").value || 2016),
+    start: Math.min(startYear, endYear),
+    end: Math.max(startYear, endYear),
     teamSearch: document.getElementById("teamSearch").value.trim().toLowerCase(),
     team: document.getElementById("teamFilter").value,
     league: document.getElementById("leagueFilter").value,
+    division: document.getElementById("divisionFilter").value,
+    postseason: document.getElementById("postseasonFilter").value,
     payrollTier: document.getElementById("payrollTierFilter").value,
     minPayroll: Number(document.getElementById("minPayroll").value || 0),
-    topN: Number(document.getElementById("topN").value || 12),
     measure: document.getElementById("measureSelect").value,
     breakdown: document.getElementById("breakdownSelect").value,
-    chartType: document.getElementById("chartTypeSelect").value,
+    topN: Number(document.getElementById("topN").value || 12),
   };
-}
-
-function setActiveEraButton() {
-  const start = document.getElementById("startYear").value;
-  const end = document.getElementById("endYear").value;
-  document.querySelectorAll(".chip-button[data-start]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.start === start && button.dataset.end === end);
-  });
-}
-
-function updateRangeReadouts() {
-  document.getElementById("minPayrollValue").textContent = `$${document.getElementById("minPayroll").value}M`;
-  document.getElementById("topNValue").textContent = `Top ${document.getElementById("topN").value}`;
 }
 
 function filteredRows() {
-  const filters = getFilters();
-  const start = Math.min(filters.startYear, filters.endYear);
-  const end = Math.max(filters.startYear, filters.endYear);
-  return allRows.filter((row) => {
-    const tierValue = row.payroll_tier.toLowerCase().split(" ")[0];
-    return (
-      row.year >= start &&
-      row.year <= end &&
-      row.payroll_millions >= filters.minPayroll &&
-      (!filters.teamSearch || row.team_name.toLowerCase().includes(filters.teamSearch) || row.team_id.toLowerCase().includes(filters.teamSearch)) &&
-      (!filters.team || row.team_name === filters.team) &&
-      (!filters.league || row.league === filters.league) &&
-      (!filters.payrollTier || tierValue === filters.payrollTier)
-    );
+  const f = filters();
+  return teamSeasons.filter((row) => {
+    const wsTeam = row.world_series_winner || row.league_champion;
+    return row.year >= f.start &&
+      row.year <= f.end &&
+      (!f.teamSearch || row.team_name.toLowerCase().includes(f.teamSearch) || row.team_id.toLowerCase().includes(f.teamSearch)) &&
+      (!f.team || row.team_name === f.team) &&
+      (!f.league || row.league === f.league) &&
+      (!f.division || row.division === f.division) &&
+      (!f.payrollTier || row.payroll_tier === f.payrollTier) &&
+      (!f.minPayroll || (row.payroll_millions || 0) >= f.minPayroll) &&
+      (!f.postseason ||
+        (f.postseason === "playoffs" && row.playoff_team) ||
+        (f.postseason === "missed" && !row.playoff_team) ||
+        (f.postseason === "world_series" && wsTeam) ||
+        (f.postseason === "champions" && row.world_series_winner));
   });
 }
 
-function measureValue(row, measure) {
-  if (measure === "runs") return row.runs;
-  return row[measure] || 0;
-}
-
-function aggregate(rows, field, measure, limit = 12) {
-  const groups = new Map();
+function aggregate(rows, group, measure, limit) {
+  const map = new Map();
   rows.forEach((row) => {
-    const key = row[field] || "Unknown";
-    if (!groups.has(key)) {
-      groups.set(key, { label: key, wins: 0, losses: 0, payrollTotal: 0, costTotal: 0, rows: 0, value: 0 });
+    const key = row[group] ?? "Unknown";
+    if (!map.has(key)) {
+      map.set(key, { label: String(key), seasons: 0, wins: 0, losses: 0, payroll: 0, payrollRows: 0, playoffs: 0, ws: 0, roster: 0, rank: 0, rankRows: 0 });
     }
-    const item = groups.get(key);
-    item.wins += row.wins;
-    item.losses += row.losses;
-    item.payrollTotal += row.payroll_millions;
-    item.costTotal += row.cost_per_win;
-    item.rows += 1;
-    if (!["win_rate", "payroll_millions", "cost_per_win"].includes(measure)) item.value += measureValue(row, measure);
+    const item = map.get(key);
+    item.seasons += 1;
+    item.wins += row.wins || 0;
+    item.losses += row.losses || 0;
+    item.playoffs += row.playoff_team ? 1 : 0;
+    item.ws += row.world_series_winner ? 1 : 0;
+    item.roster += row.roster_count || 0;
+    if (row.payroll_millions) {
+      item.payroll += row.payroll_millions;
+      item.payrollRows += 1;
+    }
+    if (row.payroll_rank) {
+      item.rank += row.payroll_rank;
+      item.rankRows += 1;
+    }
   });
-  return [...groups.values()]
-    .map((item) => {
-      if (measure === "win_rate") item.value = item.wins / Math.max(1, item.wins + item.losses);
-      if (measure === "payroll_millions") item.value = item.payrollTotal / Math.max(1, item.rows);
-      if (measure === "cost_per_win") item.value = item.costTotal / Math.max(1, item.rows);
-      return item;
-    })
-    .sort((a, b) => b.value - a.value)
-    .slice(0, limit);
+  return [...map.values()].map((item) => {
+    if (measure === "world_series_wins") item.value = item.ws;
+    if (measure === "playoff_rate") item.value = item.playoffs / Math.max(1, item.seasons);
+    if (measure === "win_pct") item.value = item.wins / Math.max(1, item.wins + item.losses);
+    if (measure === "wins") item.value = item.wins;
+    if (measure === "payroll_millions") item.value = item.payroll / Math.max(1, item.payrollRows);
+    if (measure === "payroll_rank") item.value = item.rank / Math.max(1, item.rankRows);
+    if (measure === "roster_count") item.value = item.roster / Math.max(1, item.seasons);
+    return item;
+  }).sort((a, b) => {
+    if (measure === "payroll_rank") return a.value - b.value;
+    return b.value - a.value;
+  }).slice(0, limit);
 }
 
-function trend(rows, measure) {
-  return aggregate(rows, "year", measure, 100).sort((a, b) => Number(a.label) - Number(b.label));
+function setReadouts() {
+  document.getElementById("minPayrollValue").textContent = `$${document.getElementById("minPayroll").value}M`;
+  document.getElementById("topNValue").textContent = `Top ${document.getElementById("topN").value}`;
+  const f = filters();
+  document.querySelectorAll(".chip-button[data-start]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.start === String(f.start) && button.dataset.end === String(f.end));
+  });
 }
 
 function metricCards(rows) {
+  const payrollRows = rows.filter((row) => row.payroll_millions);
+  const playoffTeams = rows.filter((row) => row.playoff_team).length;
+  const wsWinners = rows.filter((row) => row.world_series_winner).length;
   const wins = rows.reduce((sum, row) => sum + row.wins, 0);
   const losses = rows.reduce((sum, row) => sum + row.losses, 0);
-  const avgPayroll = rows.reduce((sum, row) => sum + row.payroll_millions, 0) / Math.max(1, rows.length);
-  const runDiff = rows.reduce((sum, row) => sum + row.run_differential, 0);
+  const avgPayroll = payrollRows.reduce((sum, row) => sum + row.payroll_millions, 0) / Math.max(1, payrollRows.length);
   const cards = [
-    ["Source game rows", metadata.source_game_rows || 148592, ""],
-    ["Team seasons", rows.length, ""],
-    ["Wins", wins, ""],
-    ["Win rate", wins / Math.max(1, wins + losses), "win_rate"],
-    ["Avg payroll", avgPayroll, "payroll_millions"],
-    ["Run differential", runDiff, ""],
+    [metadata.full_roster_rows, "Roster data rows"],
+    [rows.length, "Team seasons"],
+    [playoffTeams, "Playoff teams"],
+    [wsWinners, "World Series winners"],
+    [wins / Math.max(1, wins + losses), "Win rate", "win_pct"],
+    [avgPayroll, "Avg payroll", "payroll_millions"],
   ];
-  document.getElementById("dashboardMetrics").innerHTML = cards
-    .map(([label, value, field]) => `<div class="metric-card"><strong>${formatNumber(value, field)}</strong><span>${label}</span></div>`)
-    .join("");
+  document.getElementById("dashboardMetrics").innerHTML = cards.map(([value, label, field]) => `
+    <div class="metric-card"><strong>${field ? fmtValue(value, field) : number.format(Math.round(value || 0))}</strong><span>${label}</span></div>
+  `).join("");
 }
 
-function chartOptions(title, type) {
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: { duration: 850, easing: "easeOutQuart" },
-    plugins: {
-      title: { display: true, text: title, color: "#101927", font: { weight: "bold" } },
-      legend: { display: type === "doughnut", position: "bottom" },
-    },
-    scales:
-      type === "doughnut"
-        ? {}
-        : {
-            x: { ticks: { autoSkip: true, maxTicksLimit: 12 }, grid: { display: false } },
-            y: { beginAtZero: true, grid: { color: "rgba(96, 112, 133, 0.16)" } },
-          },
-  };
+function svgWrap(title, body, subtitle = "") {
+  return `<h3 class="chart-title">${escapeHtml(title)}</h3>${subtitle ? `<p class="chart-subtitle">${escapeHtml(subtitle)}</p>` : ""}<svg viewBox="0 0 720 330" role="img" aria-label="${escapeHtml(title)}">${body}</svg>`;
 }
 
-function renderChart(id, type, items, title, color = "#27724f") {
-  if (charts[id]) charts[id].destroy();
-  const chartType = items.length > 18 && type === "doughnut" ? "bar" : type;
-  charts[id] = new Chart(document.getElementById(id), {
-    type: chartType,
-    data: {
-      labels: items.map((item) => item.label),
-      datasets: [{
-        label: title,
-        data: items.map((item) => item.value),
-        backgroundColor: chartType === "doughnut" ? items.map((_, i) => palette[i % palette.length]) : color,
-        borderColor: chartType === "line" ? color : "#ffffff",
-        borderWidth: chartType === "line" ? 3 : 1,
-        tension: 0.25,
-        pointRadius: chartType === "line" ? 2 : 3,
-      }],
-    },
-    options: chartOptions(title, chartType),
+function barChart(id, title, data, field) {
+  const max = Math.max(...data.map((d) => d.value), 1);
+  const width = 640;
+  const startX = 60;
+  const rowH = Math.min(34, 250 / Math.max(1, data.length));
+  const bars = data.map((d, i) => {
+    const y = 42 + i * rowH;
+    const barW = (d.value / max) * width;
+    return `
+      <text x="52" y="${y + 15}" text-anchor="end" class="svg-label">${escapeHtml(d.label).slice(0, 18)}</text>
+      <rect x="${startX}" y="${y}" width="${barW}" height="${rowH - 7}" rx="5" fill="${colors[i % colors.length]}"></rect>
+      <text x="${Math.min(startX + barW + 8, 690)}" y="${y + 15}" class="svg-value">${fmtValue(d.value, field)}</text>`;
+  }).join("");
+  document.getElementById(id).innerHTML = svgWrap(title, bars, "Hover the filters to rebuild this chart from the current view.");
+}
+
+function lineChart(id, title, data, field) {
+  const clean = data.filter((d) => Number.isFinite(d.value));
+  const minYear = Math.min(...clean.map((d) => Number(d.label)), 1985);
+  const maxYear = Math.max(...clean.map((d) => Number(d.label)), 2025);
+  const max = Math.max(...clean.map((d) => d.value), 1);
+  const min = Math.min(...clean.map((d) => d.value), 0);
+  const x = (year) => 55 + ((year - minYear) / Math.max(1, maxYear - minYear)) * 620;
+  const y = (value) => 285 - ((value - min) / Math.max(0.01, max - min)) * 220;
+  const points = clean.map((d) => `${x(Number(d.label))},${y(d.value)}`).join(" ");
+  const dots = clean.filter((_, i) => i % Math.max(1, Math.floor(clean.length / 12)) === 0).map((d) =>
+    `<circle cx="${x(Number(d.label))}" cy="${y(d.value)}" r="4" fill="#be1e2d"><title>${d.label}: ${fmtValue(d.value, field)}</title></circle>`
+  ).join("");
+  const body = `
+    <line x1="55" y1="285" x2="680" y2="285" class="axis"></line>
+    <line x1="55" y1="45" x2="55" y2="285" class="axis"></line>
+    <polyline points="${points}" fill="none" stroke="#be1e2d" stroke-width="4"></polyline>
+    ${dots}
+    <text x="55" y="315" class="svg-label">${minYear}</text>
+    <text x="680" y="315" text-anchor="end" class="svg-label">${maxYear}</text>`;
+  document.getElementById(id).innerHTML = svgWrap(title, body);
+}
+
+function scatterChart(id, title, rows) {
+  const data = rows.filter((row) => row.payroll_millions && row.win_pct);
+  const maxX = Math.max(...data.map((row) => row.payroll_millions), 1);
+  const x = (value) => 55 + (value / maxX) * 620;
+  const y = (value) => 285 - value * 390;
+  const points = data.map((row) => {
+    const fill = row.world_series_winner ? "#d39b2a" : row.playoff_team ? "#be1e2d" : "rgba(17,59,100,.45)";
+    const r = row.world_series_winner ? 7 : row.playoff_team ? 5 : 3;
+    return `<circle cx="${x(row.payroll_millions)}" cy="${y(row.win_pct)}" r="${r}" fill="${fill}"><title>${escapeHtml(row.team_name)} ${row.year}: ${fmtMoney(row.payroll_millions)}, ${row.wins}-${row.losses}, ${row.postseason_result}</title></circle>`;
+  }).join("");
+  const body = `
+    <line x1="55" y1="285" x2="680" y2="285" class="axis"></line>
+    <line x1="55" y1="60" x2="55" y2="285" class="axis"></line>
+    ${points}
+    <text x="55" y="315" class="svg-label">$0M payroll</text>
+    <text x="680" y="315" text-anchor="end" class="svg-label">${fmtMoney(maxX)}</text>
+    <text x="18" y="70" class="svg-label">.600+</text>
+    <text x="18" y="285" class="svg-label">.000</text>`;
+  document.getElementById(id).innerHTML = svgWrap(title, body, "Gold dots are World Series winners. Red dots are playoff teams.");
+}
+
+function tierChart(rows) {
+  const tiers = ["Top third", "Middle third", "Bottom third"];
+  const data = tiers.map((tier) => {
+    const set = rows.filter((row) => row.payroll_tier === tier);
+    return { label: tier, value: set.filter((row) => row.playoff_team).length / Math.max(1, set.length) };
   });
+  barChart("tierChart", "Playoff rate by payroll tier", data, "playoff_rate");
 }
 
-function renderScatter(rows) {
-  if (charts.scatterChart) charts.scatterChart.destroy();
-  const points = rows.map((row) => ({ x: row.payroll_millions, y: row.win_rate, team: row.team_name, year: row.year }));
-  charts.scatterChart = new Chart(document.getElementById("scatterChart"), {
-    type: "scatter",
-    data: {
-      datasets: [{
-        label: "Team seasons",
-        data: points,
-        pointRadius: 4,
-        pointHoverRadius: 7,
-        backgroundColor: "rgba(200, 36, 50, 0.62)",
-        borderColor: "#c82432",
-      }],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 900 },
-      plugins: {
-        title: { display: true, text: "Payroll vs. winning percentage by team-season" },
-        tooltip: { callbacks: { label: (ctx) => `${ctx.raw.team} ${ctx.raw.year}: $${ctx.raw.x.toFixed(1)}M, ${ctx.raw.y.toFixed(3)} win rate` } },
-        legend: { display: false },
-      },
-      scales: {
-        x: { title: { display: true, text: "Payroll, $M" }, beginAtZero: true },
-        y: { title: { display: true, text: "Win rate" }, beginAtZero: true },
-      },
-    },
-  });
+function wsPayrollChart(rows) {
+  const f = filters();
+  const data = worldSeries.filter((row) => row.year >= f.start && row.year <= f.end && row.winner_payroll_millions)
+    .map((row) => ({
+      label: row.year,
+      value: row.winner_payroll_millions - row.league_avg_payroll_millions,
+    }));
+  lineChart("wsPayrollChart", "World Series winner payroll vs league average", data, "payroll_millions");
 }
 
-function renderClubhouse(rows, measure) {
-  const items = aggregate(rows, "team_name", measure, 6);
-  document.getElementById("clubhouseStrip").innerHTML = items
-    .map((item) => {
-      const look = teamStyle(item.label);
-      return `
-        <article class="mascot-card" style="--team-primary:${look.primary};--team-secondary:${look.secondary}">
-          <div class="mascot-heading">
-            <div class="mascot-mark">${look.initials}</div>
-            <div>
-              <div class="mascot-name">${item.label}</div>
-              <div class="mascot-meta">${labels[measure]}</div>
-            </div>
-          </div>
-          <div class="mascot-stat">${formatNumber(item.value, measure)}</div>
-        </article>
-      `;
-    })
-    .join("");
+function renderWorldSeries() {
+  const f = filters();
+  const items = worldSeries.filter((row) => row.year >= f.start && row.year <= f.end).sort((a, b) => b.year - a.year);
+  document.getElementById("wsCaption").textContent = `${items.length} champions in view`;
+  document.getElementById("worldSeriesTimeline").innerHTML = items.map((row) => `
+    <article class="ws-card">
+      <strong>${row.year}</strong>
+      <span>${logo(row)} ${escapeHtml(row.winner)}</span>
+      <small>${row.record} ${row.winner_payroll_rank ? `| payroll rank #${row.winner_payroll_rank}` : "| payroll unavailable"}</small>
+    </article>
+  `).join("");
 }
 
-function renderLeaderboards(rows, measure) {
-  const top = rows.slice().sort((a, b) => measureValue(b, measure) - measureValue(a, measure)).slice(0, 8);
-  const efficient = rows.slice().filter((row) => row.wins >= 80).sort((a, b) => a.cost_per_win - b.cost_per_win).slice(0, 8);
-  const render = (items, field) =>
-    items.map((row, index) => `
-      <div class="leader-row">
-        <span>${index + 1}</span>
-        <span class="team-name-with-logo" title="${row.team_name} ${row.year}">
-          ${teamLogo(row.team_name)}
-          <strong>${row.team_name} ${row.year}</strong>
-        </span>
-        <span>${formatNumber(field === "cost_per_win" ? row.cost_per_win : measureValue(row, field), field)}</span>
-      </div>
-    `).join("");
-  document.getElementById("seasonLeaders").innerHTML = render(top, measure);
-  document.getElementById("careerLeaders").innerHTML = render(efficient, "cost_per_win");
-  document.getElementById("leaderboardCaption").textContent = labels[measure];
+function renderTicker() {
+  const items = worldSeries.filter((row) => row.year >= 1985).slice(-20);
+  document.getElementById("payrollTicker").innerHTML = items.concat(items).map((row) =>
+    `<span>${row.year} ${escapeHtml(row.winner)} ${row.winner_payroll_rank ? `rank #${row.winner_payroll_rank}` : "payroll n/a"}</span>`
+  ).join("");
+}
+
+function renderRoster(row) {
+  if (!row) {
+    document.getElementById("rosterSpotlight").innerHTML = "<p>No roster selected.</p>";
+    return;
+  }
+  const key = `${row.year}-${row.team_id}`;
+  const players = rosters[key] || [];
+  document.getElementById("rosterCaption").textContent = `${row.year} ${row.team_name}, ${players.length} players`;
+  document.getElementById("rosterSpotlight").innerHTML = `
+    <div class="roster-header">${teamCell(row)}<span>${row.wins}-${row.losses}, ${row.postseason_result}, ${fmtMoney(row.payroll_millions)}</span></div>
+    <div class="roster-list">
+      ${players.slice(0, 36).map((player) => `<span title="${player.games} games">${escapeHtml(player.player_name)} <small>${player.games} G</small></span>`).join("")}
+    </div>`;
 }
 
 function renderTable(rows) {
-  const measure = getFilters().measure;
-  document.getElementById("rowCount").textContent = `${rows.length.toLocaleString("en-US")} team seasons`;
-  document.getElementById("dataTable").innerHTML = rows
-    .slice()
-    .sort((a, b) => measureValue(b, measure) - measureValue(a, measure))
-    .slice(0, 120)
-    .map((row) => `
-      <tr>
-        <td>${row.year}</td>
-        <td>${teamNameCell(row.team_name)}</td>
-        <td>${row.league}</td>
-        <td>${row.payroll_tier}</td>
-        <td>$${row.payroll_millions.toFixed(1)}M</td>
-        <td>${row.wins}-${row.losses}</td>
-        <td>${row.win_rate.toFixed(3)}</td>
-      </tr>
-    `).join("");
+  const sorted = [...rows].sort((a, b) => b.year - a.year || b.wins - a.wins).slice(0, 80);
+  document.getElementById("rowCount").textContent = `${rows.length} team seasons in current filters`;
+  document.getElementById("dataTable").innerHTML = sorted.map((row, i) => `
+    <tr>
+      <td>${row.year}</td>
+      <td>${teamCell(row)}</td>
+      <td>${row.wins}-${row.losses}</td>
+      <td>${fmtMoney(row.payroll_millions)}</td>
+      <td>${row.payroll_rank ? `#${row.payroll_rank}` : "n/a"}</td>
+      <td>${escapeHtml(row.postseason_result)}</td>
+      <td><button class="mini-button" type="button" data-row="${i}">View</button></td>
+    </tr>
+  `).join("");
+  document.querySelectorAll("[data-row]").forEach((button) => {
+    button.addEventListener("click", () => renderRoster(sorted[Number(button.dataset.row)]));
+  });
+  renderRoster(sorted[0]);
 }
 
-function renderTicker(rows) {
-  const items = aggregate(rows, "team_name", "payroll_millions", 10);
-  const ticker = document.getElementById("payrollTicker");
-  if (!ticker) return;
-  const content = items.map((item) => `<span>${teamLogo(item.label)} ${item.label}: ${formatNumber(item.value, "payroll_millions")}</span>`).join("");
-  ticker.innerHTML = `${content}${content}`;
-}
-
-function updateDashboard() {
-  updateRangeReadouts();
-  setActiveEraButton();
+function render() {
+  setReadouts();
   const rows = filteredRows();
-  const filters = getFilters();
-  const measureLabel = labels[filters.measure];
-  const breakdownItems = filters.breakdown === "year" ? trend(rows, filters.measure) : aggregate(rows, filters.breakdown, filters.measure, filters.topN);
+  const f = filters();
   metricCards(rows);
-  renderClubhouse(rows, filters.measure);
-  renderTicker(rows);
-  renderChart("breakdownChart", filters.breakdown === "year" ? "line" : filters.chartType, breakdownItems, `${measureLabel} by ${labels[filters.breakdown]}`, "#27724f");
-  renderChart("trendChart", "line", trend(rows, filters.measure), `${measureLabel} by year`, "#c82432");
-  renderChart("teamChart", "bar", aggregate(rows, "team_name", filters.measure, filters.topN), `Top teams by ${measureLabel}`, "#071d3a");
-  renderChart("tierChart", "bar", aggregate(rows, "payroll_tier", filters.measure, 3), `${measureLabel} by payroll tier`, "#d7a43b");
-  renderScatter(rows);
-  renderLeaderboards(rows, filters.measure);
+  renderWorldSeries();
+  barChart("breakdownChart", `${labels[f.measure]} by ${labels[f.breakdown]}`, aggregate(rows, f.breakdown, f.measure, f.topN), f.measure);
+  const yearly = aggregate(rows, "year", f.measure, 100).sort((a, b) => Number(a.label) - Number(b.label));
+  lineChart("trendChart", `${labels[f.measure]} trend`, yearly, f.measure);
+  tierChart(rows);
+  wsPayrollChart(rows);
+  scatterChart("scatterChart", "Payroll vs win percentage", rows);
   renderTable(rows);
 }
 
-function resetFilters() {
-  document.getElementById("startYear").value = 1985;
-  document.getElementById("endYear").value = 2016;
-  document.getElementById("teamSearch").value = "";
-  document.getElementById("minPayroll").value = 0;
-  document.getElementById("topN").value = 12;
-  ["teamFilter", "leagueFilter", "payrollTierFilter"].forEach((id) => {
-    document.getElementById(id).value = "";
+function wireEvents() {
+  document.querySelectorAll("input, select").forEach((input) => input.addEventListener("input", render));
+  document.querySelectorAll(".chip-button[data-start]").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.getElementById("startYear").value = button.dataset.start;
+      document.getElementById("endYear").value = button.dataset.end;
+      render();
+    });
   });
-  document.getElementById("measureSelect").value = "win_rate";
-  document.getElementById("breakdownSelect").value = "team_name";
-  document.getElementById("chartTypeSelect").value = "bar";
-  updateDashboard();
-}
-
-function startSeasonAnimation() {
-  const play = document.getElementById("playSeasons");
-  if (!play) return;
-  play.addEventListener("click", () => {
+  document.getElementById("resetFilters").addEventListener("click", () => {
+    document.getElementById("startYear").value = metadata.start_year;
+    document.getElementById("endYear").value = metadata.latest_year;
+    document.getElementById("teamSearch").value = "";
+    ["teamFilter", "leagueFilter", "divisionFilter", "postseasonFilter", "payrollTierFilter"].forEach((id) => document.getElementById(id).value = "");
+    document.getElementById("minPayroll").value = 0;
+    document.getElementById("measureSelect").value = "world_series_wins";
+    document.getElementById("breakdownSelect").value = "team_name";
+    document.getElementById("topN").value = 12;
+    render();
+  });
+  document.getElementById("playSeasons").addEventListener("click", () => {
     if (animationTimer) {
       clearInterval(animationTimer);
       animationTimer = null;
-      play.textContent = "Play seasons";
+      document.getElementById("playSeasons").textContent = "Animate seasons";
       return;
     }
-    play.textContent = "Pause";
-    let year = Number(document.getElementById("startYear").value || 1985);
+    let year = Number(document.getElementById("startYear").value);
+    document.getElementById("playSeasons").textContent = "Stop animation";
     animationTimer = setInterval(() => {
-      document.getElementById("startYear").value = 1985;
       document.getElementById("endYear").value = year;
-      updateDashboard();
+      render();
       year += 1;
-      if (year > 2016) year = 1985;
+      if (year > metadata.latest_year) year = metadata.start_year;
     }, 900);
   });
 }
 
-async function initDashboard() {
-  try {
-    const response = await fetch(DATA_URL);
-    const payload = await response.json();
-    metadata = payload.metadata || {};
-    allRows = payload.teamSeasons || [];
-    fillSelect("teamFilter", "team_name", "All teams");
-    fillSelect("leagueFilter", "league", "All leagues");
-
-    [
-      "startYear", "endYear", "teamSearch", "teamFilter", "leagueFilter", "payrollTierFilter",
-      "minPayroll", "topN", "measureSelect", "breakdownSelect", "chartTypeSelect",
-    ].forEach((id) => document.getElementById(id).addEventListener("input", updateDashboard));
-
-    document.querySelectorAll(".chip-button[data-start]").forEach((button) => {
-      button.addEventListener("click", () => {
-        document.getElementById("startYear").value = button.dataset.start;
-        document.getElementById("endYear").value = button.dataset.end;
-        updateDashboard();
-      });
-    });
-    document.getElementById("resetFilters").addEventListener("click", resetFilters);
-    startSeasonAnimation();
-    document.getElementById("loadingState").remove();
-    updateDashboard();
-  } catch (error) {
-    document.getElementById("loadingState").textContent = `Dashboard failed to load: ${error.message}`;
-    console.error(error);
-  }
+async function init() {
+  const response = await fetch(DATA_URL);
+  const data = await response.json();
+  teamSeasons = data.teamSeasons;
+  worldSeries = data.worldSeries;
+  rosters = data.rosters;
+  metadata = data.metadata;
+  document.getElementById("startYear").min = metadata.start_year;
+  document.getElementById("startYear").max = metadata.latest_year;
+  document.getElementById("endYear").min = metadata.start_year;
+  document.getElementById("endYear").max = metadata.latest_year;
+  fillSelect("teamFilter", "team_name", "All teams");
+  fillSelect("leagueFilter", "league", "All leagues");
+  fillSelect("divisionFilter", "division", "All divisions");
+  document.getElementById("loadingState").remove();
+  renderTicker();
+  wireEvents();
+  render();
 }
 
-initDashboard();
+init().catch((error) => {
+  document.getElementById("loadingState").textContent = `Dashboard data failed to load: ${error.message}`;
+});
