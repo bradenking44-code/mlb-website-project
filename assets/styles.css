@@ -1051,6 +1051,41 @@ tbody tr:hover {
   fill: var(--navy);
 }
 
+.tooltip-mark {
+  cursor: crosshair;
+  outline: none;
+}
+
+.tooltip-mark:hover,
+.tooltip-mark:focus {
+  filter: drop-shadow(0 0 6px rgba(211, 155, 42, 0.75));
+}
+
+.chart-tooltip {
+  position: fixed;
+  z-index: 1000;
+  max-width: 260px;
+  padding: 10px 12px;
+  color: #fff;
+  background: rgba(7, 29, 58, 0.95);
+  border: 1px solid rgba(215, 164, 59, 0.55);
+  border-radius: 8px;
+  box-shadow: 0 16px 36px rgba(7, 29, 58, 0.28);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.45;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  white-space: normal;
+}
+
+.chart-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .axis {
   stroke: rgba(67, 84, 102, 0.32);
   stroke-width: 1.5;

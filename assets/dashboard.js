@@ -48,6 +48,56 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function tooltipText(title, lines = []) {
+  return escapeHtml([title, ...lines].filter(Boolean).join("\n"));
+}
+
+function ensureTooltip() {
+  let tooltip = document.getElementById("chartTooltip");
+  if (!tooltip) {
+    tooltip = document.createElement("div");
+    tooltip.id = "chartTooltip";
+    tooltip.className = "chart-tooltip";
+    document.body.appendChild(tooltip);
+  }
+  return tooltip;
+}
+
+function moveTooltip(event) {
+  const tooltip = ensureTooltip();
+  const offset = 16;
+  let x = event.clientX;
+  let y = event.clientY;
+  if (!x || !y) {
+    const box = event.currentTarget.getBoundingClientRect();
+    x = box.left + box.width / 2;
+    y = box.top + box.height / 2;
+  }
+  tooltip.style.left = `${Math.min(x + offset, window.innerWidth - tooltip.offsetWidth - 12)}px`;
+  tooltip.style.top = `${Math.min(y + offset, window.innerHeight - tooltip.offsetHeight - 12)}px`;
+}
+
+function showTooltip(event) {
+  const tooltip = ensureTooltip();
+  tooltip.innerHTML = String(event.currentTarget.dataset.tip || "").replace(/\n/g, "<br>");
+  tooltip.classList.add("is-visible");
+  moveTooltip(event);
+}
+
+function hideTooltip() {
+  ensureTooltip().classList.remove("is-visible");
+}
+
+function bindChartTooltips() {
+  document.querySelectorAll("[data-tip]").forEach((mark) => {
+    mark.addEventListener("mouseenter", showTooltip);
+    mark.addEventListener("mousemove", moveTooltip);
+    mark.addEventListener("mouseleave", hideTooltip);
+    mark.addEventListener("focus", showTooltip);
+    mark.addEventListener("blur", hideTooltip);
+  });
+}
+
 function logo(row, size = "small") {
   const text = row.team_id || row.winner_id || "MLB";
   if (row.logo_url || row.winner_logo_url) {
@@ -221,9 +271,10 @@ function barChart(id, title, data, field) {
   const bars = data.map((d, i) => {
     const y = 42 + i * rowH;
     const barW = (d.value / max) * width;
+    const tip = tooltipText(d.label, [`${labels[field] || field}: ${fmtValue(d.value, field)}`, `Seasons in group: ${d.seasons || 0}`]);
     return `
       <text x="52" y="${y + 15}" text-anchor="end" class="svg-label">${escapeHtml(d.label).slice(0, 18)}</text>
-      <rect x="${startX}" y="${y}" width="${barW}" height="${rowH - 7}" rx="5" fill="${colors[i % colors.length]}"></rect>
+      <rect class="tooltip-mark" tabindex="0" data-tip="${tip}" x="${startX}" y="${y}" width="${barW}" height="${rowH - 7}" rx="5" fill="${colors[i % colors.length]}"></rect>
       <text x="${Math.min(startX + barW + 8, 690)}" y="${y + 15}" class="svg-value">${fmtValue(d.value, field)}</text>`;
   }).join("");
   document.getElementById(id).innerHTML = svgWrap(title, bars, "Hover the filters to rebuild this chart from the current view.");
@@ -242,9 +293,15 @@ function lineChart(id, title, data, field) {
   const x = (year) => 55 + ((year - minYear) / Math.max(1, maxYear - minYear)) * 620;
   const y = (value) => 285 - ((value - min) / Math.max(0.01, max - min)) * 220;
   const points = clean.map((d) => `${x(Number(d.label))},${y(d.value)}`).join(" ");
-  const dots = clean.filter((_, i) => i % Math.max(1, Math.floor(clean.length / 12)) === 0).map((d) =>
-    `<circle cx="${x(Number(d.label))}" cy="${y(d.value)}" r="4" fill="#be1e2d"><title>${d.label}: ${fmtValue(d.value, field)}</title></circle>`
-  ).join("");
+  const dots = clean.map((d, i) => {
+    const cx = x(Number(d.label));
+    const cy = y(d.value);
+    const visible = i % Math.max(1, Math.floor(clean.length / 12)) === 0;
+    const tip = tooltipText(d.label, [`${labels[field] || field}: ${fmtValue(d.value, field)}`]);
+    return `
+      ${visible ? `<circle cx="${cx}" cy="${cy}" r="4" fill="#be1e2d"></circle>` : ""}
+      <circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${cx}" cy="${cy}" r="10" fill="transparent"></circle>`;
+  }).join("");
   const body = `
     <line x1="55" y1="285" x2="680" y2="285" class="axis"></line>
     <line x1="55" y1="45" x2="55" y2="285" class="axis"></line>
@@ -267,7 +324,13 @@ function scatterChart(id, title, rows) {
   const points = data.map((row) => {
     const fill = row.world_series_winner ? "#d39b2a" : row.playoff_team ? "#be1e2d" : "rgba(17,59,100,.45)";
     const r = row.world_series_winner ? 7 : row.playoff_team ? 5 : 3;
-    return `<circle cx="${x(row.payroll_millions)}" cy="${y(row.win_pct)}" r="${r}" fill="${fill}"><title>${escapeHtml(row.team_name)} ${row.year}: ${fmtMoney(row.payroll_millions)}, ${row.wins}-${row.losses}, ${row.postseason_result}</title></circle>`;
+    const tip = tooltipText(`${row.year} ${row.team_name}`, [
+      `Payroll: ${fmtMoney(row.payroll_millions)}`,
+      `Record: ${row.wins}-${row.losses} (${fmtValue(row.win_pct, "win_pct")})`,
+      `Payroll rank: ${row.payroll_rank ? `#${row.payroll_rank}` : "n/a"}`,
+      row.postseason_result,
+    ]);
+    return `<circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${x(row.payroll_millions)}" cy="${y(row.win_pct)}" r="${r}" fill="${fill}"></circle>`;
   }).join("");
   const body = `
     <line x1="55" y1="285" x2="680" y2="285" class="axis"></line>
@@ -399,6 +462,7 @@ function render() {
   wsPayrollChart(rows);
   scatterChart("scatterChart", "Payroll vs win percentage", rows);
   renderTable(rows);
+  bindChartTooltips();
 }
 
 function wireEvents() {
