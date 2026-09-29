@@ -11,6 +11,7 @@ This repository is for the FDA Data Website Project. It contains a two-page stat
 
 - `data/processed/mlb_team_payroll_game_results.csv` - cleaned MLB team-game payroll and result panel.
 - `data/processed/payroll_report_summary.json` - reproducible summary data for the report charts.
+- `data/processed/payroll_dashboard_data.json` - compact team-season dashboard data derived from the full panel for fast browser rendering.
 - `data/raw/Salaries.csv` - source player salary table.
 - `data/raw/Teams.csv` - source team metadata table.
 - `data/raw/retrosheet/` - source Retrosheet season CSV downloads.
@@ -21,6 +22,7 @@ Payroll data comes from the public Baseball Databank mirror at `https://github.c
 
 - `scripts/build_payroll_dataset.py` - rebuilds the cleaned payroll/team-game CSV.
 - `scripts/build_payroll_report_summary.py` - rebuilds the payroll report summary JSON from the cleaned CSV.
+- `scripts/build_dashboard_data.py` - rebuilds the compact dashboard JSON from the full CSV.
 
 ## Project Requirements Covered
 

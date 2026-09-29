@@ -22,7 +22,7 @@
 ## Dashboard Page
 
 - File: `dashboard.html`, linked from the report page.
-- Loads CSV data in the browser.
+- Loads browser data from `payroll_dashboard_data.json`, a compact team-season file derived from the full 148,592-row CSV so the charts render quickly.
 - Includes filters for time, team, league, home/away, day/night, payroll tier, and minimum payroll.
 - Includes summary numbers that update with filters.
 - Includes chart measure and breakdown switches.

@@ -9,8 +9,10 @@ This folder contains a cleaned Major League Baseball team-game panel built for t
 - `data/raw/retrosheet/*.zip` - Retrosheet season CSV downloads used locally by the build script; these are not committed because of size.
 - `data/processed/mlb_team_payroll_game_results.csv` - cleaned website-ready payroll and game-result dataset.
 - `data/processed/payroll_report_summary.json` - reproducible summary data for report charts.
+- `data/processed/payroll_dashboard_data.json` - compact team-season dashboard data derived from the full CSV.
 - `scripts/build_payroll_dataset.py` - rebuilds the processed team-game dataset.
 - `scripts/build_payroll_report_summary.py` - rebuilds the report chart summary file.
+- `scripts/build_dashboard_data.py` - rebuilds the compact dashboard JSON.
 
 ## Sources
 

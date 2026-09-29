@@ -379,6 +379,11 @@ input[type="range"] {
   cursor: pointer;
 }
 
+.full-button {
+  width: 100%;
+  margin-top: 16px;
+}
+
 .chip-button {
   min-height: 36px;
   background: rgba(255, 255, 255, 0.1);
@@ -643,6 +648,47 @@ tbody tr:hover {
 .clubhouse-strip {
   margin: 22px 0 8px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.payroll-ticker {
+  overflow: hidden;
+  margin-top: 18px;
+  border: 1px solid rgba(7, 29, 58, 0.12);
+  border-radius: 8px;
+  background: #071d3a;
+  box-shadow: var(--shadow);
+}
+
+.payroll-ticker-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  min-width: max-content;
+  padding: 12px 18px;
+  color: #fff;
+  font-weight: 900;
+  animation: ticker-scroll 28s linear infinite;
+}
+
+.payroll-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+.payroll-ticker-track span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .mascot-card {
