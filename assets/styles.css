@@ -545,8 +545,6 @@ td {
 }
 
 th {
-  position: sticky;
-  top: 0;
   background: #fff;
 }
 
@@ -608,18 +606,48 @@ tbody tr:hover {
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
 }
 
-.payroll-diamond::before {
-  content: "";
+.field-ball {
   position: absolute;
+  left: calc(50% - 9px);
+  top: calc(50% - 9px);
   width: 18px;
   height: 18px;
   border-radius: 50%;
+  z-index: 2;
   background:
     radial-gradient(ellipse at 18% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
     radial-gradient(ellipse at 82% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
     radial-gradient(circle at 50% 50%, #fff 0 62%, #e8edf5 63%);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
-  animation: bases-loaded 7s linear infinite;
+  opacity: 0;
+  animation: field-hit 5.8s cubic-bezier(0.16, 0.78, 0.22, 1) infinite;
+}
+
+.ball-one {
+  --hit-x: 104px;
+  --hit-y: -102px;
+  --spin: 650deg;
+}
+
+.ball-two {
+  --hit-x: -126px;
+  --hit-y: -62px;
+  --spin: -560deg;
+  animation-delay: 1.35s;
+}
+
+.ball-three {
+  --hit-x: 128px;
+  --hit-y: 26px;
+  --spin: 720deg;
+  animation-delay: 2.7s;
+}
+
+.ball-four {
+  --hit-x: -78px;
+  --hit-y: 104px;
+  --spin: -680deg;
+  animation-delay: 4.05s;
 }
 
 .base {
@@ -748,7 +776,7 @@ tbody tr:hover {
   padding: 12px 18px;
   color: #fff;
   font-weight: 900;
-  animation: ticker-scroll 28s linear infinite;
+  animation: ticker-scroll 42s linear infinite;
 }
 
 .payroll-ticker-track:hover {
@@ -804,39 +832,30 @@ tbody tr:hover {
   }
 }
 
-@keyframes bases-loaded {
+@keyframes field-hit {
   0% {
-    left: calc(50% - 9px);
-    bottom: -8px;
-    transform: rotate(-45deg) scale(0.9);
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.72);
   }
 
-  25% {
-    left: -8px;
-    top: calc(50% - 9px);
-    bottom: auto;
-    transform: rotate(20deg) scale(1);
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(45deg) scale(1);
   }
 
-  50% {
-    left: calc(50% - 9px);
-    top: -8px;
-    transform: rotate(110deg) scale(1);
+  48% {
+    opacity: 1;
+    transform: translate(var(--hit-x), var(--hit-y)) rotate(var(--spin)) scale(0.9);
   }
 
-  75% {
-    left: auto;
-    right: -8px;
-    top: calc(50% - 9px);
-    transform: rotate(210deg) scale(1);
+  72% {
+    opacity: 0;
+    transform: translate(calc(var(--hit-x) * 1.08), calc(var(--hit-y) * 1.08)) rotate(var(--spin)) scale(0.52);
   }
 
   100% {
-    left: calc(50% - 9px);
-    right: auto;
-    top: auto;
-    bottom: -8px;
-    transform: rotate(315deg) scale(0.9);
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.72);
   }
 }
 
@@ -1422,6 +1441,31 @@ tbody tr:hover {
     bottom: auto;
     width: min(260px, 82vw);
     margin-top: 42px;
+  }
+
+  .field-ball {
+    --hit-x: calc(var(--mobile-hit-x, 70px));
+    --hit-y: calc(var(--mobile-hit-y, -70px));
+  }
+
+  .ball-one {
+    --mobile-hit-x: 74px;
+    --mobile-hit-y: -76px;
+  }
+
+  .ball-two {
+    --mobile-hit-x: -82px;
+    --mobile-hit-y: -42px;
+  }
+
+  .ball-three {
+    --mobile-hit-x: 82px;
+    --mobile-hit-y: 18px;
+  }
+
+  .ball-four {
+    --mobile-hit-x: -54px;
+    --mobile-hit-y: 70px;
   }
 
   .trophy-heading {
