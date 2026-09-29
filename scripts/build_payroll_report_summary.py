@@ -43,6 +43,11 @@ def main():
         by_tier[row["payroll_tier"]].append(row)
         by_result[row["postseason_result"]].append(row)
 
+    logo_by_team = {}
+    for row in rows:
+        if row.get("logo_url") and row["team_name"] not in logo_by_team:
+            logo_by_team[row["team_name"]] = row["logo_url"]
+
     payroll_by_year = [
         {"label": str(year), "value": avg([row.get("payroll_millions") for row in group])}
         for year, group in sorted(by_year.items())
@@ -62,12 +67,12 @@ def main():
     ]
 
     team_ws = [
-        {"label": team, "value": sum(1 for row in group if row["world_series_winner"])}
+        {"label": team, "value": sum(1 for row in group if row["world_series_winner"]), "logo_url": logo_by_team.get(team, "")}
         for team, group in by_team.items()
     ]
 
     team_playoff = [
-        {"label": team, "value": sum(1 for row in group if row["playoff_team"])}
+        {"label": team, "value": sum(1 for row in group if row["playoff_team"]), "logo_url": logo_by_team.get(team, "")}
         for team, group in by_team.items()
     ]
 

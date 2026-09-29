@@ -22,6 +22,7 @@ let worldSeries = [];
 let rosters = {};
 let metadata = {};
 let animationTimer = null;
+let selectedRosterKey = "";
 
 const money = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
 const number = new Intl.NumberFormat("en-US");
@@ -69,6 +70,21 @@ function fillSelect(id, field, label) {
   select.innerHTML = [`<option value="">${label}</option>`]
     .concat(unique(field).map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`))
     .join("");
+}
+
+function fillRosterTeamSelect() {
+  const select = document.getElementById("rosterTeamSelect");
+  select.innerHTML = unique("team_name").map((team) => `<option value="${escapeHtml(team)}">${escapeHtml(team)}</option>`).join("");
+}
+
+function fillRosterYearSelect(teamName, preferredYear = "") {
+  const years = teamSeasons
+    .filter((row) => row.team_name === teamName)
+    .map((row) => row.year)
+    .sort((a, b) => b - a);
+  const select = document.getElementById("rosterYearSelect");
+  select.innerHTML = years.map((year) => `<option value="${year}">${year}</option>`).join("");
+  if (preferredYear && years.includes(Number(preferredYear))) select.value = preferredYear;
 }
 
 function filters() {
@@ -182,6 +198,10 @@ function svgWrap(title, body, subtitle = "") {
 }
 
 function barChart(id, title, data, field) {
+  if (!data.length) {
+    document.getElementById(id).innerHTML = `<h3 class="chart-title">${escapeHtml(title)}</h3><div class="empty-chart">No matching data for the current filters.</div>`;
+    return;
+  }
   const max = Math.max(...data.map((d) => d.value), 1);
   const width = 640;
   const startX = 60;
@@ -199,6 +219,10 @@ function barChart(id, title, data, field) {
 
 function lineChart(id, title, data, field) {
   const clean = data.filter((d) => Number.isFinite(d.value));
+  if (!clean.length) {
+    document.getElementById(id).innerHTML = `<h3 class="chart-title">${escapeHtml(title)}</h3><div class="empty-chart">No payroll-backed data for this view. Try the Payroll Era filter.</div>`;
+    return;
+  }
   const minYear = Math.min(...clean.map((d) => Number(d.label)), 1985);
   const maxYear = Math.max(...clean.map((d) => Number(d.label)), 2025);
   const max = Math.max(...clean.map((d) => d.value), 1);
@@ -221,6 +245,10 @@ function lineChart(id, title, data, field) {
 
 function scatterChart(id, title, rows) {
   const data = rows.filter((row) => row.payroll_millions && row.win_pct);
+  if (!data.length) {
+    document.getElementById(id).innerHTML = `<h3 class="chart-title">${escapeHtml(title)}</h3><div class="empty-chart">Payroll scatter needs seasons from 1985-2016. Try the Payroll Era filter.</div>`;
+    return;
+  }
   const maxX = Math.max(...data.map((row) => row.payroll_millions), 1);
   const x = (value) => 55 + (value / maxX) * 620;
   const y = (value) => 285 - value * 390;
@@ -294,6 +322,26 @@ function renderRoster(row) {
     </div>`;
 }
 
+function renderRosterFromControls() {
+  const teamName = document.getElementById("rosterTeamSelect").value;
+  const year = Number(document.getElementById("rosterYearSelect").value);
+  const row = teamSeasons.find((item) => item.team_name === teamName && item.year === year);
+  if (row) {
+    selectedRosterKey = `${row.year}-${row.team_id}`;
+    renderRoster(row);
+  }
+}
+
+function setRosterControls(row) {
+  if (!row) return;
+  const teamSelect = document.getElementById("rosterTeamSelect");
+  const yearSelect = document.getElementById("rosterYearSelect");
+  teamSelect.value = row.team_name;
+  fillRosterYearSelect(row.team_name, String(row.year));
+  yearSelect.value = String(row.year);
+  selectedRosterKey = `${row.year}-${row.team_id}`;
+}
+
 function renderTable(rows) {
   const sorted = [...rows].sort((a, b) => b.year - a.year || b.wins - a.wins).slice(0, 80);
   document.getElementById("rowCount").textContent = `${rows.length} team seasons in current filters`;
@@ -309,9 +357,18 @@ function renderTable(rows) {
     </tr>
   `).join("");
   document.querySelectorAll("[data-row]").forEach((button) => {
-    button.addEventListener("click", () => renderRoster(sorted[Number(button.dataset.row)]));
+    button.addEventListener("click", () => {
+      const row = sorted[Number(button.dataset.row)];
+      setRosterControls(row);
+      renderRoster(row);
+    });
   });
-  renderRoster(sorted[0]);
+  const selectedRow = teamSeasons.find((row) => `${row.year}-${row.team_id}` === selectedRosterKey);
+  if (selectedRow) renderRoster(selectedRow);
+  else {
+    setRosterControls(sorted[0]);
+    renderRoster(sorted[0]);
+  }
 }
 
 function render() {
@@ -340,7 +397,7 @@ function wireEvents() {
   });
   document.getElementById("resetFilters").addEventListener("click", () => {
     document.getElementById("startYear").value = metadata.start_year;
-    document.getElementById("endYear").value = metadata.latest_year;
+    document.getElementById("endYear").value = metadata.payroll_end_year || metadata.latest_year;
     document.getElementById("teamSearch").value = "";
     ["teamFilter", "leagueFilter", "divisionFilter", "postseasonFilter", "payrollTierFilter"].forEach((id) => document.getElementById(id).value = "");
     document.getElementById("minPayroll").value = 0;
@@ -365,6 +422,11 @@ function wireEvents() {
       if (year > metadata.latest_year) year = metadata.start_year;
     }, 900);
   });
+  document.getElementById("rosterTeamSelect").addEventListener("change", () => {
+    fillRosterYearSelect(document.getElementById("rosterTeamSelect").value);
+    renderRosterFromControls();
+  });
+  document.getElementById("rosterYearSelect").addEventListener("change", renderRosterFromControls);
 }
 
 async function init() {
@@ -381,6 +443,9 @@ async function init() {
   fillSelect("teamFilter", "team_name", "All teams");
   fillSelect("leagueFilter", "league", "All leagues");
   fillSelect("divisionFilter", "division", "All divisions");
+  fillRosterTeamSelect();
+  const firstPayrollWinner = teamSeasons.find((row) => row.world_series_winner && row.payroll_millions) || teamSeasons[0];
+  setRosterControls(firstPayrollWinner);
   document.getElementById("loadingState").remove();
   renderTicker();
   wireEvents();

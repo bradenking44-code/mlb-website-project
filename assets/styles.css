@@ -713,6 +713,21 @@ tbody tr:hover {
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.3);
 }
 
+.trophy-heading {
+  align-items: center;
+  gap: 24px;
+}
+
+.trophy-art {
+  width: min(210px, 28vw);
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+  border: 1px solid rgba(215, 164, 59, 0.34);
+  box-shadow: 0 22px 48px rgba(7, 29, 58, 0.24);
+}
+
 .mascot-card::before {
   content: "";
   position: absolute;
@@ -757,6 +772,14 @@ tbody tr:hover {
   font-size: 1.2rem;
   font-weight: 900;
   flex: 0 0 auto;
+}
+
+.mascot-heading .team-logo {
+  width: 58px;
+  height: 58px;
+  padding: 6px;
+  border-radius: 50%;
+  background: #fff;
 }
 
 .mascot-name,
@@ -944,6 +967,21 @@ tbody tr:hover {
   min-height: 330px;
 }
 
+.empty-chart {
+  min-height: 250px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--muted);
+  background:
+    repeating-linear-gradient(45deg, rgba(47, 111, 99, 0.07) 0 8px, transparent 8px 16px),
+    #f8fbff;
+  border: 1px dashed rgba(7, 29, 58, 0.2);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 900;
+}
+
 .svg-chart svg {
   display: block;
   width: 100%;
@@ -999,6 +1037,13 @@ tbody tr:hover {
 .roster-spotlight {
   display: grid;
   gap: 14px;
+}
+
+.roster-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(140px, 220px);
+  gap: 14px;
+  margin-bottom: 16px;
 }
 
 .roster-header {
@@ -1104,5 +1149,17 @@ tbody tr:hover {
     bottom: auto;
     width: min(260px, 82vw);
     margin-top: 42px;
+  }
+
+  .trophy-heading {
+    align-items: start;
+  }
+
+  .trophy-art {
+    width: min(180px, 48vw);
+  }
+
+  .roster-controls {
+    grid-template-columns: 1fr;
   }
 }

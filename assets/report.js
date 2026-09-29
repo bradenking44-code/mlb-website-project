@@ -31,10 +31,17 @@ function makeBarChart(section, data) {
   const bars = data.map((item, index) => {
     const y = 38 + index * rowH;
     const width = (item.value / max) * 560;
+    const label = item.logo_url
+      ? `<image href="${escapeHtml(item.logo_url)}" x="18" y="${y - 3}" width="26" height="26" preserveAspectRatio="xMidYMid meet"></image>
+         <text x="52" y="${y + 16}" class="svg-label">${escapeHtml(item.label).slice(0, 18)}</text>`
+      : `<text x="118" y="${y + 16}" text-anchor="end" class="svg-label">${escapeHtml(item.label).slice(0, 20)}</text>`;
+    const barX = item.logo_url ? 190 : 130;
+    const maxBar = item.logo_url ? 500 : 560;
+    const barW = (item.value / max) * maxBar;
     return `
-      <text x="118" y="${y + 16}" text-anchor="end" class="svg-label">${escapeHtml(item.label).slice(0, 20)}</text>
-      <rect x="130" y="${y}" width="${width}" height="${rowH - 8}" rx="5" fill="${colors[index % colors.length]}"></rect>
-      <text x="${Math.min(700, 138 + width)}" y="${y + 16}" class="svg-value">${formatValue(item.value)}</text>`;
+      ${label}
+      <rect x="${barX}" y="${y}" width="${barW}" height="${rowH - 8}" rx="5" fill="${colors[index % colors.length]}"></rect>
+      <text x="${Math.min(710, barX + 8 + barW)}" y="${y + 16}" class="svg-value">${formatValue(item.value)}</text>`;
   }).join("");
   return `<svg viewBox="0 0 760 340" role="img" aria-label="${escapeHtml(section.title)}">${bars}</svg>`;
 }
@@ -62,10 +69,14 @@ function makeLineChart(section, data) {
 }
 
 function mascotCard(item) {
+  const initials = escapeHtml(item.label).split(" ").map((part) => part[0]).join("").slice(0, 3);
+  const mark = item.logo_url
+    ? `<img class="team-logo" src="${escapeHtml(item.logo_url)}" alt="" loading="lazy">`
+    : `<div class="mascot-mark">${initials}</div>`;
   return `
     <article class="mascot-card">
       <div class="mascot-heading">
-        <div class="mascot-mark">${escapeHtml(item.label).split(" ").map((part) => part[0]).join("").slice(0, 3)}</div>
+        ${mark}
         <div>
           <div class="mascot-name">${escapeHtml(item.label)}</div>
           <div class="mascot-meta">October profile</div>

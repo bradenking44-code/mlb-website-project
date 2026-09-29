@@ -29,10 +29,11 @@
         <div class="control-group">
           <h2>Season Range</h2>
           <div class="quick-years" aria-label="Quick year ranges">
-            <button class="chip-button is-active" type="button" data-start="1985" data-end="2025">All seasons</button>
+            <button class="chip-button" type="button" data-start="1985" data-end="2025">All seasons</button>
             <button class="chip-button" type="button" data-start="1985" data-end="1994">1985-1994</button>
             <button class="chip-button" type="button" data-start="1995" data-end="2006">Wild Card Era</button>
-            <button class="chip-button" type="button" data-start="2007" data-end="2016">Payroll Era</button>
+            <button class="chip-button is-active" type="button" data-start="1985" data-end="2016">Payroll Era</button>
+            <button class="chip-button" type="button" data-start="2007" data-end="2016">Late Payroll Era</button>
             <button class="chip-button" type="button" data-start="2017" data-end="2025">Recent Results</button>
           </div>
           <label>
@@ -41,7 +42,7 @@
           </label>
           <label>
             End year
-            <input id="endYear" type="number" min="1985" max="2025" value="2025">
+            <input id="endYear" type="number" min="1985" max="2025" value="2016">
           </label>
         </div>
 
@@ -132,7 +133,7 @@
           </div>
         </div>
         <p class="dashboard-context">
-          Records, rosters, playoff results, and World Series winners run through 2025. Payroll is shown for seasons with reproducible salary data, 1985-2016.
+          Records, rosters, playoff results, and World Series winners run through 2025. This dashboard opens in the 1985-2016 payroll era so payroll charts and table values appear immediately; use Recent Results for 2017-2025 seasons without salary coverage.
         </p>
         <div class="payroll-ticker" aria-label="Animated World Series ticker">
           <div id="payrollTicker" class="payroll-ticker-track"></div>
@@ -160,6 +161,16 @@
           <div class="table-heading">
             <h2>Roster Spotlight</h2>
             <span id="rosterCaption"></span>
+          </div>
+          <div class="roster-controls">
+            <label>
+              Roster team
+              <select id="rosterTeamSelect"></select>
+            </label>
+            <label>
+              Roster year
+              <select id="rosterYearSelect"></select>
+            </label>
           </div>
           <div id="rosterSpotlight" class="roster-spotlight"></div>
         </div>

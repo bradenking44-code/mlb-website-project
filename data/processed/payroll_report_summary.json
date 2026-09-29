@@ -322,51 +322,63 @@
       "chart": [
         {
           "label": "New York Yankees",
-          "value": 5
+          "value": 5,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
           "label": "Boston Red Sox",
-          "value": 4
+          "value": 4,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
         },
         {
           "label": "Los Angeles Dodgers",
-          "value": 4
+          "value": 4,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png"
         },
         {
           "label": "San Francisco Giants",
-          "value": 3
+          "value": 3,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/sf.png"
         },
         {
           "label": "Atlanta Braves",
-          "value": 2
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/atl.png"
         },
         {
           "label": "Houston Astros",
-          "value": 2
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/hou.png"
         },
         {
           "label": "Kansas City Royals",
-          "value": 2
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/kc.png"
         },
         {
           "label": "Minnesota Twins",
-          "value": 2
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/min.png"
         },
         {
           "label": "St. Louis Cardinals",
-          "value": 2
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/stl.png"
         },
         {
           "label": "Toronto Blue Jays",
-          "value": 2
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tor.png"
         },
         {
           "label": "Florida Marlins",
-          "value": 2
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/mia.png"
         },
         {
           "label": "Chicago White Sox",
-          "value": 1
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/chw.png"
         }
       ]
     },
@@ -378,51 +390,63 @@
       "chart": [
         {
           "label": "New York Yankees",
-          "value": 26
+          "value": 26,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
           "label": "Atlanta Braves",
-          "value": 24
+          "value": 24,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/atl.png"
         },
         {
           "label": "Los Angeles Dodgers",
-          "value": 21
+          "value": 21,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png"
         },
         {
           "label": "St. Louis Cardinals",
-          "value": 19
+          "value": 19,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/stl.png"
         },
         {
           "label": "Boston Red Sox",
-          "value": 18
+          "value": 18,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
         },
         {
           "label": "Houston Astros",
-          "value": 16
+          "value": 16,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/hou.png"
         },
         {
           "label": "Oakland Athletics",
-          "value": 15
+          "value": 15,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/oak.png"
         },
         {
           "label": "Cleveland Indians",
-          "value": 12
+          "value": 12,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/cle.png"
         },
         {
           "label": "Minnesota Twins",
-          "value": 12
+          "value": 12,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/min.png"
         },
         {
           "label": "Chicago Cubs",
-          "value": 11
+          "value": 11,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/chc.png"
         },
         {
           "label": "San Francisco Giants",
-          "value": 11
+          "value": 11,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/sf.png"
         },
         {
           "label": "Toronto Blue Jays",
-          "value": 11
+          "value": 11,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tor.png"
         }
       ]
     },
