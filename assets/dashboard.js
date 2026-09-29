@@ -87,6 +87,18 @@ function fillRosterYearSelect(teamName, preferredYear = "") {
   if (preferredYear && years.includes(Number(preferredYear))) select.value = preferredYear;
 }
 
+function syncTableYearSelect(rows) {
+  const select = document.getElementById("tableYearSelect");
+  const current = select.value;
+  const years = [...new Set(rows.map((row) => row.year))].sort((a, b) => b - a);
+  select.innerHTML = years.map((year) => `<option value="${year}">${year}</option>`).join("");
+  if (current && years.includes(Number(current))) {
+    select.value = current;
+  } else if (years.length) {
+    select.value = String(years[0]);
+  }
+}
+
 function filters() {
   const startYear = Number(document.getElementById("startYear").value || metadata.start_year);
   const endYear = Number(document.getElementById("endYear").value || metadata.latest_year);
@@ -343,8 +355,11 @@ function setRosterControls(row) {
 }
 
 function renderTable(rows) {
-  const sorted = [...rows].sort((a, b) => b.year - a.year || b.wins - a.wins).slice(0, 80);
-  document.getElementById("rowCount").textContent = `${rows.length} team seasons in current filters`;
+  syncTableYearSelect(rows);
+  const tableYear = Number(document.getElementById("tableYearSelect").value);
+  const tableRows = tableYear ? rows.filter((row) => row.year === tableYear) : rows;
+  const sorted = [...tableRows].sort((a, b) => b.wins - a.wins || a.team_name.localeCompare(b.team_name));
+  document.getElementById("rowCount").textContent = `${sorted.length} teams shown from ${tableYear || "all years"} (${rows.length} match filters)`;
   document.getElementById("dataTable").innerHTML = sorted.map((row, i) => `
     <tr>
       <td>${row.year}</td>
@@ -404,6 +419,7 @@ function wireEvents() {
     document.getElementById("measureSelect").value = "world_series_wins";
     document.getElementById("breakdownSelect").value = "team_name";
     document.getElementById("topN").value = 12;
+    document.getElementById("tableYearSelect").value = metadata.payroll_end_year || metadata.latest_year;
     render();
   });
   document.getElementById("playSeasons").addEventListener("click", () => {
