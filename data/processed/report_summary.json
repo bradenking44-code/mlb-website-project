@@ -1,0 +1,1402 @@
+{
+  "headlines": [
+    {
+      "label": "Rows",
+      "value": 101914
+    },
+    {
+      "label": "Seasons",
+      "value": 121
+    },
+    {
+      "label": "Players",
+      "value": 17634
+    },
+    {
+      "label": "Teams",
+      "value": 60
+    },
+    {
+      "label": "Total home runs",
+      "value": 306315
+    },
+    {
+      "label": "Total plate appearances",
+      "value": 15436919
+    }
+  ],
+  "leagueTotals": [
+    {
+      "label": "AL",
+      "value": 7742738
+    },
+    {
+      "label": "NL",
+      "value": 7694181
+    }
+  ],
+  "handednessTotals": [
+    {
+      "label": "R",
+      "value": 8775130
+    },
+    {
+      "label": "L",
+      "value": 5020847
+    },
+    {
+      "label": "B",
+      "value": 1632026
+    },
+    {
+      "label": "Unknown",
+      "value": 8916
+    }
+  ],
+  "sections": [
+    {
+      "id": "home-run-growth",
+      "title": "Home runs became a defining modern-era signal",
+      "body": "The long-run batting record shows home run totals moving from a small part of offense in the early 1900s to one of the most visible measures of power. The chart tracks leaguewide home runs by season.",
+      "measure": "home_runs",
+      "chart": [
+        {
+          "label": "1901",
+          "value": 455
+        },
+        {
+          "label": "1902",
+          "value": 354
+        },
+        {
+          "label": "1903",
+          "value": 335
+        },
+        {
+          "label": "1904",
+          "value": 331
+        },
+        {
+          "label": "1905",
+          "value": 338
+        },
+        {
+          "label": "1906",
+          "value": 261
+        },
+        {
+          "label": "1907",
+          "value": 244
+        },
+        {
+          "label": "1908",
+          "value": 267
+        },
+        {
+          "label": "1909",
+          "value": 259
+        },
+        {
+          "label": "1910",
+          "value": 361
+        },
+        {
+          "label": "1911",
+          "value": 514
+        },
+        {
+          "label": "1912",
+          "value": 442
+        },
+        {
+          "label": "1913",
+          "value": 470
+        },
+        {
+          "label": "1914",
+          "value": 415
+        },
+        {
+          "label": "1915",
+          "value": 385
+        },
+        {
+          "label": "1916",
+          "value": 383
+        },
+        {
+          "label": "1917",
+          "value": 335
+        },
+        {
+          "label": "1918",
+          "value": 235
+        },
+        {
+          "label": "1919",
+          "value": 447
+        },
+        {
+          "label": "1920",
+          "value": 630
+        },
+        {
+          "label": "1921",
+          "value": 937
+        },
+        {
+          "label": "1922",
+          "value": 1055
+        },
+        {
+          "label": "1923",
+          "value": 980
+        },
+        {
+          "label": "1924",
+          "value": 896
+        },
+        {
+          "label": "1925",
+          "value": 1169
+        },
+        {
+          "label": "1926",
+          "value": 863
+        },
+        {
+          "label": "1927",
+          "value": 922
+        },
+        {
+          "label": "1928",
+          "value": 1093
+        },
+        {
+          "label": "1929",
+          "value": 1349
+        },
+        {
+          "label": "1930",
+          "value": 1565
+        },
+        {
+          "label": "1931",
+          "value": 1069
+        },
+        {
+          "label": "1932",
+          "value": 1358
+        },
+        {
+          "label": "1933",
+          "value": 1067
+        },
+        {
+          "label": "1934",
+          "value": 1344
+        },
+        {
+          "label": "1935",
+          "value": 1325
+        },
+        {
+          "label": "1936",
+          "value": 1364
+        },
+        {
+          "label": "1937",
+          "value": 1430
+        },
+        {
+          "label": "1938",
+          "value": 1475
+        },
+        {
+          "label": "1939",
+          "value": 1445
+        },
+        {
+          "label": "1940",
+          "value": 1571
+        },
+        {
+          "label": "1941",
+          "value": 1331
+        },
+        {
+          "label": "1942",
+          "value": 1071
+        },
+        {
+          "label": "1943",
+          "value": 905
+        },
+        {
+          "label": "1944",
+          "value": 1034
+        },
+        {
+          "label": "1945",
+          "value": 1007
+        },
+        {
+          "label": "1946",
+          "value": 1215
+        },
+        {
+          "label": "1947",
+          "value": 1565
+        },
+        {
+          "label": "1948",
+          "value": 1555
+        },
+        {
+          "label": "1949",
+          "value": 1704
+        },
+        {
+          "label": "1950",
+          "value": 2073
+        },
+        {
+          "label": "1951",
+          "value": 1863
+        },
+        {
+          "label": "1952",
+          "value": 1701
+        },
+        {
+          "label": "1953",
+          "value": 2076
+        },
+        {
+          "label": "1954",
+          "value": 1937
+        },
+        {
+          "label": "1955",
+          "value": 2224
+        },
+        {
+          "label": "1956",
+          "value": 2294
+        },
+        {
+          "label": "1957",
+          "value": 2202
+        },
+        {
+          "label": "1958",
+          "value": 2240
+        },
+        {
+          "label": "1959",
+          "value": 2250
+        },
+        {
+          "label": "1960",
+          "value": 2128
+        },
+        {
+          "label": "1961",
+          "value": 2730
+        },
+        {
+          "label": "1962",
+          "value": 3001
+        },
+        {
+          "label": "1963",
+          "value": 2704
+        },
+        {
+          "label": "1964",
+          "value": 2762
+        },
+        {
+          "label": "1965",
+          "value": 2688
+        },
+        {
+          "label": "1966",
+          "value": 2743
+        },
+        {
+          "label": "1967",
+          "value": 2299
+        },
+        {
+          "label": "1968",
+          "value": 1995
+        },
+        {
+          "label": "1969",
+          "value": 3119
+        },
+        {
+          "label": "1970",
+          "value": 3429
+        },
+        {
+          "label": "1971",
+          "value": 2863
+        },
+        {
+          "label": "1972",
+          "value": 2534
+        },
+        {
+          "label": "1973",
+          "value": 3102
+        },
+        {
+          "label": "1974",
+          "value": 2649
+        },
+        {
+          "label": "1975",
+          "value": 2698
+        },
+        {
+          "label": "1976",
+          "value": 2235
+        },
+        {
+          "label": "1977",
+          "value": 3644
+        },
+        {
+          "label": "1978",
+          "value": 2956
+        },
+        {
+          "label": "1979",
+          "value": 3433
+        },
+        {
+          "label": "1980",
+          "value": 3087
+        },
+        {
+          "label": "1981",
+          "value": 1781
+        },
+        {
+          "label": "1982",
+          "value": 3379
+        },
+        {
+          "label": "1983",
+          "value": 3301
+        },
+        {
+          "label": "1984",
+          "value": 3258
+        },
+        {
+          "label": "1985",
+          "value": 3602
+        },
+        {
+          "label": "1986",
+          "value": 3813
+        },
+        {
+          "label": "1987",
+          "value": 4458
+        },
+        {
+          "label": "1988",
+          "value": 3180
+        },
+        {
+          "label": "1989",
+          "value": 3083
+        },
+        {
+          "label": "1990",
+          "value": 3317
+        },
+        {
+          "label": "1991",
+          "value": 3383
+        },
+        {
+          "label": "1992",
+          "value": 3038
+        },
+        {
+          "label": "1993",
+          "value": 4030
+        },
+        {
+          "label": "1994",
+          "value": 3306
+        },
+        {
+          "label": "1995",
+          "value": 4081
+        },
+        {
+          "label": "1996",
+          "value": 4962
+        },
+        {
+          "label": "1997",
+          "value": 4640
+        },
+        {
+          "label": "1998",
+          "value": 5064
+        },
+        {
+          "label": "1999",
+          "value": 5528
+        },
+        {
+          "label": "2000",
+          "value": 5693
+        },
+        {
+          "label": "2001",
+          "value": 5458
+        },
+        {
+          "label": "2002",
+          "value": 5059
+        },
+        {
+          "label": "2003",
+          "value": 5207
+        },
+        {
+          "label": "2004",
+          "value": 5451
+        },
+        {
+          "label": "2005",
+          "value": 5017
+        },
+        {
+          "label": "2006",
+          "value": 5386
+        },
+        {
+          "label": "2007",
+          "value": 4957
+        },
+        {
+          "label": "2008",
+          "value": 4878
+        },
+        {
+          "label": "2009",
+          "value": 5042
+        },
+        {
+          "label": "2010",
+          "value": 4613
+        },
+        {
+          "label": "2011",
+          "value": 4552
+        },
+        {
+          "label": "2012",
+          "value": 4934
+        },
+        {
+          "label": "2013",
+          "value": 4661
+        },
+        {
+          "label": "2014",
+          "value": 4186
+        },
+        {
+          "label": "2015",
+          "value": 4909
+        },
+        {
+          "label": "2016",
+          "value": 5610
+        },
+        {
+          "label": "2017",
+          "value": 6105
+        },
+        {
+          "label": "2018",
+          "value": 5585
+        },
+        {
+          "label": "2019",
+          "value": 6776
+        },
+        {
+          "label": "2020",
+          "value": 2304
+        },
+        {
+          "label": "2021",
+          "value": 5944
+        }
+      ]
+    },
+    {
+      "id": "strikeout-growth",
+      "title": "Strikeouts rose even faster than walks",
+      "body": "Strikeouts climbed sharply across the modern game. This gives the report a clear offensive tradeoff to explore: more power and patience, but also more empty at-bats.",
+      "measure": "strikeouts",
+      "chart": [
+        {
+          "label": "1901",
+          "value": 6976
+        },
+        {
+          "label": "1902",
+          "value": 6630
+        },
+        {
+          "label": "1903",
+          "value": 7899
+        },
+        {
+          "label": "1904",
+          "value": 9299
+        },
+        {
+          "label": "1905",
+          "value": 9523
+        },
+        {
+          "label": "1906",
+          "value": 9110
+        },
+        {
+          "label": "1907",
+          "value": 8836
+        },
+        {
+          "label": "1908",
+          "value": 9078
+        },
+        {
+          "label": "1909",
+          "value": 9377
+        },
+        {
+          "label": "1910",
+          "value": 9677
+        },
+        {
+          "label": "1911",
+          "value": 4798
+        },
+        {
+          "label": "1912",
+          "value": 4627
+        },
+        {
+          "label": "1913",
+          "value": 9283
+        },
+        {
+          "label": "1914",
+          "value": 9766
+        },
+        {
+          "label": "1915",
+          "value": 9596
+        },
+        {
+          "label": "1916",
+          "value": 9534
+        },
+        {
+          "label": "1917",
+          "value": 8680
+        },
+        {
+          "label": "1918",
+          "value": 5925
+        },
+        {
+          "label": "1919",
+          "value": 6849
+        },
+        {
+          "label": "1920",
+          "value": 7247
+        },
+        {
+          "label": "1921",
+          "value": 6959
+        },
+        {
+          "label": "1922",
+          "value": 6950
+        },
+        {
+          "label": "1923",
+          "value": 7021
+        },
+        {
+          "label": "1924",
+          "value": 6637
+        },
+        {
+          "label": "1925",
+          "value": 6665
+        },
+        {
+          "label": "1926",
+          "value": 6777
+        },
+        {
+          "label": "1927",
+          "value": 6889
+        },
+        {
+          "label": "1928",
+          "value": 7099
+        },
+        {
+          "label": "1929",
+          "value": 6982
+        },
+        {
+          "label": "1930",
+          "value": 7934
+        },
+        {
+          "label": "1931",
+          "value": 7894
+        },
+        {
+          "label": "1932",
+          "value": 7878
+        },
+        {
+          "label": "1933",
+          "value": 7444
+        },
+        {
+          "label": "1934",
+          "value": 8432
+        },
+        {
+          "label": "1935",
+          "value": 8004
+        },
+        {
+          "label": "1936",
+          "value": 8235
+        },
+        {
+          "label": "1937",
+          "value": 9001
+        },
+        {
+          "label": "1938",
+          "value": 8335
+        },
+        {
+          "label": "1939",
+          "value": 8501
+        },
+        {
+          "label": "1940",
+          "value": 9049
+        },
+        {
+          "label": "1941",
+          "value": 8826
+        },
+        {
+          "label": "1942",
+          "value": 8325
+        },
+        {
+          "label": "1943",
+          "value": 8546
+        },
+        {
+          "label": "1944",
+          "value": 8185
+        },
+        {
+          "label": "1945",
+          "value": 8045
+        },
+        {
+          "label": "1946",
+          "value": 9696
+        },
+        {
+          "label": "1947",
+          "value": 9157
+        },
+        {
+          "label": "1948",
+          "value": 9016
+        },
+        {
+          "label": "1949",
+          "value": 8951
+        },
+        {
+          "label": "1950",
+          "value": 9554
+        },
+        {
+          "label": "1951",
+          "value": 9335
+        },
+        {
+          "label": "1952",
+          "value": 10380
+        },
+        {
+          "label": "1953",
+          "value": 10213
+        },
+        {
+          "label": "1954",
+          "value": 10215
+        },
+        {
+          "label": "1955",
+          "value": 10803
+        },
+        {
+          "label": "1956",
+          "value": 11505
+        },
+        {
+          "label": "1957",
+          "value": 11948
+        },
+        {
+          "label": "1958",
+          "value": 12225
+        },
+        {
+          "label": "1959",
+          "value": 12604
+        },
+        {
+          "label": "1960",
+          "value": 12815
+        },
+        {
+          "label": "1961",
+          "value": 14947
+        },
+        {
+          "label": "1962",
+          "value": 17567
+        },
+        {
+          "label": "1963",
+          "value": 18773
+        },
+        {
+          "label": "1964",
+          "value": 19212
+        },
+        {
+          "label": "1965",
+          "value": 19283
+        },
+        {
+          "label": "1966",
+          "value": 18805
+        },
+        {
+          "label": "1967",
+          "value": 19413
+        },
+        {
+          "label": "1968",
+          "value": 19143
+        },
+        {
+          "label": "1969",
+          "value": 22473
+        },
+        {
+          "label": "1970",
+          "value": 22374
+        },
+        {
+          "label": "1971",
+          "value": 20956
+        },
+        {
+          "label": "1972",
+          "value": 20718
+        },
+        {
+          "label": "1973",
+          "value": 20358
+        },
+        {
+          "label": "1974",
+          "value": 19495
+        },
+        {
+          "label": "1975",
+          "value": 19280
+        },
+        {
+          "label": "1976",
+          "value": 18745
+        },
+        {
+          "label": "1977",
+          "value": 21722
+        },
+        {
+          "label": "1978",
+          "value": 20058
+        },
+        {
+          "label": "1979",
+          "value": 20035
+        },
+        {
+          "label": "1980",
+          "value": 20212
+        },
+        {
+          "label": "1981",
+          "value": 13237
+        },
+        {
+          "label": "1982",
+          "value": 21221
+        },
+        {
+          "label": "1983",
+          "value": 21716
+        },
+        {
+          "label": "1984",
+          "value": 22500
+        },
+        {
+          "label": "1985",
+          "value": 22451
+        },
+        {
+          "label": "1986",
+          "value": 24706
+        },
+        {
+          "label": "1987",
+          "value": 25099
+        },
+        {
+          "label": "1988",
+          "value": 23355
+        },
+        {
+          "label": "1989",
+          "value": 23650
+        },
+        {
+          "label": "1990",
+          "value": 23853
+        },
+        {
+          "label": "1991",
+          "value": 24390
+        },
+        {
+          "label": "1992",
+          "value": 23538
+        },
+        {
+          "label": "1993",
+          "value": 26310
+        },
+        {
+          "label": "1994",
+          "value": 19766
+        },
+        {
+          "label": "1995",
+          "value": 25425
+        },
+        {
+          "label": "1996",
+          "value": 29308
+        },
+        {
+          "label": "1997",
+          "value": 29937
+        },
+        {
+          "label": "1998",
+          "value": 31893
+        },
+        {
+          "label": "1999",
+          "value": 31119
+        },
+        {
+          "label": "2000",
+          "value": 31356
+        },
+        {
+          "label": "2001",
+          "value": 32404
+        },
+        {
+          "label": "2002",
+          "value": 31394
+        },
+        {
+          "label": "2003",
+          "value": 30801
+        },
+        {
+          "label": "2004",
+          "value": 31828
+        },
+        {
+          "label": "2005",
+          "value": 30644
+        },
+        {
+          "label": "2006",
+          "value": 31655
+        },
+        {
+          "label": "2007",
+          "value": 32189
+        },
+        {
+          "label": "2008",
+          "value": 32884
+        },
+        {
+          "label": "2009",
+          "value": 33591
+        },
+        {
+          "label": "2010",
+          "value": 34306
+        },
+        {
+          "label": "2011",
+          "value": 34488
+        },
+        {
+          "label": "2012",
+          "value": 36426
+        },
+        {
+          "label": "2013",
+          "value": 36710
+        },
+        {
+          "label": "2014",
+          "value": 37441
+        },
+        {
+          "label": "2015",
+          "value": 37446
+        },
+        {
+          "label": "2016",
+          "value": 38982
+        },
+        {
+          "label": "2017",
+          "value": 40104
+        },
+        {
+          "label": "2018",
+          "value": 41207
+        },
+        {
+          "label": "2019",
+          "value": 42823
+        },
+        {
+          "label": "2020",
+          "value": 15586
+        },
+        {
+          "label": "2021",
+          "value": 42145
+        }
+      ]
+    },
+    {
+      "id": "team-power",
+      "title": "A small group of franchises owns a large share of recorded home runs",
+      "body": "Team totals show the cumulative effect of long histories, ballparks, roster construction, and eras. This chart ranks teams by total home runs in the dataset.",
+      "measure": "home_runs",
+      "chart": [
+        {
+          "label": "New York Yankees",
+          "value": 16339
+        },
+        {
+          "label": "Detroit Tigers",
+          "value": 14083
+        },
+        {
+          "label": "Boston Red Sox",
+          "value": 13799
+        },
+        {
+          "label": "Chicago Cubs",
+          "value": 13637
+        },
+        {
+          "label": "Cleveland Indians",
+          "value": 13192
+        },
+        {
+          "label": "Philadelphia Phillies",
+          "value": 12771
+        },
+        {
+          "label": "Cincinnati Reds",
+          "value": 12113
+        },
+        {
+          "label": "St. Louis Cardinals",
+          "value": 11931
+        },
+        {
+          "label": "Chicago White Sox",
+          "value": 11796
+        },
+        {
+          "label": "Pittsburgh Pirates",
+          "value": 11292
+        }
+      ]
+    },
+    {
+      "id": "player-power",
+      "title": "Career home run leaders dominate the player rankings",
+      "body": "Player-level totals identify the names that repeatedly shape baseball power discussions. These values aggregate each player's recorded team-season stints.",
+      "measure": "home_runs",
+      "chart": [
+        {
+          "label": "Frank Thomas",
+          "value": 807
+        },
+        {
+          "label": "Ken Griffey",
+          "value": 782
+        },
+        {
+          "label": "Barry Bonds",
+          "value": 762
+        },
+        {
+          "label": "Hank Aaron",
+          "value": 755
+        },
+        {
+          "label": "Babe Ruth",
+          "value": 714
+        },
+        {
+          "label": "Alex Rodriguez",
+          "value": 696
+        },
+        {
+          "label": "Albert Pujols",
+          "value": 679
+        },
+        {
+          "label": "Willie Mays",
+          "value": 660
+        },
+        {
+          "label": "Jim Thome",
+          "value": 612
+        },
+        {
+          "label": "Sammy Sosa",
+          "value": 609
+        }
+      ]
+    },
+    {
+      "id": "single-season-power",
+      "title": "The largest single-season home run totals are extreme outliers",
+      "body": "Qualified player seasons make the outlier seasons easy to see. The top values stand far above a typical full-time hitter season.",
+      "measure": "home_runs",
+      "chart": [
+        {
+          "label": "Barry Bonds, 2001",
+          "value": 73
+        },
+        {
+          "label": "Mark McGwire, 1998",
+          "value": 70
+        },
+        {
+          "label": "Sammy Sosa, 1998",
+          "value": 66
+        },
+        {
+          "label": "Mark McGwire, 1999",
+          "value": 65
+        },
+        {
+          "label": "Sammy Sosa, 2001",
+          "value": 64
+        },
+        {
+          "label": "Sammy Sosa, 1999",
+          "value": 63
+        },
+        {
+          "label": "Roger Maris, 1961",
+          "value": 61
+        },
+        {
+          "label": "Babe Ruth, 1927",
+          "value": 60
+        },
+        {
+          "label": "Babe Ruth, 1921",
+          "value": 59
+        },
+        {
+          "label": "Giancarlo Stanton, 2017",
+          "value": 59
+        }
+      ]
+    },
+    {
+      "id": "single-season-ops",
+      "title": "Elite OPS seasons combine reaching base and power",
+      "body": "OPS combines on-base percentage and slugging percentage. The highest qualified seasons are useful for comparing different offensive eras.",
+      "measure": "ops",
+      "chart": [
+        {
+          "label": "Barry Bonds, 2004",
+          "value": 1.421
+        },
+        {
+          "label": "Babe Ruth, 1920",
+          "value": 1.382
+        },
+        {
+          "label": "Barry Bonds, 2002",
+          "value": 1.381
+        },
+        {
+          "label": "Barry Bonds, 2001",
+          "value": 1.378
+        },
+        {
+          "label": "Babe Ruth, 1921",
+          "value": 1.358
+        },
+        {
+          "label": "Babe Ruth, 1923",
+          "value": 1.309
+        },
+        {
+          "label": "Ted Williams, 1941",
+          "value": 1.288
+        },
+        {
+          "label": "Barry Bonds, 2003",
+          "value": 1.278
+        },
+        {
+          "label": "Babe Ruth, 1927",
+          "value": 1.258
+        },
+        {
+          "label": "Ted Williams, 1957",
+          "value": 1.257
+        }
+      ]
+    },
+    {
+      "id": "countries",
+      "title": "Most plate appearances come from U.S.-born players, with a broad international base",
+      "body": "Birth country is a useful categorical filter for the dashboard because it shows the international expansion of the player pool while keeping the main unit of analysis at the player-season level.",
+      "measure": "plate_appearances",
+      "chart": [
+        {
+          "label": "USA",
+          "value": 13129469
+        },
+        {
+          "label": "D.R.",
+          "value": 676086
+        },
+        {
+          "label": "Venezuela",
+          "value": 445076
+        },
+        {
+          "label": "P.R.",
+          "value": 408391
+        },
+        {
+          "label": "Cuba",
+          "value": 242494
+        },
+        {
+          "label": "CAN",
+          "value": 120730
+        },
+        {
+          "label": "Panama",
+          "value": 79033
+        },
+        {
+          "label": "Mexico",
+          "value": 66234
+        },
+        {
+          "label": "Japan",
+          "value": 40609
+        },
+        {
+          "label": "Colombia",
+          "value": 28183
+        }
+      ]
+    },
+    {
+      "id": "age-curve",
+      "title": "Playing time clusters around a player's mid-to-late twenties",
+      "body": "Aggregating plate appearances by age shows where MLB batting opportunity concentrates. This helps connect player development and roster decisions to the offensive record.",
+      "measure": "plate_appearances",
+      "chart": [
+        {
+          "label": "18",
+          "value": 1720
+        },
+        {
+          "label": "19",
+          "value": 11852
+        },
+        {
+          "label": "20",
+          "value": 46212
+        },
+        {
+          "label": "21",
+          "value": 142551
+        },
+        {
+          "label": "22",
+          "value": 337398
+        },
+        {
+          "label": "23",
+          "value": 623284
+        },
+        {
+          "label": "24",
+          "value": 925343
+        },
+        {
+          "label": "25",
+          "value": 1249691
+        },
+        {
+          "label": "26",
+          "value": 1420784
+        },
+        {
+          "label": "27",
+          "value": 1512818
+        },
+        {
+          "label": "28",
+          "value": 1491167
+        },
+        {
+          "label": "29",
+          "value": 1396598
+        },
+        {
+          "label": "30",
+          "value": 1267984
+        },
+        {
+          "label": "31",
+          "value": 1134521
+        },
+        {
+          "label": "32",
+          "value": 969953
+        },
+        {
+          "label": "33",
+          "value": 801480
+        },
+        {
+          "label": "34",
+          "value": 643266
+        },
+        {
+          "label": "35",
+          "value": 482810
+        },
+        {
+          "label": "36",
+          "value": 351009
+        },
+        {
+          "label": "37",
+          "value": 243884
+        },
+        {
+          "label": "38",
+          "value": 156616
+        },
+        {
+          "label": "39",
+          "value": 96700
+        },
+        {
+          "label": "40",
+          "value": 63945
+        },
+        {
+          "label": "41",
+          "value": 33660
+        },
+        {
+          "label": "42",
+          "value": 17158
+        },
+        {
+          "label": "43",
+          "value": 6971
+        },
+        {
+          "label": "44",
+          "value": 4049
+        },
+        {
+          "label": "45",
+          "value": 1511
+        }
+      ]
+    }
+  ]
+}
