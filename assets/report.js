@@ -37,9 +37,13 @@ function mascotCard(item) {
   const look = teamStyle(item.label);
   return `
     <article class="mascot-card" style="--team-primary:${look.primary};--team-secondary:${look.secondary}">
-      <div class="mascot-mark">${look.initials}</div>
-      <div class="mascot-name">${item.label}</div>
-      <div class="mascot-meta">Payroll pressure profile</div>
+      <div class="mascot-heading">
+        <div class="mascot-mark">${look.initials}</div>
+        <div>
+          <div class="mascot-name">${item.label}</div>
+          <div class="mascot-meta">Payroll pressure profile</div>
+        </div>
+      </div>
       <div class="mascot-stat">${formatValue(item.value)} ${item.value > 100 ? "M" : ""}</div>
     </article>
   `;

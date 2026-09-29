@@ -136,9 +136,13 @@ function renderClubhouse(rows, measure) {
       const look = teamStyle(item.label);
       return `
         <article class="mascot-card" style="--team-primary:${look.primary};--team-secondary:${look.secondary}">
-          <div class="mascot-mark">${look.initials}</div>
-          <div class="mascot-name">${item.label}</div>
-          <div class="mascot-meta">${labels[measure]}</div>
+          <div class="mascot-heading">
+            <div class="mascot-mark">${look.initials}</div>
+            <div>
+              <div class="mascot-name">${item.label}</div>
+              <div class="mascot-meta">${labels[measure]}</div>
+            </div>
+          </div>
           <div class="mascot-stat">${formatNumber(item.value, measure)}</div>
         </article>
       `;
@@ -360,13 +364,19 @@ function renderLeaderboards(rows, measure) {
   const render = (items, field = measure) =>
     items
       .map(
-        (item, index) => `
+        (item, index) => {
+          const look = teamStyle(item.label);
+          return `
           <div class="leader-row">
             <span>${index + 1}</span>
-            <strong title="${item.label}">${item.label}</strong>
+            <span class="team-name-with-logo" title="${item.label}">
+              <span class="team-mini-logo" style="--team-primary:${look.primary};--team-secondary:${look.secondary}">${look.initials}</span>
+              <strong>${item.label}</strong>
+            </span>
             <span>${formatNumber(item.value, field)}</span>
           </div>
-        `
+        `;
+        }
       )
       .join("");
 
@@ -391,7 +401,7 @@ function renderTable(rows) {
       return `
         <tr>
           <td>${row.date}</td>
-          <td>${row.team_name}</td>
+          <td>${teamNameCell(row.team_name)}</td>
           <td>${row.opponent_id}</td>
           <td>${row.home_away}</td>
           <td>$${row.payroll_millions.toFixed(1)}M</td>
@@ -401,6 +411,16 @@ function renderTable(rows) {
       `;
     })
     .join("");
+}
+
+function teamNameCell(teamName) {
+  const look = teamStyle(teamName);
+  return `
+    <span class="team-name-with-logo">
+      <span class="team-mini-logo" style="--team-primary:${look.primary};--team-secondary:${look.secondary}">${look.initials}</span>
+      <span>${teamName}</span>
+    </span>
+  `;
 }
 
 function updateDashboard() {

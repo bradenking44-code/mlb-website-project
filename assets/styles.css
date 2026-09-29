@@ -526,7 +526,7 @@ tbody tr:hover {
   background:
     linear-gradient(110deg, rgba(7, 29, 58, 0.96), rgba(7, 29, 58, 0.72) 48%, rgba(12, 78, 55, 0.52)),
     radial-gradient(circle at 78% 24%, rgba(215, 164, 59, 0.4), transparent 24%),
-    url("https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&w=1800&q=80") center / cover;
+    url("https://images.unsplash.com/photo-1685463376720-566a5f3c659b?auto=format&fit=crop&w=1900&q=82") center / cover;
 }
 
 .report-hero::before {
@@ -690,9 +690,16 @@ tbody tr:hover {
   pointer-events: none;
 }
 
-.mascot-mark {
+.mascot-heading {
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mascot-mark,
+.team-mini-logo {
   width: 58px;
   height: 58px;
   display: grid;
@@ -703,6 +710,7 @@ tbody tr:hover {
   border-radius: 50%;
   font-size: 1.2rem;
   font-weight: 900;
+  flex: 0 0 auto;
 }
 
 .mascot-name,
@@ -713,13 +721,11 @@ tbody tr:hover {
 }
 
 .mascot-name {
-  margin-top: 18px;
   font-size: 1.05rem;
   font-weight: 900;
 }
 
 .mascot-meta {
-  margin-top: 5px;
   color: rgba(255, 255, 255, 0.76);
   font-size: 0.8rem;
   font-weight: 800;
@@ -734,6 +740,30 @@ tbody tr:hover {
   background: var(--gold);
   border-radius: 5px;
   font-weight: 900;
+}
+
+.team-mini-logo {
+  --team-primary: #071d3a;
+  --team-secondary: #c82432;
+  width: 34px;
+  height: 34px;
+  color: var(--team-primary);
+  border-width: 3px;
+  font-size: 0.66rem;
+}
+
+.team-name-with-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.team-name-with-logo strong,
+.team-name-with-logo span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dashboard-main {
