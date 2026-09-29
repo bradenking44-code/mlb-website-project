@@ -1,0 +1,384 @@
+{
+  "headlines": [
+    {
+      "label": "Team-game rows",
+      "value": 148592
+    },
+    {
+      "label": "Seasons",
+      "value": 32
+    },
+    {
+      "label": "Team seasons",
+      "value": 918
+    },
+    {
+      "label": "Teams",
+      "value": 33
+    },
+    {
+      "label": "Total wins",
+      "value": 0
+    },
+    {
+      "label": "Average payroll",
+      "value": 60.04
+    }
+  ],
+  "sections": [
+    {
+      "id": "payroll-growth",
+      "title": "MLB payrolls rose sharply across the salary-data era",
+      "body": "Average team payroll increased from the mid-1980s through 2016. That growth makes raw payroll a useful financial measure, but comparisons are clearest within the same season because leaguewide spending changed over time.",
+      "measure": "average payroll",
+      "chart": [
+        {
+          "label": "1985",
+          "value": 10.08
+        },
+        {
+          "label": "1986",
+          "value": 11.86
+        },
+        {
+          "label": "1987",
+          "value": 10.47
+        },
+        {
+          "label": "1988",
+          "value": 11.58
+        },
+        {
+          "label": "1989",
+          "value": 13.85
+        },
+        {
+          "label": "1990",
+          "value": 17.07
+        },
+        {
+          "label": "1991",
+          "value": 23.56
+        },
+        {
+          "label": "1992",
+          "value": 31.05
+        },
+        {
+          "label": "1993",
+          "value": 32.26
+        },
+        {
+          "label": "1994",
+          "value": 33.11
+        },
+        {
+          "label": "1995",
+          "value": 34.09
+        },
+        {
+          "label": "1996",
+          "value": 34.37
+        },
+        {
+          "label": "1997",
+          "value": 40.43
+        },
+        {
+          "label": "1998",
+          "value": 42.78
+        },
+        {
+          "label": "1999",
+          "value": 50.1
+        },
+        {
+          "label": "2000",
+          "value": 55.72
+        },
+        {
+          "label": "2001",
+          "value": 65.64
+        },
+        {
+          "label": "2002",
+          "value": 67.51
+        },
+        {
+          "label": "2003",
+          "value": 71.26
+        },
+        {
+          "label": "2004",
+          "value": 69.58
+        },
+        {
+          "label": "2005",
+          "value": 73.22
+        },
+        {
+          "label": "2006",
+          "value": 77.55
+        },
+        {
+          "label": "2007",
+          "value": 82.68
+        },
+        {
+          "label": "2008",
+          "value": 89.6
+        },
+        {
+          "label": "2009",
+          "value": 89.3
+        },
+        {
+          "label": "2010",
+          "value": 90.89
+        },
+        {
+          "label": "2011",
+          "value": 92.99
+        },
+        {
+          "label": "2012",
+          "value": 98.03
+        },
+        {
+          "label": "2013",
+          "value": 101.49
+        },
+        {
+          "label": "2014",
+          "value": 106.67
+        },
+        {
+          "label": "2015",
+          "value": 117.13
+        },
+        {
+          "label": "2016",
+          "value": 125.35
+        }
+      ]
+    },
+    {
+      "id": "high-payroll-teams",
+      "title": "The largest payroll seasons were concentrated among a few big-market teams",
+      "body": "The highest payroll seasons show how much some clubs outspent the league in specific years. This creates a natural question for the dashboard: did that spending convert into wins?",
+      "measure": "payroll millions",
+      "chart": [
+        {
+          "label": "New York Yankees 2013",
+          "value": 231.98
+        },
+        {
+          "label": "Los Angeles Dodgers 2013",
+          "value": 223.36
+        },
+        {
+          "label": "New York Yankees 2016",
+          "value": 223.0
+        },
+        {
+          "label": "Los Angeles Dodgers 2016",
+          "value": 221.29
+        },
+        {
+          "label": "Los Angeles Dodgers 2014",
+          "value": 217.01
+        },
+        {
+          "label": "Los Angeles Dodgers 2015",
+          "value": 215.79
+        },
+        {
+          "label": "New York Yankees 2015",
+          "value": 212.75
+        },
+        {
+          "label": "New York Yankees 2005",
+          "value": 208.31
+        },
+        {
+          "label": "New York Yankees 2008",
+          "value": 207.9
+        },
+        {
+          "label": "New York Yankees 2010",
+          "value": 206.33
+        }
+      ]
+    },
+    {
+      "id": "payroll-quartiles",
+      "title": "Higher-payroll quartiles won more often, but not automatically",
+      "body": "Grouping team seasons by payroll percentile shows the broad relationship between spending and winning. The pattern is positive, but the gap is not large enough to make payroll destiny.",
+      "measure": "winning percentage",
+      "chart": []
+    },
+    {
+      "id": "best-records",
+      "title": "The best records were not always the most expensive rosters",
+      "body": "Top win-percentage seasons include both high-spending clubs and teams that converted less expensive rosters into excellent records.",
+      "measure": "winning percentage",
+      "chart": [
+        {
+          "label": "San Diego Padres 1985",
+          "value": 0
+        },
+        {
+          "label": "Atlanta Braves 1985",
+          "value": 0
+        },
+        {
+          "label": "Cincinnati Reds 1985",
+          "value": 0
+        },
+        {
+          "label": "Houston Astros 1985",
+          "value": 0
+        },
+        {
+          "label": "Montreal Expos 1985",
+          "value": 0
+        },
+        {
+          "label": "New York Mets 1985",
+          "value": 0
+        },
+        {
+          "label": "Philadelphia Phillies 1985",
+          "value": 0
+        },
+        {
+          "label": "Chicago Cubs 1985",
+          "value": 0
+        },
+        {
+          "label": "Pittsburgh Pirates 1985",
+          "value": 0
+        },
+        {
+          "label": "St. Louis Cardinals 1985",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "efficient-winners",
+      "title": "Some winners delivered strong records at a lower cost per win",
+      "body": "Cost per win highlights efficient winning. Restricting to teams with at least 85 wins keeps the chart focused on clubs that were both successful and financially efficient.",
+      "measure": "cost per win millions",
+      "chart": []
+    },
+    {
+      "id": "expensive-losses",
+      "title": "Some expensive rosters still finished near or below .500",
+      "body": "Large payrolls reduce some constraints, but they do not remove injuries, roster imbalance, underperformance, or tough divisions.",
+      "measure": "payroll millions",
+      "chart": [
+        {
+          "label": "New York Yankees 2013",
+          "value": 231.98
+        },
+        {
+          "label": "Los Angeles Dodgers 2013",
+          "value": 223.36
+        },
+        {
+          "label": "New York Yankees 2016",
+          "value": 223.0
+        },
+        {
+          "label": "Los Angeles Dodgers 2016",
+          "value": 221.29
+        },
+        {
+          "label": "Los Angeles Dodgers 2014",
+          "value": 217.01
+        },
+        {
+          "label": "Los Angeles Dodgers 2015",
+          "value": 215.79
+        },
+        {
+          "label": "New York Yankees 2015",
+          "value": 212.75
+        },
+        {
+          "label": "New York Yankees 2005",
+          "value": 208.31
+        },
+        {
+          "label": "New York Yankees 2008",
+          "value": 207.9
+        },
+        {
+          "label": "New York Yankees 2010",
+          "value": 206.33
+        }
+      ]
+    },
+    {
+      "id": "run-differential",
+      "title": "Run differential separates sustainable success from lucky records",
+      "body": "Payroll can be compared not only to wins, but also to run differential. Teams with strong run differentials usually had underlying performance to support their records.",
+      "measure": "run differential",
+      "chart": [
+        {
+          "label": "New York Yankees 1998",
+          "value": 337
+        },
+        {
+          "label": "Seattle Mariners 2001",
+          "value": 287
+        },
+        {
+          "label": "Chicago Cubs 2016",
+          "value": 270
+        },
+        {
+          "label": "Boston Red Sox 2007",
+          "value": 263
+        },
+        {
+          "label": "Cleveland Indians 1995",
+          "value": 251
+        },
+        {
+          "label": "Atlanta Braves 1998",
+          "value": 250
+        },
+        {
+          "label": "Houston Astros 1998",
+          "value": 248
+        },
+        {
+          "label": "Oakland Athletics 2001",
+          "value": 233
+        },
+        {
+          "label": "Anaheim Angels 2002",
+          "value": 227
+        },
+        {
+          "label": "Arizona Diamondbacks 1999",
+          "value": 226
+        }
+      ]
+    },
+    {
+      "id": "home-field",
+      "title": "Home teams won more often across the game-level panel",
+      "body": "Home and away status is a useful dashboard filter because game context matters. Payroll is a season-level input, but each row still records whether the result came at home or on the road.",
+      "measure": "winning percentage",
+      "chart": [
+        {
+          "label": "Away",
+          "value": 0.0
+        }
+      ]
+    }
+  ]
+}

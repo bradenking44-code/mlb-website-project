@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MLB Batting Dashboard</title>
+    <title>MLB Payroll Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
   </head>
   <body>
     <nav class="site-nav">
-      <a class="brand" href="index.html">MLB Batting Trends</a>
+      <a class="brand" href="index.html">MLB Payroll Efficiency</a>
       <div class="nav-links">
         <a href="index.html">Report</a>
         <a aria-current="page" href="dashboard.html">Dashboard</a>
@@ -25,33 +25,33 @@
           <h1>Control Room</h1>
           <button id="resetFilters" class="secondary-button" type="button">Reset</button>
         </div>
-        <p class="filter-subtitle">Slice the MLB batting panel by era, team, player, handedness, country, and playing-time thresholds.</p>
+        <p class="filter-subtitle">Slice team-game results by season, club, payroll level, league, and home/away context.</p>
 
         <div class="control-group">
           <h2>Era</h2>
           <div class="quick-years" aria-label="Quick year ranges">
-            <button class="chip-button is-active" type="button" data-start="1901" data-end="2021">All eras</button>
-            <button class="chip-button" type="button" data-start="1901" data-end="1919">Dead-ball</button>
-            <button class="chip-button" type="button" data-start="1920" data-end="1946">Live-ball</button>
-            <button class="chip-button" type="button" data-start="1947" data-end="1968">Integration</button>
-            <button class="chip-button" type="button" data-start="1969" data-end="1993">Division</button>
-            <button class="chip-button" type="button" data-start="1994" data-end="2021">Wild card</button>
+            <button class="chip-button is-active" type="button" data-start="1985" data-end="2016">All seasons</button>
+            <button class="chip-button" type="button" data-start="1985" data-end="1993">Pre-strike</button>
+            <button class="chip-button" type="button" data-start="1994" data-end="1999">Wild card launch</button>
+            <button class="chip-button" type="button" data-start="2000" data-end="2006">Early 2000s</button>
+            <button class="chip-button" type="button" data-start="2007" data-end="2011">Late 2000s</button>
+            <button class="chip-button" type="button" data-start="2012" data-end="2016">Second wild card</button>
           </div>
           <label>
             Start year
-            <input id="startYear" type="number" min="1901" max="2021" value="1901">
+            <input id="startYear" type="number" min="1985" max="2016" value="1985">
           </label>
           <label>
             End year
-            <input id="endYear" type="number" min="1901" max="2021" value="2021">
+            <input id="endYear" type="number" min="1985" max="2016" value="2016">
           </label>
         </div>
 
         <div class="control-group">
           <h2>Filters</h2>
           <label>
-            Player search
-            <input id="playerSearch" type="search" placeholder="Try Aaron, Ruth, Bonds">
+            Team search
+            <input id="teamSearch" type="search" placeholder="Try Yankees, Athletics, Marlins">
           </label>
           <label>
             Team
@@ -62,21 +62,26 @@
             <select id="leagueFilter"></select>
           </label>
           <label>
-            Bats
-            <select id="batsFilter"></select>
+            Home/Away
+            <select id="homeAwayFilter"></select>
           </label>
           <label>
-            Throws
-            <select id="throwsFilter"></select>
+            Day/Night
+            <select id="dayNightFilter"></select>
           </label>
           <label>
-            Birth country
-            <select id="countryFilter"></select>
+            Payroll tier
+            <select id="payrollTierFilter">
+              <option value="">All payroll tiers</option>
+              <option value="top">Top third</option>
+              <option value="middle">Middle third</option>
+              <option value="bottom">Bottom third</option>
+            </select>
           </label>
           <label>
-            Minimum plate appearances
-            <input id="minPa" type="range" min="0" max="700" step="25" value="0">
-            <span class="range-readout"><span>0</span><strong id="minPaValue">0 PA</strong><span>700</span></span>
+            Minimum payroll
+            <input id="minPayroll" type="range" min="0" max="250" step="5" value="0">
+            <span class="range-readout"><span>$0M</span><strong id="minPayrollValue">$0M</strong><span>$250M</span></span>
           </label>
         </div>
 
@@ -85,14 +90,13 @@
           <label>
             Measure
             <select id="measureSelect">
-              <option value="home_runs">Home runs</option>
-              <option value="hits">Hits</option>
-              <option value="rbi">RBI</option>
-              <option value="plate_appearances">Plate appearances</option>
-              <option value="walks">Walks</option>
-              <option value="strikeouts">Strikeouts</option>
-              <option value="total_bases">Total bases</option>
-              <option value="ops">Average OPS</option>
+              <option value="win_rate">Win rate</option>
+              <option value="wins">Wins</option>
+              <option value="run_differential">Run differential</option>
+              <option value="payroll_millions">Payroll millions</option>
+              <option value="cost_per_win">Cost per win</option>
+              <option value="attendance">Attendance</option>
+              <option value="team_runs">Runs scored</option>
             </select>
           </label>
           <label>
@@ -100,9 +104,9 @@
             <select id="breakdownSelect">
               <option value="team_name">Team</option>
               <option value="league">League</option>
-              <option value="bats">Bats</option>
-              <option value="throws">Throws</option>
-              <option value="birth_country">Birth country</option>
+              <option value="home_away">Home/Away</option>
+              <option value="day_night">Day/Night</option>
+              <option value="payroll_tier">Payroll tier</option>
               <option value="year">Year</option>
             </select>
           </label>
@@ -125,14 +129,14 @@
       <section class="dashboard-main">
         <div class="dashboard-title-row">
           <div>
-            <p class="dashboard-kicker">Interactive batting lab</p>
-            <h1>Explore the modern MLB batting record</h1>
+            <p class="dashboard-kicker">Interactive payroll lab</p>
+            <h1>Explore payroll, wins, and team efficiency</h1>
           </div>
         </div>
         <p class="dashboard-context">
-          Every chart, number, leaderboard, and table below recalculates from the current filters. Use the era buttons, player search, plate-appearance threshold, and chart controls to test different baseball questions.
+          Every chart, number, leaderboard, and table below recalculates from the current filters. Use the season buttons, team search, payroll threshold, and chart controls to test whether money bought wins.
         </p>
-        <div id="loadingState" class="loading-state">Loading MLB batting data...</div>
+        <div id="loadingState" class="loading-state">Loading MLB payroll and game data...</div>
         <div class="metric-grid" id="dashboardMetrics" aria-live="polite"></div>
         <div class="dashboard-grid">
           <div class="chart-panel"><canvas id="breakdownChart"></canvas></div>
@@ -152,7 +156,7 @@
               <div id="seasonLeaders" class="leader-list"></div>
             </div>
             <div>
-              <h3>Top career totals in current view</h3>
+              <h3>Lowest cost per win in current view</h3>
               <div id="careerLeaders" class="leader-list"></div>
             </div>
           </div>
@@ -166,13 +170,13 @@
             <table>
               <thead>
                 <tr>
-                  <th>Player</th>
-                  <th>Year</th>
+                  <th>Date</th>
                   <th>Team</th>
-                  <th>League</th>
-                  <th>PA</th>
-                  <th>HR</th>
-                  <th>OPS</th>
+                  <th>Opponent</th>
+                  <th>H/A</th>
+                  <th>Payroll</th>
+                  <th>Result</th>
+                  <th>Win %</th>
                 </tr>
               </thead>
               <tbody id="dataTable"></tbody>

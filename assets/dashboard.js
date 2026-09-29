@@ -1,33 +1,42 @@
-const DATA_URL = "data/processed/mlb_batting_player_seasons.csv";
+const DATA_URL = "data/processed/mlb_team_payroll_game_results.csv";
 
 const numericFields = [
-  "games",
-  "at_bats",
-  "plate_appearances",
-  "runs",
+  "year",
+  "games_played_to_date",
+  "team_runs",
+  "opponent_runs",
+  "run_differential",
+  "win",
+  "loss",
+  "tie",
+  "winning_percentage_after_game",
+  "season_payroll",
+  "payroll_rank",
+  "payroll_percentile",
+  "payroll_millions",
+  "cost_per_win_to_date",
+  "attendance",
+  "time_of_game_minutes",
   "hits",
   "home_runs",
-  "rbi",
   "walks",
   "strikeouts",
-  "total_bases",
-  "ops",
+  "errors",
 ];
 
 const labels = {
-  home_runs: "Home runs",
-  hits: "Hits",
-  rbi: "RBI",
-  plate_appearances: "Plate appearances",
-  walks: "Walks",
-  strikeouts: "Strikeouts",
-  total_bases: "Total bases",
-  ops: "Average OPS",
+  win_rate: "Win rate",
+  wins: "Wins",
+  run_differential: "Run differential",
+  payroll_millions: "Payroll millions",
+  cost_per_win: "Cost per win",
+  attendance: "Attendance",
+  team_runs: "Runs scored",
   team_name: "Team",
   league: "League",
-  bats: "Bats",
-  throws: "Throws",
-  birth_country: "Birth country",
+  home_away: "Home/Away",
+  day_night: "Day/Night",
+  payroll_tier: "Payroll tier",
   year: "Year",
 };
 
@@ -45,7 +54,6 @@ function parseCsv(text) {
   for (let i = 0; i < text.length; i += 1) {
     const char = text[i];
     const next = text[i + 1];
-
     if (char === '"' && inQuotes && next === '"') {
       cell += '"';
       i += 1;
@@ -79,14 +87,18 @@ function parseCsv(text) {
     numericFields.forEach((field) => {
       object[field] = Number(object[field] || 0);
     });
-    object.year = Number(object.year);
+    object.payroll_tier =
+      object.payroll_percentile >= 0.667 ? "Top third" : object.payroll_percentile >= 0.334 ? "Middle third" : "Bottom third";
     return object;
   });
 }
 
 function formatNumber(value, field = "") {
-  if (field === "ops" || (value < 10 && value % 1 !== 0)) {
+  if (field === "win_rate") {
     return value.toLocaleString("en-US", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+  }
+  if (field === "payroll_millions" || field === "cost_per_win") {
+    return `$${value.toLocaleString("en-US", { maximumFractionDigits: 1 })}M`;
   }
   return Math.round(value).toLocaleString("en-US");
 }
@@ -106,20 +118,25 @@ function fillSelect(id, field, allLabel) {
 
 function getFilters() {
   return {
-    startYear: Number(document.getElementById("startYear").value || 1901),
-    endYear: Number(document.getElementById("endYear").value || 2021),
-    player: document.getElementById("playerSearch").value.trim().toLowerCase(),
+    startYear: Number(document.getElementById("startYear").value || 1985),
+    endYear: Number(document.getElementById("endYear").value || 2016),
+    teamSearch: document.getElementById("teamSearch").value.trim().toLowerCase(),
     team: document.getElementById("teamFilter").value,
     league: document.getElementById("leagueFilter").value,
-    bats: document.getElementById("batsFilter").value,
-    throws: document.getElementById("throwsFilter").value,
-    country: document.getElementById("countryFilter").value,
-    minPa: Number(document.getElementById("minPa").value || 0),
+    homeAway: document.getElementById("homeAwayFilter").value,
+    dayNight: document.getElementById("dayNightFilter").value,
+    payrollTier: document.getElementById("payrollTierFilter").value,
+    minPayroll: Number(document.getElementById("minPayroll").value || 0),
     topN: Number(document.getElementById("topN").value || 12),
     measure: document.getElementById("measureSelect").value,
     breakdown: document.getElementById("breakdownSelect").value,
     chartType: document.getElementById("chartTypeSelect").value,
   };
+}
+
+function updateRangeReadouts() {
+  document.getElementById("minPayrollValue").textContent = `$${document.getElementById("minPayroll").value}M`;
+  document.getElementById("topNValue").textContent = `Top ${document.getElementById("topN").value}`;
 }
 
 function setActiveEraButton() {
@@ -130,98 +147,82 @@ function setActiveEraButton() {
   });
 }
 
-function updateRangeReadouts() {
-  document.getElementById("minPaValue").textContent = `${document.getElementById("minPa").value} PA`;
-  document.getElementById("topNValue").textContent = `Top ${document.getElementById("topN").value}`;
-}
-
 function filteredRows() {
   const filters = getFilters();
   const start = Math.min(filters.startYear, filters.endYear);
   const end = Math.max(filters.startYear, filters.endYear);
-
   return allRows.filter((row) => {
+    const tierValue = row.payroll_tier.toLowerCase().split(" ")[0];
     return (
       row.year >= start &&
       row.year <= end &&
-      row.plate_appearances >= filters.minPa &&
-      (!filters.player || row.player_name.toLowerCase().includes(filters.player)) &&
+      row.payroll_millions >= filters.minPayroll &&
+      (!filters.teamSearch || row.team_name.toLowerCase().includes(filters.teamSearch) || row.team_id.toLowerCase().includes(filters.teamSearch)) &&
       (!filters.team || row.team_name === filters.team) &&
       (!filters.league || row.league === filters.league) &&
-      (!filters.bats || row.bats === filters.bats) &&
-      (!filters.throws || row.throws === filters.throws) &&
-      (!filters.country || row.birth_country === filters.country)
+      (!filters.homeAway || row.home_away === filters.homeAway) &&
+      (!filters.dayNight || row.day_night === filters.dayNight) &&
+      (!filters.payrollTier || tierValue === filters.payrollTier)
     );
   });
 }
 
-function summarize(rows, field, measure, limit = 12) {
+function aggregate(rows, field, measure, limit = 12) {
   const groups = new Map();
   rows.forEach((row) => {
     const key = row[field] || "Unknown";
-    if (!groups.has(key)) groups.set(key, { label: key, value: 0, count: 0 });
+    if (!groups.has(key)) {
+      groups.set(key, { label: key, wins: 0, losses: 0, value: 0, payrollTotal: 0, payrollCount: 0, costTotal: 0, costCount: 0 });
+    }
     const item = groups.get(key);
-    item.value += row[measure] || 0;
-    item.count += 1;
+    item.wins += row.win;
+    item.losses += row.loss;
+    item.payrollTotal += row.payroll_millions;
+    item.payrollCount += 1;
+    if (row.cost_per_win_to_date) {
+      item.costTotal += row.cost_per_win_to_date / 1_000_000;
+      item.costCount += 1;
+    }
+    if (measure === "wins") item.value += row.win;
+    else if (measure === "win_rate") item.value = 0;
+    else if (measure === "payroll_millions") item.value = 0;
+    else if (measure === "cost_per_win") item.value = 0;
+    else item.value += row[measure] || 0;
   });
 
   return [...groups.values()]
-    .map((item) => ({
-      label: item.label,
-      value: measure === "ops" ? item.value / item.count : item.value,
-      count: item.count,
-    }))
+    .map((item) => {
+      if (measure === "win_rate") item.value = item.wins / Math.max(1, item.wins + item.losses);
+      if (measure === "payroll_millions") item.value = item.payrollTotal / Math.max(1, item.payrollCount);
+      if (measure === "cost_per_win") item.value = item.costTotal / Math.max(1, item.costCount);
+      return item;
+    })
     .sort((a, b) => b.value - a.value)
     .slice(0, limit);
 }
 
 function trend(rows, measure) {
-  const groups = new Map();
-  rows.forEach((row) => {
-    const key = row.year;
-    if (!groups.has(key)) groups.set(key, { label: key, value: 0, count: 0 });
-    const item = groups.get(key);
-    item.value += row[measure] || 0;
-    item.count += 1;
-  });
-
-  return [...groups.values()]
-    .map((item) => ({
-      label: item.label,
-      value: measure === "ops" ? item.value / item.count : item.value,
-    }))
-    .sort((a, b) => a.label - b.label);
+  return aggregate(rows, "year", measure, 100).sort((a, b) => Number(a.label) - Number(b.label));
 }
 
 function metricCards(rows) {
-  const totals = rows.reduce(
-    (acc, row) => {
-      acc.pa += row.plate_appearances;
-      acc.hr += row.home_runs;
-      acc.hits += row.hits;
-      acc.ops += row.ops;
-      acc.count += 1;
-      acc.players.add(row.player_id);
-      acc.teams.add(row.team_name);
-      return acc;
-    },
-    { pa: 0, hr: 0, hits: 0, ops: 0, count: 0, players: new Set(), teams: new Set() }
-  );
+  const teams = new Set(rows.map((row) => `${row.year}-${row.team_id}`));
+  const wins = rows.reduce((sum, row) => sum + row.win, 0);
+  const losses = rows.reduce((sum, row) => sum + row.loss, 0);
+  const avgPayroll = rows.reduce((sum, row) => sum + row.payroll_millions, 0) / Math.max(1, rows.length);
+  const runDiff = rows.reduce((sum, row) => sum + row.run_differential, 0);
 
   const cards = [
     ["Rows", rows.length, ""],
-    ["Players", totals.players.size, ""],
-    ["Teams", totals.teams.size, ""],
-    ["Plate appearances", totals.pa, ""],
-    ["Home runs", totals.hr, ""],
-    ["Average OPS", totals.count ? totals.ops / totals.count : 0, "ops"],
+    ["Team seasons", teams.size, ""],
+    ["Wins", wins, ""],
+    ["Win rate", wins / Math.max(1, wins + losses), "win_rate"],
+    ["Avg payroll", avgPayroll, "payroll_millions"],
+    ["Run differential", runDiff, ""],
   ];
 
   document.getElementById("dashboardMetrics").innerHTML = cards
-    .map(
-      ([label, value, field]) =>
-        `<div class="metric-card"><strong>${formatNumber(value, field)}</strong><span>${label}</span></div>`
-    )
+    .map(([label, value, field]) => `<div class="metric-card"><strong>${formatNumber(value, field)}</strong><span>${label}</span></div>`)
     .join("");
 }
 
@@ -243,12 +244,10 @@ function chartOptions(title, type) {
   };
 }
 
-function renderChart(id, type, items, title, color = "#27724f") {
+function renderChart(id, type, items, title, color = "#27724f", measure = "") {
   if (charts[id]) charts[id].destroy();
-  const ctx = document.getElementById(id);
   const chartType = items.length > 18 && type === "doughnut" ? "bar" : type;
-
-  charts[id] = new Chart(ctx, {
+  charts[id] = new Chart(document.getElementById(id), {
     type: chartType,
     data: {
       labels: items.map((item) => item.label),
@@ -264,33 +263,25 @@ function renderChart(id, type, items, title, color = "#27724f") {
         },
       ],
     },
-    options: chartOptions(title, chartType),
+    options: chartOptions(title, chartType, measure),
   });
 }
 
 function renderScatter(rows) {
   if (charts.scatterChart) charts.scatterChart.destroy();
-  const sample = rows
-    .filter((row) => row.plate_appearances >= 100)
-    .sort((a, b) => b.plate_appearances - a.plate_appearances)
-    .slice(0, 600)
-    .map((row) => ({
-      x: row.home_runs,
-      y: row.ops,
-      player: row.player_name,
-      year: row.year,
-      team: row.team_name,
-    }));
+  const seasons = aggregate(rows, "team_name", "win_rate", 500)
+    .map((item) => ({ x: item.payrollTotal / Math.max(1, item.payrollCount), y: item.value, team: item.label }))
+    .filter((item) => item.x > 0);
 
   charts.scatterChart = new Chart(document.getElementById("scatterChart"), {
     type: "scatter",
     data: {
       datasets: [
         {
-          label: "Player seasons",
-          data: sample,
-          pointRadius: 4,
-          pointHoverRadius: 6,
+          label: "Teams",
+          data: seasons,
+          pointRadius: 5,
+          pointHoverRadius: 7,
           backgroundColor: "rgba(200, 36, 50, 0.62)",
           borderColor: "#c82432",
         },
@@ -300,57 +291,44 @@ function renderScatter(rows) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: "Power vs. OPS for top playing-time seasons" },
+        title: { display: true, text: "Average payroll vs. win rate in current view" },
         tooltip: {
           callbacks: {
-            label: (ctx) => {
-              const item = ctx.raw;
-              return `${item.player}, ${item.year} ${item.team}: ${item.x} HR, ${item.y.toFixed(3)} OPS`;
-            },
+            label: (ctx) => `${ctx.raw.team}: $${ctx.raw.x.toFixed(1)}M payroll, ${ctx.raw.y.toFixed(3)} win rate`,
           },
         },
         legend: { display: false },
       },
       scales: {
-        x: { title: { display: true, text: "Home runs" }, beginAtZero: true },
-        y: { title: { display: true, text: "OPS" }, beginAtZero: true },
+        x: { title: { display: true, text: "Average payroll, $M" }, beginAtZero: true },
+        y: { title: { display: true, text: "Win rate" }, beginAtZero: true },
       },
     },
   });
 }
 
 function renderLeaderboards(rows, measure) {
-  const seasonLeaders = rows
-    .slice()
-    .sort((a, b) => b[measure] - a[measure])
-    .slice(0, 8)
-    .map((row, index) => ({
-      rank: index + 1,
-      label: `${row.player_name}, ${row.year}`,
-      value: row[measure],
-    }));
+  const topSeasons = aggregate(rows, "team_name", measure, 8);
+  const efficient = aggregate(rows, "team_name", "cost_per_win", 100)
+    .filter((item) => item.wins >= 20 && item.value > 0)
+    .sort((a, b) => a.value - b.value)
+    .slice(0, 8);
 
-  const careerLeaders = summarize(rows, "player_name", measure, 8).map((item, index) => ({
-    rank: index + 1,
-    label: item.label,
-    value: item.value,
-  }));
-
-  const render = (items) =>
+  const render = (items, field = measure) =>
     items
       .map(
-        (item) => `
+        (item, index) => `
           <div class="leader-row">
-            <span>${item.rank}</span>
+            <span>${index + 1}</span>
             <strong title="${item.label}">${item.label}</strong>
-            <span>${formatNumber(item.value, measure)}</span>
+            <span>${formatNumber(item.value, field)}</span>
           </div>
         `
       )
       .join("");
 
-  document.getElementById("seasonLeaders").innerHTML = render(seasonLeaders);
-  document.getElementById("careerLeaders").innerHTML = render(careerLeaders);
+  document.getElementById("seasonLeaders").innerHTML = render(topSeasons);
+  document.getElementById("careerLeaders").innerHTML = render(efficient, "cost_per_win");
   document.getElementById("leaderboardCaption").textContent = labels[measure];
 }
 
@@ -359,61 +337,57 @@ function renderTable(rows) {
   document.getElementById("rowCount").textContent = `${rows.length.toLocaleString("en-US")} rows`;
   document.getElementById("dataTable").innerHTML = rows
     .slice()
-    .sort((a, b) => b[measure] - a[measure])
+    .sort((a, b) => {
+      if (measure === "wins" || measure === "win_rate") return b.win - a.win;
+      if (measure === "cost_per_win") return (b.cost_per_win_to_date || 0) - (a.cost_per_win_to_date || 0);
+      return (b[measure] || 0) - (a[measure] || 0);
+    })
     .slice(0, 120)
-    .map(
-      (row) => `
+    .map((row) => {
+      const result = row.win ? "W" : row.loss ? "L" : "T";
+      return `
         <tr>
-          <td>${row.player_name}</td>
-          <td>${row.year}</td>
+          <td>${row.date}</td>
           <td>${row.team_name}</td>
-          <td>${row.league}</td>
-          <td>${row.plate_appearances.toLocaleString("en-US")}</td>
-          <td>${row.home_runs.toLocaleString("en-US")}</td>
-          <td>${row.ops.toFixed(3)}</td>
+          <td>${row.opponent_id}</td>
+          <td>${row.home_away}</td>
+          <td>$${row.payroll_millions.toFixed(1)}M</td>
+          <td>${result} ${row.team_runs}-${row.opponent_runs}</td>
+          <td>${row.winning_percentage_after_game.toFixed(3)}</td>
         </tr>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
 function updateDashboard() {
   updateRangeReadouts();
   setActiveEraButton();
-
   const rows = filteredRows();
   const filters = getFilters();
   const measureLabel = labels[filters.measure];
-  const topN = filters.topN;
-  const breakdownItems =
-    filters.breakdown === "year" ? trend(rows, filters.measure) : summarize(rows, filters.breakdown, filters.measure, topN);
+  const breakdownItems = filters.breakdown === "year" ? trend(rows, filters.measure) : aggregate(rows, filters.breakdown, filters.measure, filters.topN);
 
   metricCards(rows);
-  renderChart(
-    "breakdownChart",
-    filters.breakdown === "year" ? "line" : filters.chartType,
-    breakdownItems,
-    `${measureLabel} by ${labels[filters.breakdown]}`,
-    "#27724f"
-  );
-  renderChart("trendChart", "line", trend(rows, filters.measure), `${measureLabel} by year`, "#c82432");
-  renderChart("teamChart", "bar", summarize(rows, "team_name", filters.measure, topN), `Top teams by ${measureLabel}`, "#071d3a");
-  renderChart("playerChart", "bar", summarize(rows, "player_name", filters.measure, topN), `Top players by ${measureLabel}`, "#d7a43b");
+  renderChart("breakdownChart", filters.breakdown === "year" ? "line" : filters.chartType, breakdownItems, `${measureLabel} by ${labels[filters.breakdown]}`, "#27724f", filters.measure);
+  renderChart("trendChart", "line", trend(rows, filters.measure), `${measureLabel} by year`, "#c82432", filters.measure);
+  renderChart("teamChart", "bar", aggregate(rows, "team_name", filters.measure, filters.topN), `Top teams by ${measureLabel}`, "#071d3a", filters.measure);
+  renderChart("playerChart", "bar", aggregate(rows, "payroll_tier", filters.measure, 3), `${measureLabel} by payroll tier`, "#d7a43b", filters.measure);
   renderScatter(rows);
   renderLeaderboards(rows, filters.measure);
   renderTable(rows);
 }
 
 function resetFilters() {
-  document.getElementById("startYear").value = 1901;
-  document.getElementById("endYear").value = 2021;
-  document.getElementById("playerSearch").value = "";
-  document.getElementById("minPa").value = 0;
+  document.getElementById("startYear").value = 1985;
+  document.getElementById("endYear").value = 2016;
+  document.getElementById("teamSearch").value = "";
+  document.getElementById("minPayroll").value = 0;
   document.getElementById("topN").value = 12;
-  ["teamFilter", "leagueFilter", "batsFilter", "throwsFilter", "countryFilter"].forEach((id) => {
+  ["teamFilter", "leagueFilter", "homeAwayFilter", "dayNightFilter", "payrollTierFilter"].forEach((id) => {
     document.getElementById(id).value = "";
   });
-  document.getElementById("measureSelect").value = "home_runs";
+  document.getElementById("measureSelect").value = "win_rate";
   document.getElementById("breakdownSelect").value = "team_name";
   document.getElementById("chartTypeSelect").value = "bar";
   updateDashboard();
@@ -426,20 +400,19 @@ async function initDashboard() {
 
   fillSelect("teamFilter", "team_name", "All teams");
   fillSelect("leagueFilter", "league", "All leagues");
-  fillSelect("batsFilter", "bats", "All batting sides");
-  fillSelect("throwsFilter", "throws", "All throwing arms");
-  fillSelect("countryFilter", "birth_country", "All countries");
+  fillSelect("homeAwayFilter", "home_away", "Home and away");
+  fillSelect("dayNightFilter", "day_night", "Day and night");
 
   [
     "startYear",
     "endYear",
-    "playerSearch",
+    "teamSearch",
     "teamFilter",
     "leagueFilter",
-    "batsFilter",
-    "throwsFilter",
-    "countryFilter",
-    "minPa",
+    "homeAwayFilter",
+    "dayNightFilter",
+    "payrollTierFilter",
+    "minPayroll",
     "topN",
     "measureSelect",
     "breakdownSelect",

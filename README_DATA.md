@@ -1,50 +1,44 @@
-# MLB Batting Player-Season Dataset
+# MLB Payroll and Team Success Dataset
 
-This folder contains a cleaned Major League Baseball batting panel built for the FDA Data Website Project.
+This folder contains a cleaned Major League Baseball team-game panel built for the FDA Data Website Project.
 
 ## Files
 
-- `data/raw/Batting.csv` - original Baseball Databank batting table.
-- `data/raw/People.csv` - original Baseball Databank player metadata table.
-- `data/raw/Teams.csv` - original Baseball Databank team metadata table.
-- `data/processed/mlb_batting_player_seasons.csv` - cleaned website-ready dataset.
-- `scripts/build_mlb_dataset.py` - reproducible script that builds the processed CSV.
+- `data/raw/Salaries.csv` - Baseball Databank player salary table.
+- `data/raw/Teams.csv` - Baseball Databank team metadata table.
+- `data/raw/retrosheet/*.zip` - Retrosheet season CSV downloads used locally by the build script; these are not committed because of size.
+- `data/processed/mlb_team_payroll_game_results.csv` - cleaned website-ready payroll and game-result dataset.
+- `data/processed/payroll_report_summary.json` - reproducible summary data for report charts.
+- `scripts/build_payroll_dataset.py` - rebuilds the processed team-game dataset.
+- `scripts/build_payroll_report_summary.py` - rebuilds the report chart summary file.
 
-## Source
+## Sources
 
-Raw data comes from the Baseball Databank/Lahman-style CSV tables preserved in the public `cbwinslow/baseballdatabank` GitHub mirror:
+Payroll comes from the Baseball Databank/Lahman salary table preserved in the public `cbwinslow/baseballdatabank` GitHub mirror.
 
-- `https://github.com/cbwinslow/baseballdatabank`
-- `https://raw.githubusercontent.com/cbwinslow/baseballdatabank/master/core/Batting.csv`
-- `https://raw.githubusercontent.com/cbwinslow/baseballdatabank/master/core/People.csv`
-- `https://raw.githubusercontent.com/cbwinslow/baseballdatabank/master/core/Teams.csv`
-
-The mirror describes the data as Baseball Databank data from the Chadwick Baseball Bureau, historically based in part on the Lahman Baseball Database. The original Chadwick Bureau repository URL was unavailable when this dataset was built, so the preserved public mirror was used.
+Game-level results come from Retrosheet season CSV downloads, especially `gameinfo.csv` and `teamstats.csv`.
 
 ## Grain
 
-One row is one player-team-season stint for modern AL/NL Major League Baseball, from 1901 through 2021. Players traded mid-season can appear more than once in the same year because the source batting table records separate team stints.
+One row is one team in one regular-season game from 1985 through 2016. Each row includes that team's season payroll, game result, running winning percentage after the game, game context, and team box-score measures.
 
 ## Assignment Fit
 
-- Rows: 101,914
-- Columns: 37
-- Time column: `year`
-- Group columns: `player_id`, `team_id`, `team_name`
-- Time periods: 121 seasons
-- Groups: 18,140 players and 47 team IDs
-- Filterable categorical variables include `year`, `team_name`, `league`, `division`, `bats`, `throws`, and `birth_country`
-- Numeric variables include `games`, `plate_appearances`, `hits`, `home_runs`, `rbi`, `walks`, `strikeouts`, `total_bases`, `batting_average`, `on_base_percentage`, `slugging_percentage`, `ops`, and `isolated_power`
+- Rows: 148,592
+- Columns: 29
+- Time columns: `date`, `year`
+- Group columns: `team_id`, `team_name`
+- Time periods: 32 seasons
+- Groups: 33 team IDs
+- Filterable categorical variables include `year`, `team_name`, `league`, `home_away`, `day_night`, and `payroll_tier`
+- Numeric variables include `season_payroll`, `payroll_millions`, `payroll_rank`, `winning_percentage_after_game`, `win`, `loss`, `team_runs`, `opponent_runs`, `run_differential`, `attendance`, and `cost_per_win_to_date`
 
 ## Derived Fields
 
-- `plate_appearances` = `at_bats + walks + hit_by_pitch + sacrifice_flies + sacrifice_hits`
-- `total_bases` = `hits + doubles + 2 * triples + 3 * home_runs`
-- `batting_average` = `hits / at_bats`
-- `on_base_percentage` = `(hits + walks + hit_by_pitch) / (at_bats + walks + hit_by_pitch + sacrifice_flies)`
-- `slugging_percentage` = `total_bases / at_bats`
-- `ops` = `on_base_percentage + slugging_percentage`
-- `isolated_power` = `(total_bases - hits) / at_bats`
-- `age` = `year - birthYear`
-
-Blank rate values mean the denominator was zero.
+- `season_payroll` = sum of listed player salaries for that team-season.
+- `payroll_rank` = team payroll rank within the season, where 1 is highest payroll.
+- `payroll_percentile` = within-season payroll rank converted to a 0-1 scale.
+- `payroll_millions` = `season_payroll / 1,000,000`.
+- `run_differential` = `team_runs - opponent_runs`.
+- `winning_percentage_after_game` = wins to date divided by completed decisions to date.
+- `cost_per_win_to_date` = `season_payroll / wins_to_date`; blank before a team's first win.

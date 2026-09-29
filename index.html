@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MLB Batting Trends</title>
+    <title>MLB Payroll Efficiency</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
   </head>
   <body>
     <nav class="site-nav">
-      <a class="brand" href="index.html">MLB Batting Trends</a>
+      <a class="brand" href="index.html">MLB Payroll Efficiency</a>
       <div class="nav-links">
         <a aria-current="page" href="index.html">Report</a>
         <a href="dashboard.html">Dashboard</a>
@@ -22,16 +22,16 @@
     <header class="report-hero">
       <div class="hero-inner">
         <p class="eyebrow">Financial Data Analytics Project</p>
-        <h1>Modern MLB batting, from dead-ball contact to power-era offense</h1>
+        <h1>Does spending more buy more wins?</h1>
         <p class="byline">By Braden King</p>
         <p class="summary">
-          This project uses a player-team-season panel of Major League Baseball batting records from 1901 through 2021. The data shows a sport that shifted toward power, strikeouts, and specialized offensive value, while still preserving clear patterns by team, age, handedness, and player origin.
+          This project studies Major League Baseball team payroll and game-by-game success from 1985 through 2016. The data connects each team's season payroll to every regular-season game result, making it possible to test whether higher spending translated into more wins, stronger records, and better payroll efficiency.
         </p>
         <div class="hero-scoreboard" aria-label="Dataset highlights">
-          <div class="score-cell"><strong>1901</strong><span>First season</span></div>
-          <div class="score-cell"><strong>2021</strong><span>Final season</span></div>
+          <div class="score-cell"><strong>1985</strong><span>First season</span></div>
+          <div class="score-cell"><strong>2016</strong><span>Final season</span></div>
           <div class="score-cell"><strong>AL/NL</strong><span>League scope</span></div>
-          <div class="score-cell"><strong>101K+</strong><span>Player stints</span></div>
+          <div class="score-cell"><strong>148K+</strong><span>Team games</span></div>
         </div>
       </div>
     </header>
@@ -54,22 +54,21 @@
           <div>
             <h2 id="method-title">Dataset Notes</h2>
             <p>
-              The dataset comes from Baseball Databank/Lahman-style CSV tables preserved in a public Baseball Databank mirror. The original tables used here are Batting, People, and Teams. One row in the cleaned file is one player on one team in one season stint. A player traded during a season can appear more than once for that year because each team stint is separate in the source table.
+              The dataset combines Baseball Databank salary records with Retrosheet game and team-stat logs. One row in the cleaned file is one team in one game, with that team's full-season payroll attached to the row.
             </p>
             <p>
-              The processed file keeps AL and NL seasons from 1901 through 2021. Rows before 1901 and non-AL/NL league rows are dropped so the project focuses on modern Major League Baseball. Rate fields are calculated only when the denominator is positive.
+              The processed file keeps AL and NL seasons from 1985 through 2016 because Baseball Databank salary coverage runs through those years. All-Star rows and team-code mismatches without payroll records are excluded.
             </p>
           </div>
           <div>
             <h3>Computed Fields</h3>
             <ul class="clean-list">
-              <li>Plate appearances = at-bats + walks + hit by pitch + sacrifice flies + sacrifice hits</li>
-              <li>Total bases = hits + doubles + 2 * triples + 3 * home runs</li>
-              <li>Batting average = hits / at-bats</li>
-              <li>On-base percentage = (hits + walks + hit by pitch) / (at-bats + walks + hit by pitch + sacrifice flies)</li>
-              <li>Slugging percentage = total bases / at-bats</li>
-              <li>OPS = on-base percentage + slugging percentage</li>
-              <li>Isolated power = (total bases - hits) / at-bats</li>
+              <li>Season payroll = sum of listed player salaries for a team-season</li>
+              <li>Payroll rank = team payroll rank within that season</li>
+              <li>Payroll percentile = payroll rank converted to a 0-1 within-season scale</li>
+              <li>Run differential = team runs minus opponent runs</li>
+              <li>Winning percentage after game = wins to date / completed decisions to date</li>
+              <li>Cost per win to date = season payroll / wins to date</li>
             </ul>
           </div>
         </div>

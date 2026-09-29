@@ -55,7 +55,7 @@ function makeChart(canvas, section) {
 }
 
 async function initReport() {
-  const response = await fetch("data/processed/report_summary.json");
+  const response = await fetch("data/processed/payroll_report_summary.json");
   const summary = await response.json();
 
   document.getElementById("headlineCards").innerHTML = summary.headlines

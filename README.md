@@ -1,35 +1,35 @@
-# MLB Batting Trends Website
+# MLB Payroll Efficiency Website
 
 This repository is for the FDA Data Website Project. It contains a two-page static website built with plain HTML, CSS, and JavaScript.
 
 ## Pages
 
-- `index.html` - report page with a title, author, summary, headline numbers, eight findings, charts, and dataset notes.
-- `dashboard.html` - dashboard page with era buttons, player search, filters, summary numbers, chart switches, five charts, leaderboards, a data table, and a reset button.
+- `index.html` - report page with a title, author, summary, headline numbers, eight payroll/winning findings, charts, and dataset notes.
+- `dashboard.html` - dashboard page with season buttons, team search, payroll filters, summary numbers, chart switches, five charts, leaderboards, a data table, and a reset button.
 
 ## Data
 
-- `data/processed/mlb_batting_player_seasons.csv` - cleaned MLB batting player-team-season panel.
-- `data/processed/report_summary.json` - reproducible summary data for the report charts.
-- `data/raw/Batting.csv` - source batting table.
-- `data/raw/People.csv` - source player metadata table.
+- `data/processed/mlb_team_payroll_game_results.csv` - cleaned MLB team-game payroll and result panel.
+- `data/processed/payroll_report_summary.json` - reproducible summary data for the report charts.
+- `data/raw/Salaries.csv` - source player salary table.
 - `data/raw/Teams.csv` - source team metadata table.
+- `data/raw/retrosheet/` - source Retrosheet season CSV downloads.
 
-Raw data comes from the public Baseball Databank mirror at `https://github.com/cbwinslow/baseballdatabank`.
+Payroll data comes from the public Baseball Databank mirror at `https://github.com/cbwinslow/baseballdatabank`. Game-level results come from Retrosheet CSV downloads at `https://www.retrosheet.org/downloads/csvdownloads.html`.
 
 ## Scripts
 
-- `scripts/build_mlb_dataset.py` - rebuilds the cleaned CSV from the raw Baseball Databank tables.
-- `scripts/build_report_summary.py` - rebuilds the report summary JSON from the cleaned CSV.
+- `scripts/build_payroll_dataset.py` - rebuilds the cleaned payroll/team-game CSV.
+- `scripts/build_payroll_report_summary.py` - rebuilds the payroll report summary JSON from the cleaned CSV.
 
 ## Project Requirements Covered
 
-- Panel data with one row per player-team-season stint.
-- Time column: `year`.
-- Group columns: `player_id`, `team_id`, and `team_name`.
-- 101,914 rows, 37 columns, 121 seasons, 47 team IDs, and 18,140 players.
+- Panel/event data with one row per team-game.
+- Time columns: `date` and `year`.
+- Group columns: `team_id` and `team_name`.
+- 148,592 rows, 29 columns, 32 seasons, and 33 team IDs.
 - Report page with headline numbers and eight charted findings.
-- Dashboard page with filters for year, player, team, league, batting side, throwing arm, birth country, and minimum plate appearances.
+- Dashboard page with filters for year, team, league, home/away, day/night, payroll tier, and minimum payroll.
 - Dashboard summary numbers, chart switches, five charts, leaderboards, table, and reset button.
 
 ## Local Preview
