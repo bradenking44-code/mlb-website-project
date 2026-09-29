@@ -60,13 +60,19 @@ a {
 
 .brand::before {
   content: "";
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at center, #fff 0 54%, transparent 55%),
-    linear-gradient(90deg, transparent 42%, var(--red) 43% 57%, transparent 58%);
+    radial-gradient(ellipse at 18% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
+    radial-gradient(ellipse at 82% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
+    repeating-linear-gradient(58deg, transparent 0 5px, rgba(200, 36, 50, 0.48) 5px 6px, transparent 6px 13px),
+    radial-gradient(circle at 50% 50%, #ffffff 0 62%, #f2f4f7 63% 100%);
   border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    inset -5px -6px 10px rgba(7, 29, 58, 0.16),
+    0 0 0 3px rgba(255, 255, 255, 0.08);
+  animation: baseball-idle 8s linear infinite;
 }
 
 .nav-links {
@@ -567,6 +573,27 @@ tbody tr:hover {
   pointer-events: none;
 }
 
+.report-hero .hero-inner::before {
+  content: "";
+  position: absolute;
+  right: min(52vw, 560px);
+  top: 54px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 18% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
+    radial-gradient(ellipse at 82% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
+    radial-gradient(circle at 50% 50%, #fff 0 62%, #e8edf5 63% 100%);
+  box-shadow:
+    -18px 10px 0 -12px rgba(255, 255, 255, 0.72),
+    -36px 22px 0 -16px rgba(255, 255, 255, 0.44),
+    0 10px 28px rgba(0, 0, 0, 0.28);
+  opacity: 0.94;
+  animation: pitch-arc 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
 .payroll-diamond {
   position: absolute;
   right: 16px;
@@ -579,6 +606,20 @@ tbody tr:hover {
     radial-gradient(circle at center, rgba(215, 164, 59, 0.18), transparent 36%),
     linear-gradient(135deg, rgba(39, 114, 79, 0.6), rgba(7, 29, 58, 0.32));
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+}
+
+.payroll-diamond::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 18% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
+    radial-gradient(ellipse at 82% 50%, transparent 0 44%, var(--red) 45% 49%, transparent 50%),
+    radial-gradient(circle at 50% 50%, #fff 0 62%, #e8edf5 63%);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+  animation: bases-loaded 7s linear infinite;
 }
 
 .base {
@@ -630,6 +671,7 @@ tbody tr:hover {
   position: relative;
   overflow: hidden;
   border-top: 5px solid var(--red);
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
 .headline-card::after,
@@ -642,6 +684,23 @@ tbody tr:hover {
   height: 104px;
   border: 18px solid rgba(7, 29, 58, 0.05);
   border-radius: 50%;
+}
+
+.headline-card::before,
+.metric-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 0 40%, rgba(255, 255, 255, 0.62) 48%, transparent 56% 100%);
+  transform: translateX(-125%);
+  animation: stat-shine 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.headline-card:hover,
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 42px rgba(7, 29, 58, 0.14);
 }
 
 .clubhouse-band {
@@ -713,6 +772,132 @@ tbody tr:hover {
   }
 }
 
+@keyframes baseball-idle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(16deg);
+  }
+}
+
+@keyframes pitch-arc {
+  0% {
+    transform: translate(-160px, 36px) rotate(0deg) scale(0.86);
+    opacity: 0;
+  }
+
+  18%,
+  76% {
+    opacity: 0.94;
+  }
+
+  50% {
+    transform: translate(10px, -18px) rotate(300deg) scale(1);
+  }
+
+  100% {
+    transform: translate(175px, 42px) rotate(620deg) scale(0.88);
+    opacity: 0;
+  }
+}
+
+@keyframes bases-loaded {
+  0% {
+    left: calc(50% - 9px);
+    bottom: -8px;
+    transform: rotate(-45deg) scale(0.9);
+  }
+
+  25% {
+    left: -8px;
+    top: calc(50% - 9px);
+    bottom: auto;
+    transform: rotate(20deg) scale(1);
+  }
+
+  50% {
+    left: calc(50% - 9px);
+    top: -8px;
+    transform: rotate(110deg) scale(1);
+  }
+
+  75% {
+    left: auto;
+    right: -8px;
+    top: calc(50% - 9px);
+    transform: rotate(210deg) scale(1);
+  }
+
+  100% {
+    left: calc(50% - 9px);
+    right: auto;
+    top: auto;
+    bottom: -8px;
+    transform: rotate(315deg) scale(0.9);
+  }
+}
+
+@keyframes stat-shine {
+  0%,
+  52% {
+    transform: translateX(-125%);
+  }
+
+  68%,
+  100% {
+    transform: translateX(125%);
+  }
+}
+
+@keyframes trophy-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes card-scan {
+  0%,
+  100% {
+    opacity: 0.88;
+    transform: translateX(-10px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(10px);
+  }
+}
+
+@keyframes scoreboard-sweep {
+  0%,
+  60% {
+    transform: translateX(-60%);
+  }
+
+  100% {
+    transform: translateX(90%);
+  }
+}
+
+@keyframes panel-glint {
+  0%,
+  65% {
+    transform: translateX(-120%);
+  }
+
+  100% {
+    transform: translateX(120%);
+  }
+}
+
 .mascot-card {
   --team-primary: #071d3a;
   --team-secondary: #c82432;
@@ -748,6 +933,7 @@ tbody tr:hover {
   border-radius: 8px;
   border: 1px solid rgba(215, 164, 59, 0.34);
   box-shadow: 0 22px 48px rgba(7, 29, 58, 0.24);
+  animation: trophy-float 5.4s ease-in-out infinite;
 }
 
 .mascot-card::before {
@@ -771,6 +957,7 @@ tbody tr:hover {
     linear-gradient(125deg, transparent 0 58%, rgba(255, 255, 255, 0.15) 59% 61%, transparent 62%),
     repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 13px);
   pointer-events: none;
+  animation: card-scan 5.8s ease-in-out infinite;
 }
 
 .mascot-heading {
@@ -877,6 +1064,7 @@ tbody tr:hover {
 }
 
 .dashboard-title-row {
+  position: relative;
   padding: 22px;
   color: #fff;
   border-radius: 8px;
@@ -884,10 +1072,25 @@ tbody tr:hover {
     linear-gradient(120deg, rgba(7, 29, 58, 0.96), rgba(16, 47, 85, 0.92)),
     radial-gradient(circle at 90% 20%, rgba(215, 164, 59, 0.4), transparent 26%);
   box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.dashboard-title-row::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(115deg, transparent 0 55%, rgba(255, 255, 255, 0.16) 56% 58%, transparent 59%),
+    radial-gradient(circle at 12% 120%, rgba(215, 164, 59, 0.32), transparent 24%);
+  transform: translateX(-28%);
+  animation: scoreboard-sweep 7s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .dashboard-title-row h1,
 .dashboard-title-row .dashboard-kicker {
+  position: relative;
+  z-index: 1;
   color: #fff;
 }
 
@@ -900,6 +1103,19 @@ tbody tr:hover {
 .leaderboard-panel,
 .world-series-panel {
   border-top: 5px solid var(--navy-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-panel::after,
+.world-series-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0 62%, rgba(215, 164, 59, 0.12) 63% 65%, transparent 66%);
+  transform: translateX(-120%);
+  animation: panel-glint 9s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .chart-panel:nth-child(1) {
@@ -1218,5 +1434,21 @@ tbody tr:hover {
 
   .roster-controls {
     grid-template-columns: 1fr;
+  }
+
+  .report-hero .hero-inner::before {
+    right: 24px;
+    top: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
   }
 }
