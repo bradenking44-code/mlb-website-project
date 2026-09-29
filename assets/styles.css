@@ -686,45 +686,39 @@ tbody tr:hover {
 
 .base {
   position: absolute;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   display: grid;
   place-items: center;
-  padding: 8px;
   transform: rotate(45deg);
   color: var(--navy);
   background:
     linear-gradient(135deg, #ffffff 0 48%, #edf1f6 49% 100%);
   border: 2px solid var(--gold);
   border-radius: 6px;
-  font-size: 0.66rem;
-  font-weight: 900;
-  line-height: 1.05;
-  text-align: center;
-  text-transform: uppercase;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
 }
 
 .base-one {
-  right: -4px;
-  top: calc(50% - 30px);
+  right: 6px;
+  top: calc(50% - 25px);
 }
 
 .base-two {
-  left: calc(50% - 30px);
-  top: -4px;
+  left: calc(50% - 25px);
+  top: 6px;
 }
 
 .base-three {
-  left: -4px;
-  top: calc(50% - 30px);
+  left: 6px;
+  top: calc(50% - 25px);
 }
 
 .base-home {
-  left: calc(50% - 34px);
-  bottom: -10px;
-  width: 68px;
-  height: 62px;
+  left: calc(50% - 31px);
+  bottom: 0;
+  width: 62px;
+  height: 56px;
   clip-path: polygon(16% 0, 84% 0, 84% 58%, 50% 100%, 16% 58%);
   transform: rotate(0deg);
   border-radius: 6px 6px 12px 12px;
@@ -745,14 +739,48 @@ tbody tr:hover {
 }
 
 .base span {
-  position: relative;
+  position: absolute;
   z-index: 1;
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 5px 7px;
+  color: #071d3a;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(215, 164, 59, 0.9);
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  font-size: 0.58rem;
+  font-weight: 1000;
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
   transform: rotate(-45deg);
 }
 
+.base-one span {
+  right: 42px;
+  top: 7px;
+}
+
+.base-two span {
+  left: 50%;
+  top: 42px;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.base-three span {
+  left: 42px;
+  top: 7px;
+}
+
 .base-home span {
-  transform: none;
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%);
 }
 
 .headline-band {
