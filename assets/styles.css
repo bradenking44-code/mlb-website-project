@@ -611,13 +611,12 @@ tbody tr:hover {
 .pitching-mound::after {
   content: "";
   position: absolute;
-  left: 11px;
-  top: 20px;
-  width: 26px;
-  height: 5px;
+  left: 21px;
+  top: 11px;
+  width: 6px;
+  height: 26px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.86);
-  transform: rotate(0deg);
 }
 
 .field-ball {
@@ -629,13 +628,37 @@ tbody tr:hover {
   border-radius: 50%;
   z-index: 2;
   background:
-    radial-gradient(ellipse at 24% 50%, transparent 0 40%, rgba(200, 36, 50, 0.96) 42% 47%, transparent 49%),
-    radial-gradient(ellipse at 76% 50%, transparent 0 40%, rgba(200, 36, 50, 0.96) 42% 47%, transparent 49%),
-    repeating-linear-gradient(58deg, transparent 0 4px, rgba(200, 36, 50, 0.46) 4px 5px, transparent 5px 10px),
-    radial-gradient(circle at 36% 30%, #ffffff 0 18%, #f6f8fb 36%, #dfe5ed 100%);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+    radial-gradient(circle at 36% 30%, #ffffff 0 20%, #f8fafc 42%, #dfe5ed 100%);
+  border: 2px solid rgba(7, 29, 58, 0.18);
+  box-shadow:
+    inset -3px -4px 7px rgba(7, 29, 58, 0.16),
+    0 8px 22px rgba(0, 0, 0, 0.28);
   opacity: 0;
   animation: field-hit 6.8s cubic-bezier(0.16, 0.78, 0.22, 1) infinite;
+}
+
+.field-ball::before,
+.field-ball::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  width: 9px;
+  height: 14px;
+  border: 2px solid var(--red);
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.field-ball::before {
+  left: 2px;
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+}
+
+.field-ball::after {
+  right: 2px;
+  border-left: 0;
+  border-radius: 0 10px 10px 0;
 }
 
 .hit-burst {
@@ -858,42 +881,37 @@ tbody tr:hover {
 @keyframes field-hit {
   0% {
     opacity: 0;
-    transform: translate(0, 0) rotate(0deg) scale(0.82);
+    transform: translate(0, 0) rotate(0deg) scale(0.84);
   }
 
-  8% {
+  7% {
     opacity: 1;
-    transform: translate(0, 0) rotate(80deg) scale(1);
+    transform: translate(0, 0) rotate(30deg) scale(1);
   }
 
-  24% {
+  26% {
     opacity: 1;
-    transform: translate(0, 112px) rotate(430deg) scale(1);
+    transform: translate(0, 112px) rotate(260deg) scale(1);
   }
 
-  30% {
+  33% {
     opacity: 1;
-    transform: translate(0, 112px) rotate(500deg) scale(0.94);
+    transform: translate(0, 112px) rotate(300deg) scale(0.92);
   }
 
-  48% {
+  58% {
     opacity: 1;
-    transform: translate(112px, -86px) rotate(980deg) scale(0.88);
+    transform: translate(108px, -96px) rotate(760deg) scale(0.82);
   }
 
-  66% {
-    opacity: 1;
-    transform: translate(-118px, -68px) rotate(1460deg) scale(0.74);
-  }
-
-  82% {
-    opacity: 0.86;
-    transform: translate(74px, 36px) rotate(1880deg) scale(0.58);
+  76% {
+    opacity: 0;
+    transform: translate(132px, -126px) rotate(960deg) scale(0.52);
   }
 
   100% {
     opacity: 0;
-    transform: translate(0, 0) rotate(0deg) scale(0.82);
+    transform: translate(0, 0) rotate(0deg) scale(0.84);
   }
 }
 
