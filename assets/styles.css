@@ -611,13 +611,13 @@ tbody tr:hover {
 .pitching-mound::after {
   content: "";
   position: absolute;
-  left: 12px;
+  left: 11px;
   top: 20px;
-  width: 24px;
+  width: 26px;
   height: 5px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.86);
-  transform: rotate(-45deg);
+  transform: rotate(0deg);
 }
 
 .field-ball {
@@ -635,34 +635,30 @@ tbody tr:hover {
     radial-gradient(circle at 36% 30%, #ffffff 0 18%, #f6f8fb 36%, #dfe5ed 100%);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
   opacity: 0;
-  animation: field-hit 5.8s cubic-bezier(0.16, 0.78, 0.22, 1) infinite;
+  animation: field-hit 6.8s cubic-bezier(0.16, 0.78, 0.22, 1) infinite;
 }
 
-.ball-one {
-  --hit-x: 104px;
-  --hit-y: -102px;
-  --spin: 650deg;
-}
-
-.ball-two {
-  --hit-x: -126px;
-  --hit-y: -62px;
-  --spin: -560deg;
-  animation-delay: 1.35s;
-}
-
-.ball-three {
-  --hit-x: 128px;
-  --hit-y: 26px;
-  --spin: 720deg;
-  animation-delay: 2.7s;
-}
-
-.ball-four {
-  --hit-x: -78px;
-  --hit-y: 104px;
-  --spin: -680deg;
-  animation-delay: 4.05s;
+.hit-burst {
+  position: absolute;
+  left: calc(50% - 32px);
+  bottom: 28px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 42px;
+  color: #071d3a;
+  background: var(--gold);
+  border: 3px solid #fff;
+  clip-path: polygon(50% 0, 61% 24%, 88% 10%, 76% 37%, 100% 50%, 76% 63%, 88% 90%, 61% 76%, 50% 100%, 39% 76%, 12% 90%, 24% 63%, 0 50%, 24% 37%, 12% 10%, 39% 24%);
+  font-size: 0.92rem;
+  font-weight: 1000;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: rotate(-8deg) scale(0.4);
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.32));
+  animation: hit-pop 6.8s ease-in-out infinite;
 }
 
 .base {
@@ -862,27 +858,66 @@ tbody tr:hover {
 @keyframes field-hit {
   0% {
     opacity: 0;
-    transform: translate(0, 0) rotate(0deg) scale(0.72);
+    transform: translate(0, 0) rotate(0deg) scale(0.82);
   }
 
-  10% {
+  8% {
     opacity: 1;
-    transform: translate(0, 0) rotate(45deg) scale(1);
+    transform: translate(0, 0) rotate(80deg) scale(1);
+  }
+
+  24% {
+    opacity: 1;
+    transform: translate(0, 112px) rotate(430deg) scale(1);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translate(0, 112px) rotate(500deg) scale(0.94);
   }
 
   48% {
     opacity: 1;
-    transform: translate(var(--hit-x), var(--hit-y)) rotate(var(--spin)) scale(0.9);
+    transform: translate(112px, -86px) rotate(980deg) scale(0.88);
   }
 
-  72% {
-    opacity: 0;
-    transform: translate(calc(var(--hit-x) * 1.08), calc(var(--hit-y) * 1.08)) rotate(var(--spin)) scale(0.52);
+  66% {
+    opacity: 1;
+    transform: translate(-118px, -68px) rotate(1460deg) scale(0.74);
+  }
+
+  82% {
+    opacity: 0.86;
+    transform: translate(74px, 36px) rotate(1880deg) scale(0.58);
   }
 
   100% {
     opacity: 0;
-    transform: translate(0, 0) rotate(0deg) scale(0.72);
+    transform: translate(0, 0) rotate(0deg) scale(0.82);
+  }
+}
+
+@keyframes hit-pop {
+  0%,
+  21% {
+    opacity: 0;
+    transform: rotate(-8deg) scale(0.4);
+  }
+
+  25% {
+    opacity: 1;
+    transform: rotate(-8deg) scale(1.12);
+  }
+
+  34% {
+    opacity: 1;
+    transform: rotate(5deg) scale(0.94);
+  }
+
+  43%,
+  100% {
+    opacity: 0;
+    transform: rotate(5deg) scale(0.48);
   }
 }
 
@@ -1471,28 +1506,18 @@ tbody tr:hover {
   }
 
   .field-ball {
-    --hit-x: calc(var(--mobile-hit-x, 70px));
-    --hit-y: calc(var(--mobile-hit-y, -70px));
+    width: 17px;
+    height: 17px;
+    left: calc(50% - 8.5px);
+    top: calc(50% - 8.5px);
   }
 
-  .ball-one {
-    --mobile-hit-x: 74px;
-    --mobile-hit-y: -76px;
-  }
-
-  .ball-two {
-    --mobile-hit-x: -82px;
-    --mobile-hit-y: -42px;
-  }
-
-  .ball-three {
-    --mobile-hit-x: 82px;
-    --mobile-hit-y: 18px;
-  }
-
-  .ball-four {
-    --mobile-hit-x: -54px;
-    --mobile-hit-y: 70px;
+  .hit-burst {
+    width: 54px;
+    height: 36px;
+    left: calc(50% - 27px);
+    bottom: 24px;
+    font-size: 0.78rem;
   }
 
   .trophy-heading {
