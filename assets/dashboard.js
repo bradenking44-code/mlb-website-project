@@ -42,6 +42,25 @@ const labels = {
 
 const palette = ["#c82432", "#071d3a", "#27724f", "#d7a43b", "#6f4bb3", "#1e88a8", "#9e1d29", "#5c6f82"];
 
+const teamLooks = {
+  Yankees: ["#0c2340", "#c4ced4", "NYY"],
+  Dodgers: ["#005a9c", "#ef3e42", "LAD"],
+  "Red Sox": ["#bd3039", "#0c2340", "BOS"],
+  Mets: ["#002d72", "#ff5910", "NYM"],
+  Cubs: ["#0e3386", "#cc3433", "CHC"],
+  Cardinals: ["#c41e3a", "#fedb00", "STL"],
+  Giants: ["#fd5a1e", "#27251f", "SF"],
+  Athletics: ["#003831", "#efb21e", "OAK"],
+  Braves: ["#13274f", "#ce1141", "ATL"],
+  Phillies: ["#e81828", "#002d72", "PHI"],
+  Tigers: ["#0c2340", "#fa4616", "DET"],
+  Mariners: ["#0c2c56", "#005c5c", "SEA"],
+  Orioles: ["#df4601", "#000000", "BAL"],
+  Royals: ["#004687", "#bd9b60", "KC"],
+  Marlins: ["#00a3e0", "#ef3340", "MIA"],
+  "Blue Jays": ["#134a8e", "#e8291c", "TOR"],
+};
+
 let allRows = [];
 let charts = {};
 
@@ -101,6 +120,30 @@ function formatNumber(value, field = "") {
     return `$${value.toLocaleString("en-US", { maximumFractionDigits: 1 })}M`;
   }
   return Math.round(value).toLocaleString("en-US");
+}
+
+function teamStyle(label) {
+  const match = Object.keys(teamLooks).find((name) => label.includes(name));
+  const fallback = ["#071d3a", "#c82432", label.split(" ").map((part) => part[0]).join("").slice(0, 3).toUpperCase()];
+  const [primary, secondary, initials] = match ? teamLooks[match] : fallback;
+  return { primary, secondary, initials };
+}
+
+function renderClubhouse(rows, measure) {
+  const items = aggregate(rows, "team_name", measure, 6);
+  document.getElementById("clubhouseStrip").innerHTML = items
+    .map((item) => {
+      const look = teamStyle(item.label);
+      return `
+        <article class="mascot-card" style="--team-primary:${look.primary};--team-secondary:${look.secondary}">
+          <div class="mascot-mark">${look.initials}</div>
+          <div class="mascot-name">${item.label}</div>
+          <div class="mascot-meta">${labels[measure]}</div>
+          <div class="mascot-stat">${formatNumber(item.value, measure)}</div>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function uniqueOptions(field) {
@@ -369,6 +412,7 @@ function updateDashboard() {
   const breakdownItems = filters.breakdown === "year" ? trend(rows, filters.measure) : aggregate(rows, filters.breakdown, filters.measure, filters.topN);
 
   metricCards(rows);
+  renderClubhouse(rows, filters.measure);
   renderChart("breakdownChart", filters.breakdown === "year" ? "line" : filters.chartType, breakdownItems, `${measureLabel} by ${labels[filters.breakdown]}`, "#27724f", filters.measure);
   renderChart("trendChart", "line", trend(rows, filters.measure), `${measureLabel} by year`, "#c82432", filters.measure);
   renderChart("teamChart", "bar", aggregate(rows, "team_name", filters.measure, filters.topN), `Top teams by ${measureLabel}`, "#071d3a", filters.measure);
