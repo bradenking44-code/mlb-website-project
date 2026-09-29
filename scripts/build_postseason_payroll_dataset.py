@@ -30,9 +30,11 @@ LOGO_VERSION = "500"
 
 ESPN_LOGOS = {
     "ARI": "ari",
+    "ANA": "laa",
     "ATL": "atl",
     "BAL": "bal",
     "BOS": "bos",
+    "CAL": "laa",
     "CHA": "chw",
     "CHN": "chc",
     "CIN": "cin",
@@ -46,6 +48,7 @@ ESPN_LOGOS = {
     "MIA": "mia",
     "FLO": "mia",
     "MIL": "mil",
+    "ML4": "mil",
     "MIN": "min",
     "NYA": "nyy",
     "NYN": "nym",

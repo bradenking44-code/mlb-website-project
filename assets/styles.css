@@ -611,10 +611,10 @@ tbody tr:hover {
 .pitching-mound::after {
   content: "";
   position: absolute;
-  left: 21px;
-  top: 11px;
-  width: 6px;
-  height: 26px;
+  left: 11px;
+  top: 21px;
+  width: 26px;
+  height: 6px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.86);
 }
