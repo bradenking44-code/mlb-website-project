@@ -5,7 +5,7 @@ This repository is for the FDA Data Website Project. It contains a two-page stat
 ## Pages
 
 - `index.html` - report page with a title, author, summary, headline numbers, eight findings, charts, and dataset notes.
-- `dashboard.html` - dashboard page with filters, summary numbers, chart switches, four charts, a data table, and a reset button.
+- `dashboard.html` - dashboard page with era buttons, player search, filters, summary numbers, chart switches, five charts, leaderboards, a data table, and a reset button.
 
 ## Data
 
@@ -29,8 +29,8 @@ Raw data comes from the public Baseball Databank mirror at `https://github.com/c
 - Group columns: `player_id`, `team_id`, and `team_name`.
 - 101,914 rows, 37 columns, 121 seasons, 47 team IDs, and 18,140 players.
 - Report page with headline numbers and eight charted findings.
-- Dashboard page with filters for year, team, league, batting side, and birth country.
-- Dashboard summary numbers, chart switches, four charts, table, and reset button.
+- Dashboard page with filters for year, player, team, league, batting side, throwing arm, birth country, and minimum plate appearances.
+- Dashboard summary numbers, chart switches, five charts, leaderboards, table, and reset button.
 
 ## Local Preview
 

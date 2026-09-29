@@ -22,60 +22,116 @@
     <main class="dashboard-shell">
       <aside class="filters-panel" aria-label="Dashboard filters">
         <div class="panel-heading">
-          <h1>Dashboard</h1>
+          <h1>Control Room</h1>
           <button id="resetFilters" class="secondary-button" type="button">Reset</button>
         </div>
+        <p class="filter-subtitle">Slice the MLB batting panel by era, team, player, handedness, country, and playing-time thresholds.</p>
 
-        <label>
-          Start year
-          <input id="startYear" type="number" min="1901" max="2021" value="1901">
-        </label>
-        <label>
-          End year
-          <input id="endYear" type="number" min="1901" max="2021" value="2021">
-        </label>
-        <label>
-          Team
-          <select id="teamFilter"></select>
-        </label>
-        <label>
-          League
-          <select id="leagueFilter"></select>
-        </label>
-        <label>
-          Bats
-          <select id="batsFilter"></select>
-        </label>
-        <label>
-          Birth country
-          <select id="countryFilter"></select>
-        </label>
+        <div class="control-group">
+          <h2>Era</h2>
+          <div class="quick-years" aria-label="Quick year ranges">
+            <button class="chip-button is-active" type="button" data-start="1901" data-end="2021">All eras</button>
+            <button class="chip-button" type="button" data-start="1901" data-end="1919">Dead-ball</button>
+            <button class="chip-button" type="button" data-start="1920" data-end="1946">Live-ball</button>
+            <button class="chip-button" type="button" data-start="1947" data-end="1968">Integration</button>
+            <button class="chip-button" type="button" data-start="1969" data-end="1993">Division</button>
+            <button class="chip-button" type="button" data-start="1994" data-end="2021">Wild card</button>
+          </div>
+          <label>
+            Start year
+            <input id="startYear" type="number" min="1901" max="2021" value="1901">
+          </label>
+          <label>
+            End year
+            <input id="endYear" type="number" min="1901" max="2021" value="2021">
+          </label>
+        </div>
 
-        <label>
-          Measure
-          <select id="measureSelect">
-            <option value="home_runs">Home runs</option>
-            <option value="hits">Hits</option>
-            <option value="rbi">RBI</option>
-            <option value="plate_appearances">Plate appearances</option>
-            <option value="walks">Walks</option>
-            <option value="strikeouts">Strikeouts</option>
-            <option value="ops">Average OPS</option>
-          </select>
-        </label>
-        <label>
-          Break down by
-          <select id="breakdownSelect">
-            <option value="team_name">Team</option>
-            <option value="league">League</option>
-            <option value="bats">Bats</option>
-            <option value="birth_country">Birth country</option>
-            <option value="year">Year</option>
-          </select>
-        </label>
+        <div class="control-group">
+          <h2>Filters</h2>
+          <label>
+            Player search
+            <input id="playerSearch" type="search" placeholder="Try Aaron, Ruth, Bonds">
+          </label>
+          <label>
+            Team
+            <select id="teamFilter"></select>
+          </label>
+          <label>
+            League
+            <select id="leagueFilter"></select>
+          </label>
+          <label>
+            Bats
+            <select id="batsFilter"></select>
+          </label>
+          <label>
+            Throws
+            <select id="throwsFilter"></select>
+          </label>
+          <label>
+            Birth country
+            <select id="countryFilter"></select>
+          </label>
+          <label>
+            Minimum plate appearances
+            <input id="minPa" type="range" min="0" max="700" step="25" value="0">
+            <span class="range-readout"><span>0</span><strong id="minPaValue">0 PA</strong><span>700</span></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <h2>Chart controls</h2>
+          <label>
+            Measure
+            <select id="measureSelect">
+              <option value="home_runs">Home runs</option>
+              <option value="hits">Hits</option>
+              <option value="rbi">RBI</option>
+              <option value="plate_appearances">Plate appearances</option>
+              <option value="walks">Walks</option>
+              <option value="strikeouts">Strikeouts</option>
+              <option value="total_bases">Total bases</option>
+              <option value="ops">Average OPS</option>
+            </select>
+          </label>
+          <label>
+            Break down by
+            <select id="breakdownSelect">
+              <option value="team_name">Team</option>
+              <option value="league">League</option>
+              <option value="bats">Bats</option>
+              <option value="throws">Throws</option>
+              <option value="birth_country">Birth country</option>
+              <option value="year">Year</option>
+            </select>
+          </label>
+          <label>
+            Chart type
+            <select id="chartTypeSelect">
+              <option value="bar">Bar</option>
+              <option value="line">Line</option>
+              <option value="doughnut">Doughnut</option>
+            </select>
+          </label>
+          <label>
+            Top groups shown
+            <input id="topN" type="range" min="5" max="25" step="1" value="12">
+            <span class="range-readout"><span>5</span><strong id="topNValue">Top 12</strong><span>25</span></span>
+          </label>
+        </div>
       </aside>
 
       <section class="dashboard-main">
+        <div class="dashboard-title-row">
+          <div>
+            <p class="dashboard-kicker">Interactive batting lab</p>
+            <h1>Explore the modern MLB batting record</h1>
+          </div>
+        </div>
+        <p class="dashboard-context">
+          Every chart, number, leaderboard, and table below recalculates from the current filters. Use the era buttons, player search, plate-appearance threshold, and chart controls to test different baseball questions.
+        </p>
         <div id="loadingState" class="loading-state">Loading MLB batting data...</div>
         <div class="metric-grid" id="dashboardMetrics" aria-live="polite"></div>
         <div class="dashboard-grid">
@@ -83,6 +139,23 @@
           <div class="chart-panel"><canvas id="trendChart"></canvas></div>
           <div class="chart-panel"><canvas id="teamChart"></canvas></div>
           <div class="chart-panel"><canvas id="playerChart"></canvas></div>
+          <div class="chart-panel wide"><canvas id="scatterChart"></canvas></div>
+        </div>
+        <div class="leaderboard-panel">
+          <div class="table-heading">
+            <h2>Leaderboards</h2>
+            <span id="leaderboardCaption"></span>
+          </div>
+          <div class="leaderboard-grid">
+            <div>
+              <h3>Top seasons by selected measure</h3>
+              <div id="seasonLeaders" class="leader-list"></div>
+            </div>
+            <div>
+              <h3>Top career totals in current view</h3>
+              <div id="careerLeaders" class="leader-list"></div>
+            </div>
+          </div>
         </div>
         <div class="table-panel">
           <div class="table-heading">
