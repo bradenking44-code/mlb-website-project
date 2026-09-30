@@ -86,6 +86,65 @@ function mascotCard(item) {
     </article>`;
 }
 
+function lerp(start, end, amount) {
+  return start + (end - start) * amount;
+}
+
+function initScrollRunner() {
+  const widget = document.getElementById("scrollBasepath");
+  const runner = widget?.querySelector(".scroll-runner");
+  const status = document.getElementById("runnerStatus");
+  if (!widget || !runner || !status) return;
+
+  const points = {
+    home: { x: 51, y: 82 },
+    first: { x: 95, y: 48 },
+    second: { x: 51, y: 14 },
+    third: { x: 8, y: 48 },
+  };
+
+  function segment(progress, from, to, start, end) {
+    const amount = Math.min(1, Math.max(0, (progress - start) / (end - start)));
+    return {
+      x: lerp(from.x, to.x, amount),
+      y: lerp(from.y, to.y, amount),
+    };
+  }
+
+  function update() {
+    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+    let point = points.home;
+    let label = "At bat";
+    widget.classList.toggle("is-hit", progress > 0.06 && progress < 0.18);
+
+    if (progress < 0.12) {
+      point = points.home;
+      label = progress > 0.06 ? "Ball in play" : "At bat";
+    } else if (progress < 0.34) {
+      point = segment(progress, points.home, points.first, 0.12, 0.34);
+      label = "Running to first";
+    } else if (progress < 0.56) {
+      point = segment(progress, points.first, points.second, 0.34, 0.56);
+      label = "Rounding second";
+    } else if (progress < 0.78) {
+      point = segment(progress, points.second, points.third, 0.56, 0.78);
+      label = "Heading to third";
+    } else {
+      point = segment(progress, points.third, points.home, 0.78, 1);
+      label = progress > 0.96 ? "Scored" : "Coming home";
+    }
+
+    runner.style.setProperty("--runner-x", `${point.x}px`);
+    runner.style.setProperty("--runner-y", `${point.y}px`);
+    status.textContent = label;
+  }
+
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+}
+
 async function initReport() {
   const response = await fetch("data/processed/payroll_report_summary.json");
   const summary = await response.json();
@@ -113,6 +172,8 @@ async function initReport() {
   if (titleSection) {
     document.getElementById("reportMascots").innerHTML = titleSection.chart.slice(0, 8).map(mascotCard).join("");
   }
+
+  initScrollRunner();
 }
 
 initReport();
