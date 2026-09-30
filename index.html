@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20260930-6">
+    <link rel="stylesheet" href="assets/styles.css?v=20260930-7">
   </head>
   <body>
     <nav class="site-nav">
@@ -44,17 +44,26 @@
           <div class="score-cell"><strong>AL/NL</strong><span>League scope</span></div>
           <div class="score-cell"><strong>54K+</strong><span>Roster rows</span></div>
         </div>
-        <div class="championship-visual" aria-hidden="true">
+        <div class="championship-visual" role="region" aria-label="World Series winner explorer">
           <div class="championship-card">
             <div class="broadcast-tag">October Index</div>
             <img src="assets/images/world-series-trophy.png" alt="">
             <div class="trophy-glow"></div>
             <div class="orbit-ball"></div>
-            <div class="index-board">
-              <div><span>Payroll Rank</span><strong>#1-30</strong></div>
-              <div><span>Win Pct</span><strong>.600</strong></div>
-              <div><span>Playoff Odds</span><strong>Live</strong></div>
-              <div><span>Title Result</span><strong>WS</strong></div>
+            <div class="champion-strip">
+              <span id="heroChampionYear">2025</span>
+              <strong id="heroChampionName">World Series Champion</strong>
+            </div>
+            <div class="champion-controls">
+              <button id="heroPrevChampion" type="button" aria-label="Previous World Series winner">‹</button>
+              <input id="heroChampionSlider" type="range" min="0" max="0" value="0" aria-label="World Series year">
+              <button id="heroNextChampion" type="button" aria-label="Next World Series winner">›</button>
+            </div>
+            <div class="index-board" id="heroChampionStats">
+              <div><span>Payroll Rank</span><strong>Loading</strong></div>
+              <div><span>Win Pct</span><strong>Loading</strong></div>
+              <div><span>Payroll</span><strong>Loading</strong></div>
+              <div><span>Record</span><strong>Loading</strong></div>
             </div>
             <div class="signal-bars">
               <span></span><span></span><span></span><span></span>
@@ -116,6 +125,6 @@
       </section>
     </main>
 
-    <script src="assets/report.js?v=20260930-6"></script>
+    <script src="assets/report.js?v=20260930-7"></script>
   </body>
 </html>

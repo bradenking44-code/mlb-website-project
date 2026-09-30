@@ -160,6 +160,62 @@ function mascotCard(item) {
     </article>`;
 }
 
+function parseRecord(record) {
+  const [wins, losses] = String(record || "").split("-").map((part) => Number(part));
+  if (!Number.isFinite(wins) || !Number.isFinite(losses) || wins + losses === 0) return null;
+  return { wins, losses, winPct: wins / (wins + losses) };
+}
+
+function formatMoney(value) {
+  return value || value === 0 ? `$${decimalFormat.format(value)}M` : "Unavailable";
+}
+
+function initChampionExplorer(worldSeries) {
+  const card = document.querySelector(".championship-card");
+  const slider = document.getElementById("heroChampionSlider");
+  const prev = document.getElementById("heroPrevChampion");
+  const next = document.getElementById("heroNextChampion");
+  const year = document.getElementById("heroChampionYear");
+  const name = document.getElementById("heroChampionName");
+  const stats = document.getElementById("heroChampionStats");
+  if (!card || !slider || !prev || !next || !year || !name || !stats || !worldSeries?.length) return;
+
+  const champions = [...worldSeries].sort((a, b) => a.year - b.year);
+  let index = champions.length - 1;
+  slider.min = 0;
+  slider.max = champions.length - 1;
+
+  function renderChampion() {
+    const champion = champions[index];
+    const record = parseRecord(champion.record);
+    const payrollRank = champion.winner_payroll_rank ? `#${champion.winner_payroll_rank}` : "n/a";
+    year.textContent = champion.year;
+    name.textContent = champion.winner;
+    slider.value = index;
+    card.style.setProperty("--winner-logo", champion.winner_logo_url ? `url("${champion.winner_logo_url}")` : "none");
+    stats.innerHTML = `
+      <div><span>Payroll Rank</span><strong>${payrollRank}</strong></div>
+      <div><span>Win Pct</span><strong>${record ? record.winPct.toFixed(3).replace(/^0/, "") : "n/a"}</strong></div>
+      <div><span>Payroll</span><strong>${formatMoney(champion.winner_payroll_millions)}</strong></div>
+      <div><span>Record</span><strong>${escapeHtml(champion.record || "n/a")}</strong></div>`;
+  }
+
+  slider.addEventListener("input", () => {
+    index = Number(slider.value);
+    renderChampion();
+  });
+  prev.addEventListener("click", () => {
+    index = index <= 0 ? champions.length - 1 : index - 1;
+    renderChampion();
+  });
+  next.addEventListener("click", () => {
+    index = index >= champions.length - 1 ? 0 : index + 1;
+    renderChampion();
+  });
+
+  renderChampion();
+}
+
 function lerp(start, end, amount) {
   return start + (end - start) * amount;
 }
@@ -220,8 +276,12 @@ function initScrollRunner() {
 }
 
 async function initReport() {
-  const response = await fetch("data/processed/payroll_report_summary.json");
-  const summary = await response.json();
+  const [summaryResponse, dashboardResponse] = await Promise.all([
+    fetch("data/processed/payroll_report_summary.json"),
+    fetch("data/processed/postseason_dashboard_data.json"),
+  ]);
+  const summary = await summaryResponse.json();
+  const dashboard = await dashboardResponse.json();
 
   document.getElementById("headlineCards").innerHTML = summary.headlines.map((item) => `
     <div class="headline-card">
@@ -248,6 +308,7 @@ async function initReport() {
   }
 
   initScrollRunner();
+  initChampionExplorer(dashboard.worldSeries);
 }
 
 initReport();
