@@ -20,6 +20,7 @@ PEOPLE = RAW / "People2025.csv"
 SALARIES = RAW / "Salaries2025.csv"
 if not SALARIES.exists():
     SALARIES = RAW / "Salaries.csv"
+EXTERNAL_PAYROLLS = RAW / "ExternalPayrolls.csv"
 
 FULL_CSV = OUT / "mlb_payroll_postseason_roster.csv"
 DASHBOARD_JSON = OUT / "postseason_dashboard_data.json"
@@ -84,6 +85,14 @@ def safe_float(value, default=0.0):
         return float(value)
     except (TypeError, ValueError):
         return default
+
+
+def clean_money(value):
+    return safe_int(str(value or "").replace("$", "").replace(",", "").strip())
+
+
+def normalize_name(value):
+    return " ".join(str(value or "").lower().replace("&", "and").split())
 
 
 def yn(value):
@@ -160,6 +169,25 @@ def main():
             "salary_players": payroll_player_counts.get((year, team_id), 0),
             "logo_url": logo_url(team_id),
         }
+
+    external_payroll_years = []
+    if EXTERNAL_PAYROLLS.exists():
+        name_index = {
+            (season["year"], normalize_name(season["team_name"])): key
+            for key, season in team_seasons.items()
+        }
+        for row in read_csv(EXTERNAL_PAYROLLS):
+            year = safe_int(row.get("year") or row.get("yearID"))
+            team_id = (row.get("team_id") or row.get("teamID") or "").strip()
+            team_name = row.get("team") or row.get("team_name") or row.get("name") or ""
+            payroll = clean_money(row.get("payroll") or row.get("team payroll") or row.get("team_payroll"))
+            key = (year, team_id) if team_id else name_index.get((year, normalize_name(team_name)))
+            if key in team_seasons and payroll:
+                team_seasons[key]["payroll"] = payroll
+                team_seasons[key]["salary_players"] = safe_int(row.get("player_count") or row.get("roster"), 0)
+                payrolls[key] = payroll
+                external_payroll_years.append(year)
+                salary_years.append(year)
 
     ranks_by_year = defaultdict(list)
     for key, row in team_seasons.items():
@@ -310,8 +338,9 @@ def main():
         "latest_year": LATEST_YEAR,
         "payroll_start_year": min(salary_years) if salary_years else None,
         "payroll_end_year": max(salary_years) if salary_years else None,
+        "external_payroll_years": sorted(set(external_payroll_years)),
         "teams": len({row["team_id"] for row in team_rows}),
-        "note": "Records, postseason results, and rosters run through 2025. Reproducible Lahman salary data runs 1985-2016, so payroll charts use seasons with salary coverage.",
+        "note": "Records, postseason results, and rosters run through 2025. Lahman salary data covers 1985-2016. Add verified rows to data/raw/ExternalPayrolls.csv to extend payroll-backed charts after 2016.",
     }
 
     DASHBOARD_JSON.write_text(json.dumps({

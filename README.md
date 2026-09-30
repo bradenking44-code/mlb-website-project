@@ -17,8 +17,15 @@ This repository is for the FDA Data Website Project. It contains a two-page stat
 - `data/raw/Appearances2025.csv` - Lahman/SABR player-team appearance table through 2025.
 - `data/raw/People2025.csv` - Lahman/SABR player name table.
 - `data/raw/Salaries2025.csv` - Lahman salary table. Salary coverage remains 1985-2016.
+- `data/raw/ExternalPayrolls.example.csv` - template for adding verified 2017+ team payroll rows.
 
 Sources come from the public Lahman/SABR CSV mirror at `https://github.com/cbwinslow/lahman-database-csv`. Team logo images are loaded from ESPN's public team logo CDN with text fallbacks.
+
+### Payroll Coverage After 2016
+
+The Lahman/SABR `Salaries` table is the reproducible source used in the current build, but its MLB salary coverage ends after the 2016 season. For 2017 and later dashboard payrolls, the recommended extension source is The Baseball Cube's MLB payroll history and year pages because they provide team-level payroll by season alongside team records. Spotrac's MLB payroll tracker is a useful cross-check, but its payroll categories can differ from Opening Day/team payroll totals, so the dashboard should use one definition consistently before merging newer values.
+
+To extend the dashboard, create `data/raw/ExternalPayrolls.csv` with `year`, `team_id` or `team`, and `payroll` columns, then rerun `scripts/build_postseason_payroll_dataset.py` and `scripts/build_payroll_report_summary.py`.
 
 ## Scripts
 

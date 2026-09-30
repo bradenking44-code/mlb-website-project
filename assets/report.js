@@ -25,22 +25,96 @@ function makeSvgChart(section) {
   return makeBarChart(section, data);
 }
 
+function abbreviateLabel(label) {
+  return String(label ?? "")
+    .replace("Arizona Diamondbacks", "Arizona")
+    .replace("Atlanta Braves", "Atlanta")
+    .replace("Baltimore Orioles", "Baltimore")
+    .replace("Boston Red Sox", "Boston")
+    .replace("Chicago Cubs", "Cubs")
+    .replace("Chicago White Sox", "White Sox")
+    .replace("Cincinnati Reds", "Cincinnati")
+    .replace("Cleveland Indians", "Cleveland")
+    .replace("Cleveland Guardians", "Cleveland")
+    .replace("Colorado Rockies", "Colorado")
+    .replace("Detroit Tigers", "Detroit")
+    .replace("Houston Astros", "Houston")
+    .replace("Kansas City Royals", "Kansas City")
+    .replace("Los Angeles Angels", "Angels")
+    .replace("Los Angeles Dodgers", "Dodgers")
+    .replace("Florida Marlins", "Marlins")
+    .replace("Miami Marlins", "Marlins")
+    .replace("Milwaukee Brewers", "Milwaukee")
+    .replace("Minnesota Twins", "Minnesota")
+    .replace("Montreal Expos", "Montreal")
+    .replace("New York Mets", "Mets")
+    .replace("New York Yankees", "Yankees")
+    .replace("Oakland Athletics", "Oakland")
+    .replace("Athletics", "A's")
+    .replace("Philadelphia Phillies", "Phillies")
+    .replace("Pittsburgh Pirates", "Pittsburgh")
+    .replace("San Diego Padres", "San Diego")
+    .replace("San Francisco Giants", "Giants")
+    .replace("Seattle Mariners", "Seattle")
+    .replace("St. Louis Cardinals", "St. Louis")
+    .replace("Tampa Bay Devil Rays", "Tampa Bay")
+    .replace("Tampa Bay Rays", "Tampa Bay")
+    .replace("Texas Rangers", "Texas")
+    .replace("Toronto Blue Jays", "Toronto")
+    .replace("Washington Nationals", "Washington");
+}
+
+function splitChartLabel(label, maxChars = 17) {
+  const text = abbreviateLabel(label);
+  const seasonMatch = text.match(/^(\d{4})\s+(.+)$/);
+  if (seasonMatch) return [seasonMatch[1], seasonMatch[2]];
+  if (text.length <= maxChars) return [text];
+
+  const words = text.split(/\s+/);
+  const lines = [""];
+  words.forEach((word) => {
+    const current = lines[lines.length - 1];
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length <= maxChars || lines.length === 2) {
+      lines[lines.length - 1] = candidate;
+    } else {
+      lines.push(word);
+    }
+  });
+
+  return lines.slice(0, 2).map((line) => (line.length > maxChars ? `${line.slice(0, maxChars - 1)}...` : line));
+}
+
+function makeMultilineLabel(lines, x, y, anchor = "start") {
+  const safeLines = lines.map((line) => escapeHtml(line));
+  const startDy = safeLines.length > 1 ? 0 : 5;
+  return `
+    <text x="${x}" y="${y}" text-anchor="${anchor}" class="svg-label">
+      ${safeLines.map((line, index) => (
+        `<tspan x="${x}" dy="${index === 0 ? startDy : 13}">${line}</tspan>`
+      )).join("")}
+    </text>`;
+}
+
 function makeBarChart(section, data) {
   const max = Math.max(...data.map((item) => item.value), 1);
   const rowH = Math.min(38, 260 / Math.max(1, data.length));
   const bars = data.map((item, index) => {
     const y = 38 + index * rowH;
-    const width = (item.value / max) * 560;
+    const hasLogo = Boolean(item.logo_url);
+    const labelLines = splitChartLabel(item.label, hasLogo ? 16 : 18);
     const label = item.logo_url
       ? `<image href="${escapeHtml(item.logo_url)}" x="18" y="${y - 3}" width="26" height="26" preserveAspectRatio="xMidYMid meet"></image>
-         <text x="52" y="${y + 16}" class="svg-label">${escapeHtml(item.label).slice(0, 18)}</text>`
-      : `<text x="118" y="${y + 16}" text-anchor="end" class="svg-label">${escapeHtml(item.label).slice(0, 20)}</text>`;
-    const barX = item.logo_url ? 190 : 130;
-    const maxBar = item.logo_url ? 500 : 560;
+         ${makeMultilineLabel(labelLines, 52, y + 8)}`
+      : makeMultilineLabel(labelLines, 152, y + 8, "end");
+    const barX = item.logo_url ? 198 : 168;
+    const maxBar = item.logo_url ? 490 : 520;
     const barW = (item.value / max) * maxBar;
     return `
       ${label}
-      <rect x="${barX}" y="${y}" width="${barW}" height="${rowH - 8}" rx="5" fill="${colors[index % colors.length]}"></rect>
+      <rect x="${barX}" y="${y}" width="${barW}" height="${rowH - 8}" rx="5" fill="${colors[index % colors.length]}">
+        <title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title>
+      </rect>
       <text x="${Math.min(710, barX + 8 + barW)}" y="${y + 16}" class="svg-value">${formatValue(item.value)}</text>`;
   }).join("");
   return `<svg viewBox="0 0 760 340" role="img" aria-label="${escapeHtml(section.title)}">${bars}</svg>`;
