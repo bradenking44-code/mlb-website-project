@@ -1769,7 +1769,7 @@ body {
   padding: clamp(60px, 8vw, 96px) 0;
 }
 
-.hero-inner > :not(.payroll-diamond) {
+.hero-inner > :not(.championship-visual) {
   grid-column: 1;
 }
 
@@ -1810,18 +1810,183 @@ body {
   color: rgba(255, 255, 255, .7);
 }
 
-.payroll-diamond {
+.championship-visual {
   grid-column: 2;
   grid-row: 1 / span 6;
   position: relative;
   right: auto;
   bottom: auto;
   width: min(100%, 500px);
-  aspect-ratio: 900 / 680;
+  min-height: 580px;
   justify-self: end;
+}
+
+.championship-card {
+  position: relative;
+  min-height: 580px;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .22);
   border-radius: 18px;
-  background: url("images/cartoon-baseball-field.svg?v=20260930-5") center / contain no-repeat;
-  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, .48));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .04)),
+    radial-gradient(circle at 50% 30%, rgba(215, 164, 59, .28), transparent 35%),
+    linear-gradient(145deg, rgba(4, 17, 36, .94), rgba(9, 39, 72, .9) 58%, rgba(11, 76, 54, .86));
+  box-shadow: 0 34px 86px rgba(0, 0, 0, .42);
+}
+
+.championship-card::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.championship-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0 45%, rgba(255, 255, 255, .18) 49%, transparent 53%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px 16px);
+  transform: translateX(-70%);
+  animation: broadcast-sweep 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.broadcast-tag {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  padding: 8px 11px;
+  color: #071d3a;
+  background: var(--gold);
+  border-radius: 4px;
+  font-size: .72rem;
+  font-weight: 1000;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .24);
+}
+
+.championship-card img {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 46%;
+  width: min(68%, 310px);
+  max-height: 430px;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 28px 42px rgba(0, 0, 0, .45));
+  animation: trophy-rise 5.6s ease-in-out infinite;
+}
+
+.trophy-glow {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 43%;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(215, 164, 59, .42), rgba(215, 164, 59, .12) 42%, transparent 68%);
+  transform: translate(-50%, -50%);
+  animation: glow-pulse 3.8s ease-in-out infinite;
+}
+
+.orbit-ball {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 42%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff url("images/cartoon-baseball.svg") center / 132% 132% no-repeat;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, .34);
+  animation: trophy-orbit 6.2s linear infinite;
+}
+
+.index-board {
+  position: absolute;
+  z-index: 4;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.index-board div {
+  min-height: 74px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 6px;
+  background: rgba(3, 13, 29, .72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+
+.index-board span,
+.index-board strong {
+  display: block;
+}
+
+.index-board span {
+  color: rgba(255, 255, 255, .64);
+  font-size: .67rem;
+  font-weight: 900;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.index-board strong {
+  margin-top: 7px;
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 1000;
+  line-height: 1;
+}
+
+.signal-bars {
+  position: absolute;
+  z-index: 3;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  align-items: end;
+  gap: 5px;
+  height: 34px;
+}
+
+.signal-bars span {
+  width: 8px;
+  border-radius: 99px;
+  background: var(--gold);
+  animation: signal-lift 1.4s ease-in-out infinite;
+}
+
+.signal-bars span:nth-child(1) {
+  height: 12px;
+}
+
+.signal-bars span:nth-child(2) {
+  height: 20px;
+  animation-delay: .12s;
+}
+
+.signal-bars span:nth-child(3) {
+  height: 28px;
+  animation-delay: .24s;
+}
+
+.signal-bars span:nth-child(4) {
+  height: 16px;
+  animation-delay: .36s;
 }
 
 .payroll-diamond::after {
@@ -2045,38 +2210,6 @@ tbody tr:hover {
   border-left: 5px solid var(--gold);
 }
 
-@keyframes pro-field-hit {
-  0%, 8% {
-    opacity: 0;
-    transform: translate(0, 0) rotate(0deg) scale(.72);
-  }
-
-  16% {
-    opacity: 1;
-    transform: translate(0, 32%) rotate(130deg) scale(1);
-  }
-
-  23% {
-    opacity: 1;
-    transform: translate(0, 185%) rotate(260deg) scale(1.05);
-  }
-
-  31% {
-    opacity: 1;
-    transform: translate(0, 185%) rotate(320deg) scale(.88);
-  }
-
-  58% {
-    opacity: 1;
-    transform: translate(112%, -170%) rotate(820deg) scale(.8);
-  }
-
-  78%, 100% {
-    opacity: 0;
-    transform: translate(138%, -220%) rotate(1080deg) scale(.48);
-  }
-}
-
 @keyframes pro-hit-pop {
   0%, 20% {
     opacity: 0;
@@ -2099,17 +2232,71 @@ tbody tr:hover {
   }
 }
 
+@keyframes broadcast-sweep {
+  0%, 55% {
+    transform: translateX(-72%);
+  }
+
+  100% {
+    transform: translateX(72%);
+  }
+}
+
+@keyframes trophy-rise {
+  0%, 100% {
+    transform: translate(-50%, -50%);
+  }
+
+  50% {
+    transform: translate(-50%, -53%);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: .68;
+    transform: translate(-50%, -50%) scale(.94);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+}
+
+@keyframes trophy-orbit {
+  from {
+    transform: rotate(0deg) translateX(175px) rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg) translateX(175px) rotate(-360deg);
+  }
+}
+
+@keyframes signal-lift {
+  0%, 100% {
+    opacity: .58;
+    transform: scaleY(.72);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
 @media (max-width: 980px) {
   .hero-inner {
     grid-template-columns: 1fr;
   }
 
-  .hero-inner > :not(.payroll-diamond),
-  .payroll-diamond {
+  .hero-inner > :not(.championship-visual),
+  .championship-visual {
     grid-column: 1;
   }
 
-  .payroll-diamond {
+  .championship-visual {
     justify-self: start;
     width: min(100%, 540px);
   }
@@ -2124,7 +2311,20 @@ tbody tr:hover {
     padding: 18px;
   }
 
-  .payroll-diamond {
+  .championship-visual {
     width: min(100%, 440px);
+    min-height: 520px;
+  }
+
+  .championship-card {
+    min-height: 520px;
+  }
+
+  .championship-card img {
+    width: min(72%, 270px);
+  }
+
+  .index-board {
+    grid-template-columns: 1fr;
   }
 }
