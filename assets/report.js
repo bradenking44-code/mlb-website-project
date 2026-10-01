@@ -30,7 +30,7 @@ function escapeHtml(value) {
 
 function makeSvgChart(section) {
   const data = section.chart || [];
-  if (section.id === "tier-playoff-rate") return makeVerticalBarChart(section, data);
+  if (section.id === "tier-playoff-rate" || section.id === "top-spender-results") return makeVerticalBarChart(section, data);
   const longSeries = data.length > 18;
   if (longSeries) return makeLineChart(section, data);
   return makeBarChart(section, data);

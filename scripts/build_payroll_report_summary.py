@@ -95,10 +95,19 @@ def main():
         if row["payroll_tier"] == "Bottom third" and row["playoff_team"]
     ]
 
-    result_counts = [
-        {"label": result, "value": len(group)}
-        for result, group in by_result.items()
-    ]
+    top_spender_results = defaultdict(int)
+    for row in payroll_rows:
+        if row.get("payroll_rank") != 1:
+            continue
+        if row["world_series_winner"]:
+            result = "Won WS"
+        elif row["league_champion"]:
+            result = "Lost WS"
+        elif row["playoff_team"]:
+            result = "Playoff exit"
+        else:
+            result = "Missed playoffs"
+        top_spender_results[result] += 1
 
     roster_sizes = [
         {"label": str(year), "value": avg([row.get("roster_count") for row in group])}
@@ -169,11 +178,14 @@ def main():
                 "chart": top(low_payroll_success, n=6),
             },
             {
-                "id": "postseason-results",
-                "title": "The dataset separates regular-season records from postseason outcomes",
-                "body": "Each team-season is labeled as missed playoffs, playoff team, pennant winner, or World Series champion so filters can test different definitions of success.",
-                "measure": "Team seasons",
-                "chart": top(result_counts, n=8),
+                "id": "top-spender-results",
+                "title": "The highest payroll team often fell short of the title",
+                "body": "Looking only at each season's top spender from 1985 through 2016 shows why payroll is an advantage, not a guarantee. Many top payroll teams still missed October or exited before winning the World Series.",
+                "measure": "Top payroll team seasons",
+                "chart": [
+                    {"label": label, "value": top_spender_results.get(label, 0)}
+                    for label in ["Missed playoffs", "Playoff exit", "Lost WS", "Won WS"]
+                ],
             },
             {
                 "id": "roster-size",

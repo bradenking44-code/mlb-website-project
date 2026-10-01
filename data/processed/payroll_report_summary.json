@@ -564,26 +564,26 @@
       ]
     },
     {
-      "id": "postseason-results",
-      "title": "The dataset separates regular-season records from postseason outcomes",
-      "body": "Each team-season is labeled as missed playoffs, playoff team, pennant winner, or World Series champion so filters can test different definitions of success.",
-      "measure": "Team seasons",
+      "id": "top-spender-results",
+      "title": "The highest payroll team often fell short of the title",
+      "body": "Looking only at each season's top spender from 1985 through 2016 shows why payroll is an advantage, not a guarantee. Many top payroll teams still missed October or exited before winning the World Series.",
+      "measure": "Top payroll team seasons",
       "chart": [
         {
           "label": "Missed playoffs",
-          "value": 862
+          "value": 13
         },
         {
-          "label": "Playoff team",
-          "value": 246
+          "label": "Playoff exit",
+          "value": 12
         },
         {
-          "label": "Won World Series",
-          "value": 40
+          "label": "Lost WS",
+          "value": 2
         },
         {
-          "label": "Lost World Series",
-          "value": 40
+          "label": "Won WS",
+          "value": 5
         }
       ]
     },
