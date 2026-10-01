@@ -68,7 +68,7 @@ a {
   width: 48px;
   height: 40px;
   flex: 0 0 auto;
-  background: url("images/homeplate-bat-logo.svg") center / contain no-repeat;
+  background: url("images/homeplate-bat-logo.svg?v=2") center / contain no-repeat;
   filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.24));
 }
 

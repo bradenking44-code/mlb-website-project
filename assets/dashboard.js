@@ -1,4 +1,4 @@
-const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-20";
+const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-21";
 
 const labels = {
   world_series_wins: "World Series wins",
@@ -541,7 +541,9 @@ function renderOpeningDayPayrollArchive() {
   document.getElementById("openingPayrollSource").href = `https://www.thebaseballcube.com/content/payroll_year/${year}/`;
   document.getElementById("openingPayrollTable").innerHTML = rows.map((row) => {
     const season = teamYearIndex.get(row.team_id);
-    const record = season ? `${season.wins}-${season.losses}` : "No completed-season record";
+    const record = season
+      ? `${season.wins}-${season.losses}`
+      : year === 2026 ? "Season has not concluded yet" : "No completed-season record";
     return `<tr>
       <td>#${row.payroll_rank}</td>
       <td>${teamCell(row)}</td>
