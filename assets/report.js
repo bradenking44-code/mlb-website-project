@@ -162,6 +162,24 @@ function mascotCard(item) {
     </article>`;
 }
 
+function addPayrollEraTitleYears(items, worldSeries, payrollEndYear = 2016) {
+  const yearsByTeam = new Map();
+  worldSeries
+    .filter((row) => row.year <= payrollEndYear)
+    .forEach((row) => {
+      const years = yearsByTeam.get(row.winner) || [];
+      years.push(row.year);
+      yearsByTeam.set(row.winner, years);
+    });
+
+  return items
+    .map((item) => {
+      const years = item.years?.length ? item.years : yearsByTeam.get(item.label) || [];
+      return { ...item, years, value: years.length || item.value };
+    })
+    .filter((item) => item.years?.length);
+}
+
 function parseRecord(record) {
   const [wins, losses] = String(record || "").split("-").map((part) => Number(part));
   if (!Number.isFinite(wins) || !Number.isFinite(losses) || wins + losses === 0) return null;
@@ -194,7 +212,6 @@ function initChampionExplorer(worldSeries) {
     logo.src = champion.winner_logo_url || "";
     logo.alt = `${champion.winner} logo`;
     logo.hidden = !champion.winner_logo_url;
-    card.style.setProperty("--winner-logo", champion.winner_logo_url ? `url("${champion.winner_logo_url}")` : "none");
     stats.innerHTML = `
       <div><span>Payroll Rank</span><strong>${payrollRank}</strong></div>
       <div><span>Win Pct</span><strong>${record ? record.winPct.toFixed(3).replace(/^0/, "") : "n/a"}</strong></div>
@@ -302,7 +319,9 @@ async function initReport() {
 
   const titleSection = summary.sections.find((section) => section.id === "world-series-teams");
   if (titleSection) {
-    document.getElementById("reportMascots").innerHTML = titleSection.chart.slice(0, 8).map(mascotCard).join("");
+    const payrollEndYear = dashboard.metadata?.payroll_end_year || 2016;
+    const leaders = addPayrollEraTitleYears(titleSection.chart, dashboard.worldSeries, payrollEndYear);
+    document.getElementById("reportMascots").innerHTML = leaders.slice(0, 8).map(mascotCard).join("");
   }
 
   initScrollRunner();

@@ -69,6 +69,8 @@ def main():
     team_ws = []
     for team, group in by_team.items():
         title_years = sorted(row["year"] for row in group if row["world_series_winner"] and row["year"] <= meta["payroll_end_year"])
+        if not title_years:
+            continue
         team_ws.append({
             "label": team,
             "value": len(title_years),

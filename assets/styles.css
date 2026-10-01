@@ -1850,10 +1850,6 @@ body {
   inset: 18px;
   border: 1px solid rgba(255, 255, 255, .12);
   border-radius: 14px;
-  background:
-    linear-gradient(rgba(3, 13, 29, .62), rgba(3, 13, 29, .62)),
-    var(--winner-logo) center 42% / 42% auto no-repeat;
-  opacity: .5;
   pointer-events: none;
 }
 
@@ -1884,7 +1880,7 @@ body {
   box-shadow: 0 12px 28px rgba(0, 0, 0, .24);
 }
 
-.championship-card img {
+.championship-card .championship-trophy {
   position: absolute;
   z-index: 2;
   left: 50%;
@@ -1958,13 +1954,18 @@ body {
 }
 
 .champion-logo {
+  position: static;
+  z-index: 6;
   width: 42px;
   height: 42px;
   padding: 4px;
   border-radius: 50%;
   object-fit: contain;
+  transform: none;
   background: rgba(255, 255, 255, .96);
   box-shadow: 0 10px 24px rgba(0, 0, 0, .24);
+  filter: none;
+  animation: none;
 }
 
 .champion-strip strong {
@@ -2376,7 +2377,7 @@ tbody tr:hover {
     min-height: 520px;
   }
 
-  .championship-card img {
+  .championship-card .championship-trophy {
     width: min(72%, 270px);
   }
 
