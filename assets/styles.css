@@ -68,7 +68,7 @@ a {
   width: 48px;
   height: 40px;
   flex: 0 0 auto;
-  background: url("images/homeplate-bat-logo.svg?v=2") center / contain no-repeat;
+  background: url("images/homeplate-bat-logo.svg?v=3") center / contain no-repeat;
   filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.24));
 }
 
@@ -147,12 +147,6 @@ a {
   font-size: 0.5rem;
   font-weight: 1000;
   text-transform: uppercase;
-}
-
-.scroll-home {
-  left: 42px;
-  bottom: 7px;
-  clip-path: polygon(12% 0, 88% 0, 88% 56%, 50% 100%, 12% 56%);
 }
 
 .scroll-first {
@@ -955,6 +949,87 @@ tbody tr:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 14px;
+}
+
+.clubhouse-caption {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.winner-grid {
+  grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+  gap: 10px;
+}
+
+.winner-card {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 72px;
+  padding: 10px 12px;
+  color: #fff;
+  background: rgba(4, 18, 36, 0.54);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-left: 4px solid var(--gold);
+  border-radius: 7px;
+}
+
+.winner-year {
+  color: #f1c65c;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.winner-team {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  font-size: 0.94rem;
+  font-weight: 800;
+}
+
+.winner-team > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.winner-team .team-logo {
+  width: 35px;
+  height: 35px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+.winner-team-mark {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  flex: 0 0 auto;
+  color: var(--navy);
+  background: #fff;
+  border-radius: 50%;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.winner-canceled {
+  grid-template-columns: 48px minmax(0, 1fr);
+  color: rgba(255, 255, 255, 0.84);
+  border-left-color: rgba(255, 255, 255, 0.38);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.chart-gridline {
+  stroke: rgba(96, 112, 133, 0.23);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
 }
 
 .clubhouse-strip {

@@ -1,4 +1,4 @@
-const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-22";
+const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-23";
 
 const labels = {
   world_series_wins: "World Series wins",
@@ -324,6 +324,47 @@ function barChart(id, title, data, field) {
   document.getElementById(id).innerHTML = svgWrap(title, bars, subtitle, chartHeight);
 }
 
+function verticalBarChart(id, title, data, field) {
+  if (!data.length) {
+    document.getElementById(id).innerHTML = `<h3 class="chart-title">${escapeHtml(title)}</h3><div class="empty-chart">No matching data for the current filters.</div>`;
+    return;
+  }
+
+  const plotLeft = 76;
+  const plotRight = 690;
+  const plotTop = 42;
+  const plotBottom = 274;
+  const plotHeight = plotBottom - plotTop;
+  const slot = (plotRight - plotLeft) / data.length;
+  const barWidth = Math.min(112, slot * 0.52);
+  const grid = [0, 0.25, 0.5, 0.75, 1].map((tick) => {
+    const y = plotBottom - tick * plotHeight;
+    return `
+      <line x1="${plotLeft}" y1="${y}" x2="${plotRight}" y2="${y}" class="chart-gridline"></line>
+      <text x="${plotLeft - 10}" y="${y + 4}" text-anchor="end" class="svg-label">${Math.round(tick * 100)}%</text>`;
+  }).join("");
+  const bars = data.map((item, index) => {
+    const x = plotLeft + index * slot + (slot - barWidth) / 2;
+    const height = Math.max(0, Math.min(1, item.value)) * plotHeight;
+    const y = plotBottom - height;
+    const color = item.color || colors[index % colors.length];
+    const tip = tooltipText(item.label, [
+      `Playoff rate: ${fmtValue(item.value, field)}`,
+      `Playoff teams: ${item.playoffTeams || 0}`,
+      `Team seasons: ${item.seasons || 0}`,
+    ]);
+    return `
+      <rect class="tooltip-mark" tabindex="0" data-tip="${tip}" x="${x}" y="${y}" width="${barWidth}" height="${height}" rx="6" fill="${color}"></rect>
+      <text x="${x + barWidth / 2}" y="${Math.max(plotTop + 14, y - 9)}" text-anchor="middle" class="svg-value">${fmtValue(item.value, field)}</text>
+      <text x="${x + barWidth / 2}" y="${plotBottom + 25}" text-anchor="middle" class="svg-label">${escapeHtml(item.label)}</text>`;
+  }).join("");
+  const body = `
+    ${grid}
+    <line x1="${plotLeft}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" class="axis"></line>
+    ${bars}`;
+  document.getElementById(id).innerHTML = svgWrap(title, body, "Share of team seasons reaching the playoffs; hover a bar for counts.", 330);
+}
+
 function lineChart(id, title, data, field) {
   const clean = data.filter((d) => Number.isFinite(d.value));
   if (!clean.length) {
@@ -454,10 +495,11 @@ function tierChart(rows) {
       label: tier,
       value: set.filter((row) => row.playoff_team).length / Math.max(1, set.length),
       seasons: set.length,
+      playoffTeams: set.filter((row) => row.playoff_team).length,
       color: payrollTierColors[tier],
     };
   });
-  barChart("tierChart", "Playoff rate by payroll tier", data, "playoff_rate");
+  verticalBarChart("tierChart", "Playoff rate by payroll tier", data, "playoff_rate");
 }
 
 function wsPayrollChart(rows) {

@@ -216,42 +216,19 @@ function makeLineChart(section, data) {
     </svg>`;
 }
 
-function mascotCard(item, payrollEndYear = 2016) {
-  const initials = escapeHtml(item.label).split(" ").map((part) => part[0]).join("").slice(0, 3);
-  const mark = item.logo_url
-    ? `<img class="team-logo" src="${escapeHtml(item.logo_url)}" alt="" loading="lazy">`
-    : `<div class="mascot-mark">${initials}</div>`;
-  const years = item.years?.length ? item.years.join(", ") : `No titles in 1985-${payrollEndYear}`;
+function worldSeriesWinnerCard(item) {
+  const initials = escapeHtml(item.winner).split(" ").map((part) => part[0]).join("").slice(0, 3);
+  const mark = item.winner_logo_url
+    ? `<img class="team-logo" src="${escapeHtml(item.winner_logo_url)}" alt="" loading="lazy">`
+    : `<span class="winner-team-mark" aria-hidden="true">${initials}</span>`;
   return `
-    <article class="mascot-card">
-      <div class="mascot-heading">
+    <article class="winner-card">
+      <strong class="winner-year">${item.year}</strong>
+      <div class="winner-team">
         ${mark}
-        <div>
-          <div class="mascot-name">${escapeHtml(item.label)}</div>
-          <div class="mascot-meta">1985-${payrollEndYear} title leader</div>
-        </div>
+        <span>${escapeHtml(item.winner)}</span>
       </div>
-      <div class="mascot-stat">${formatValue(item.value)}</div>
-      <div class="mascot-years">${escapeHtml(years)}</div>
     </article>`;
-}
-
-function addPayrollEraTitleYears(items, worldSeries, payrollEndYear = 2016) {
-  const yearsByTeam = new Map();
-  worldSeries
-    .filter((row) => row.year <= payrollEndYear)
-    .forEach((row) => {
-      const years = yearsByTeam.get(row.winner) || [];
-      years.push(row.year);
-      yearsByTeam.set(row.winner, years);
-    });
-
-  return items
-    .map((item) => {
-      const years = item.years?.length ? item.years : yearsByTeam.get(item.label) || [];
-      return { ...item, years, value: years.length || item.value };
-    })
-    .filter((item) => item.years?.length);
 }
 
 function parseRecord(record) {
@@ -391,12 +368,18 @@ async function initReport() {
       </div>
     </article>`).join("");
 
-  const titleSection = summary.sections.find((section) => section.id === "world-series-teams");
-  if (titleSection) {
-    const payrollEndYear = dashboard.metadata?.payroll_end_year || 2016;
-    const leaders = addPayrollEraTitleYears(titleSection.chart, dashboard.worldSeries, payrollEndYear);
-    document.getElementById("reportMascots").innerHTML = leaders.slice(0, 8).map((item) => mascotCard(item, payrollEndYear)).join("");
+  const worldSeries = [...(dashboard.worldSeries || [])].sort((a, b) => a.year - b.year);
+  const winnersByYear = new Map(worldSeries.map((row) => [Number(row.year), row]));
+  const winnerCards = [];
+  for (let year = 1985; year <= 2025; year += 1) {
+    const champion = winnersByYear.get(year);
+    if (champion) {
+      winnerCards.push(worldSeriesWinnerCard(champion));
+    } else if (year === 1994) {
+      winnerCards.push(`<article class="winner-card winner-canceled"><strong class="winner-year">1994</strong><span>World Series canceled</span></article>`);
+    }
   }
+  document.getElementById("reportMascots").innerHTML = winnerCards.join("");
 
   initScrollRunner();
   initChampionExplorer(dashboard.worldSeries);
