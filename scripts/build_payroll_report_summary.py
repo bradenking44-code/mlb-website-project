@@ -66,10 +66,15 @@ def main():
         if tier != "Payroll unavailable"
     ]
 
-    team_ws = [
-        {"label": team, "value": sum(1 for row in group if row["world_series_winner"]), "logo_url": logo_by_team.get(team, "")}
-        for team, group in by_team.items()
-    ]
+    team_ws = []
+    for team, group in by_team.items():
+        title_years = sorted(row["year"] for row in group if row["world_series_winner"] and row["year"] <= meta["payroll_end_year"])
+        team_ws.append({
+            "label": team,
+            "value": len(title_years),
+            "years": title_years,
+            "logo_url": logo_by_team.get(team, ""),
+        })
 
     team_playoff = [
         {"label": team, "value": sum(1 for row in group if row["playoff_team"]), "logo_url": logo_by_team.get(team, "")}
@@ -135,8 +140,8 @@ def main():
             },
             {
                 "id": "world-series-teams",
-                "title": "A few clubs collected most of the titles",
-                "body": "World Series wins cluster around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
+                "title": "A few clubs collected most payroll-era titles",
+                "body": "From 1985 through 2016, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
                 "measure": "World Series wins",
                 "chart": top(team_ws),
             },

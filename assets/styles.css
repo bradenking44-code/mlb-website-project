@@ -1212,7 +1212,8 @@ tbody tr:hover {
 
 .mascot-name,
 .mascot-stat,
-.mascot-meta {
+.mascot-meta,
+.mascot-years {
   position: relative;
   z-index: 1;
 }
@@ -1237,6 +1238,14 @@ tbody tr:hover {
   background: var(--gold);
   border-radius: 5px;
   font-weight: 900;
+}
+
+.mascot-years {
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.84rem;
+  font-weight: 900;
+  line-height: 1.35;
 }
 
 .team-mini-logo {
@@ -1902,19 +1911,6 @@ body {
   animation: glow-pulse 3.8s ease-in-out infinite;
 }
 
-.orbit-ball {
-  position: absolute;
-  z-index: 4;
-  left: 50%;
-  top: 42%;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #fff url("images/cartoon-baseball.svg") center / 132% 132% no-repeat;
-  box-shadow: 0 12px 22px rgba(0, 0, 0, .34);
-  animation: trophy-orbit 6.2s linear infinite;
-}
-
 .champion-strip {
   position: absolute;
   z-index: 5;
@@ -1922,14 +1918,31 @@ body {
   right: 24px;
   top: 70px;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: 38px auto 42px minmax(0, 1fr) 38px;
+  gap: 10px;
   align-items: center;
   padding: 10px;
   border: 1px solid rgba(255, 255, 255, .16);
   border-radius: 6px;
   background: rgba(3, 13, 29, .7);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 14px 30px rgba(0, 0, 0, .24);
+}
+
+.champion-strip button {
+  min-height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(215, 164, 59, .65);
+  color: #071d3a;
+  background: var(--gold);
+  font-size: 1.25rem;
+  font-weight: 1000;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.champion-strip button:hover {
+  filter: brightness(1.08);
 }
 
 .champion-strip span {
@@ -1944,6 +1957,16 @@ body {
   font-weight: 1000;
 }
 
+.champion-logo {
+  width: 42px;
+  height: 42px;
+  padding: 4px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .24);
+}
+
 .champion-strip strong {
   overflow: hidden;
   color: #fff;
@@ -1952,45 +1975,6 @@ body {
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
-}
-
-.champion-controls {
-  position: absolute;
-  z-index: 6;
-  left: 24px;
-  right: 24px;
-  bottom: 184px;
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 42px;
-  gap: 10px;
-  align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  background: rgba(3, 13, 29, .72);
-  border: 1px solid rgba(255, 255, 255, .13);
-}
-
-.champion-controls button {
-  min-height: 38px;
-  width: 38px;
-  border-radius: 50%;
-  border: 1px solid rgba(215, 164, 59, .65);
-  color: #071d3a;
-  background: var(--gold);
-  font-size: 1.35rem;
-  font-weight: 1000;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.champion-controls button:hover {
-  filter: brightness(1.08);
-}
-
-.champion-controls input[type="range"] {
-  min-height: 32px;
-  accent-color: var(--gold);
-  background: transparent;
 }
 
 .index-board {
@@ -2346,16 +2330,6 @@ tbody tr:hover {
   }
 }
 
-@keyframes trophy-orbit {
-  from {
-    transform: rotate(0deg) translateX(175px) rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg) translateX(175px) rotate(-360deg);
-  }
-}
-
 @keyframes signal-lift {
   0%, 100% {
     opacity: .58;
@@ -2410,12 +2384,13 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 
-  .champion-controls {
-    bottom: 330px;
+  .champion-strip {
+    grid-template-columns: 36px 1fr 36px;
   }
 
-  .champion-strip {
-    grid-template-columns: 1fr;
+  .champion-strip span,
+  .champion-logo {
+    display: none;
   }
 
   .champion-strip strong {

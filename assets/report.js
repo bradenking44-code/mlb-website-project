@@ -147,16 +147,18 @@ function mascotCard(item) {
   const mark = item.logo_url
     ? `<img class="team-logo" src="${escapeHtml(item.logo_url)}" alt="" loading="lazy">`
     : `<div class="mascot-mark">${initials}</div>`;
+  const years = item.years?.length ? item.years.join(", ") : "No titles in 1985-2016";
   return `
     <article class="mascot-card">
       <div class="mascot-heading">
         ${mark}
         <div>
           <div class="mascot-name">${escapeHtml(item.label)}</div>
-          <div class="mascot-meta">October profile</div>
+          <div class="mascot-meta">1985-2016 title leader</div>
         </div>
       </div>
       <div class="mascot-stat">${formatValue(item.value)}</div>
+      <div class="mascot-years">${escapeHtml(years)}</div>
     </article>`;
 }
 
@@ -172,18 +174,16 @@ function formatMoney(value) {
 
 function initChampionExplorer(worldSeries) {
   const card = document.querySelector(".championship-card");
-  const slider = document.getElementById("heroChampionSlider");
   const prev = document.getElementById("heroPrevChampion");
   const next = document.getElementById("heroNextChampion");
   const year = document.getElementById("heroChampionYear");
   const name = document.getElementById("heroChampionName");
+  const logo = document.getElementById("heroChampionLogo");
   const stats = document.getElementById("heroChampionStats");
-  if (!card || !slider || !prev || !next || !year || !name || !stats || !worldSeries?.length) return;
+  if (!card || !prev || !next || !year || !name || !logo || !stats || !worldSeries?.length) return;
 
   const champions = [...worldSeries].sort((a, b) => a.year - b.year);
   let index = champions.length - 1;
-  slider.min = 0;
-  slider.max = champions.length - 1;
 
   function renderChampion() {
     const champion = champions[index];
@@ -191,7 +191,9 @@ function initChampionExplorer(worldSeries) {
     const payrollRank = champion.winner_payroll_rank ? `#${champion.winner_payroll_rank}` : "n/a";
     year.textContent = champion.year;
     name.textContent = champion.winner;
-    slider.value = index;
+    logo.src = champion.winner_logo_url || "";
+    logo.alt = `${champion.winner} logo`;
+    logo.hidden = !champion.winner_logo_url;
     card.style.setProperty("--winner-logo", champion.winner_logo_url ? `url("${champion.winner_logo_url}")` : "none");
     stats.innerHTML = `
       <div><span>Payroll Rank</span><strong>${payrollRank}</strong></div>
@@ -200,10 +202,6 @@ function initChampionExplorer(worldSeries) {
       <div><span>Record</span><strong>${escapeHtml(champion.record || "n/a")}</strong></div>`;
   }
 
-  slider.addEventListener("input", () => {
-    index = Number(slider.value);
-    renderChampion();
-  });
   prev.addEventListener("click", () => {
     index = index <= 0 ? champions.length - 1 : index - 1;
     renderChampion();
