@@ -159,14 +159,14 @@ def main():
                 "title": "High payroll misses are the clearest counterexamples",
                 "body": "Several top-third payroll teams still missed the playoffs, which shows why payroll should be treated as a predictor, not a certainty.",
                 "measure": "Payroll, $M",
-                "chart": top(expensive_misses),
+                "chart": top(expensive_misses, n=8),
             },
             {
                 "id": "low-payroll-success",
                 "title": "Low-payroll playoff teams prove efficiency mattered",
                 "body": "Bottom-third payroll teams still reached October when player development, roster construction, and timing beat spending power.",
                 "measure": "Wins",
-                "chart": top(low_payroll_success),
+                "chart": top(low_payroll_success, n=8),
             },
             {
                 "id": "postseason-results",

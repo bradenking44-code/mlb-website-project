@@ -98,17 +98,17 @@ function makeMultilineLabel(lines, x, y, anchor = "start") {
 
 function makeBarChart(section, data) {
   const max = Math.max(...data.map((item) => item.value), 1);
-  const rowH = Math.min(38, 260 / Math.max(1, data.length));
+  const rowH = Math.min(44, 280 / Math.max(1, data.length));
   const bars = data.map((item, index) => {
-    const y = 38 + index * rowH;
+    const y = 34 + index * rowH;
     const hasLogo = Boolean(item.logo_url);
-    const labelLines = splitChartLabel(item.label, hasLogo ? 16 : 18);
+    const labelLines = splitChartLabel(item.label, hasLogo ? 16 : 20);
     const label = item.logo_url
       ? `<image href="${escapeHtml(item.logo_url)}" x="18" y="${y - 3}" width="26" height="26" preserveAspectRatio="xMidYMid meet"></image>
          ${makeMultilineLabel(labelLines, 52, y + 8)}`
-      : makeMultilineLabel(labelLines, 152, y + 8, "end");
+      : makeMultilineLabel(labelLines, 170, y + 8, "end");
     const barX = item.logo_url ? 198 : 168;
-    const maxBar = item.logo_url ? 490 : 520;
+    const maxBar = item.logo_url ? 490 : 500;
     const barW = (item.value / max) * maxBar;
     return `
       ${label}
@@ -242,10 +242,10 @@ function initScrollRunner() {
   if (!widget || !runner || !status) return;
 
   const points = {
-    home: { x: 51, y: 82 },
-    first: { x: 95, y: 48 },
-    second: { x: 51, y: 14 },
-    third: { x: 8, y: 48 },
+    home: { x: 42, y: 68 },
+    first: { x: 78, y: 40 },
+    second: { x: 42, y: 12 },
+    third: { x: 6, y: 40 },
   };
 
   function segment(progress, from, to, start, end) {

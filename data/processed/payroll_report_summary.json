@@ -536,22 +536,6 @@
         {
           "label": "2012 Philadelphia Phillies",
           "value": 174.54
-        },
-        {
-          "label": "2012 Boston Red Sox",
-          "value": 173.19
-        },
-        {
-          "label": "2015 Detroit Tigers",
-          "value": 172.28
-        },
-        {
-          "label": "2013 Philadelphia Phillies",
-          "value": 169.86
-        },
-        {
-          "label": "2015 San Francisco Giants",
-          "value": 164.7
         }
       ]
     },
@@ -592,22 +576,6 @@
         {
           "label": "2003 Oakland Athletics",
           "value": 96
-        },
-        {
-          "label": "2007 Cleveland Indians",
-          "value": 96
-        },
-        {
-          "label": "2013 Oakland Athletics",
-          "value": 96
-        },
-        {
-          "label": "2000 Chicago White Sox",
-          "value": 95
-        },
-        {
-          "label": "1991 Atlanta Braves",
-          "value": 94
         }
       ]
     },
