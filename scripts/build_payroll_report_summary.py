@@ -55,7 +55,12 @@ def main():
     ]
 
     ws_rank = [
-        {"label": str(row["year"]), "value": row["winner_payroll_rank"]}
+        {
+            "label": f"{row['year']} {row['winner']}",
+            "year": row["year"],
+            "value": row["winner_payroll_rank"],
+            "logo_url": row.get("winner_logo_url", ""),
+        }
         for row in ws
         if row.get("winner_payroll_rank")
     ]
@@ -84,18 +89,26 @@ def main():
     ]
 
     expensive_misses = [
-        {"label": f"{row['year']} {row['team_name']}", "value": row["payroll_millions"]}
+        {
+            "label": f"{row['year']} {row['team_name']}",
+            "value": row["payroll_millions"],
+            "logo_url": row.get("logo_url", ""),
+        }
         for row in payroll_rows
         if row["payroll_tier"] == "Top third" and not row["playoff_team"]
     ]
 
     low_payroll_success = [
-        {"label": f"{row['year']} {row['team_name']}", "value": row["wins"]}
+        {
+            "label": f"{row['year']} {row['team_name']}",
+            "value": row["wins"],
+            "logo_url": row.get("logo_url", ""),
+        }
         for row in payroll_rows
         if row["payroll_tier"] == "Bottom third" and row["playoff_team"]
     ]
 
-    top_spender_results = defaultdict(int)
+    top_spender_wins = defaultdict(list)
     for row in payroll_rows:
         if row.get("payroll_rank") != 1:
             continue
@@ -107,7 +120,7 @@ def main():
             result = "Playoff exit"
         else:
             result = "Missed playoffs"
-        top_spender_results[result] += 1
+        top_spender_wins[result].append(row["wins"])
 
     roster_sizes = [
         {"label": str(year), "value": avg([row.get("roster_count") for row in group])}
@@ -179,11 +192,11 @@ def main():
             },
             {
                 "id": "top-spender-results",
-                "title": "The highest payroll team often fell short of the title",
-                "body": "Looking only at each season's top spender from 1985 through 2016 shows why payroll is an advantage, not a guarantee. Many top payroll teams still missed October or exited before winning the World Series.",
-                "measure": "Top payroll team seasons",
+                "title": "Even elite regular seasons did not guarantee top-spender titles",
+                "body": "This chart compares the average wins for each season's highest-payroll team by final postseason result. The top spender usually won plenty of regular-season games, but that success still did not reliably convert into a championship.",
+                "measure": "Average wins by top spender result",
                 "chart": [
-                    {"label": label, "value": top_spender_results.get(label, 0)}
+                    {"label": label, "value": avg(top_spender_wins.get(label, []))}
                     for label in ["Missed playoffs", "Playoff exit", "Lost WS", "Won WS"]
                 ],
             },

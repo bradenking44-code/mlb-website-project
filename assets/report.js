@@ -176,23 +176,43 @@ function makeBarChart(section, data) {
 
 function makeLineChart(section, data) {
   const values = data.map((item) => item.value);
+  const years = data.map((item) => Number(item.year ?? item.label));
   const max = Math.max(...values, 1);
   const min = Math.min(...values, 0);
-  const x = (index) => 55 + (index / Math.max(1, data.length - 1)) * 650;
+  const minYear = Math.min(...years.filter(Number.isFinite));
+  const maxYear = Math.max(...years.filter(Number.isFinite));
+  const x = (item, index) => {
+    const year = Number(item.year ?? item.label);
+    if (Number.isFinite(year) && Number.isFinite(minYear) && Number.isFinite(maxYear)) {
+      return 55 + ((year - minYear) / Math.max(1, maxYear - minYear)) * 650;
+    }
+    return 55 + (index / Math.max(1, data.length - 1)) * 650;
+  };
   const y = (value) => 285 - ((value - min) / Math.max(0.01, max - min)) * 225;
-  const points = data.map((item, index) => `${x(index)},${y(item.value)}`).join(" ");
-  const dots = data.filter((_, index) => index % Math.max(1, Math.floor(data.length / 12)) === 0).map((item) => {
+  const points = data.map((item, index) => `${x(item, index)},${y(item.value)}`).join(" ");
+  const markers = data.map((item, index) => {
+    const cx = x(item, index);
+    const cy = y(item.value);
+    if (item.logo_url) {
+      return `<image href="${escapeHtml(item.logo_url)}" x="${cx - 8}" y="${cy - 8}" width="16" height="16" preserveAspectRatio="xMidYMid meet">
+        <title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title>
+      </image>`;
+    }
+    if (index % Math.max(1, Math.floor(data.length / 12)) !== 0) return "";
+    return `<circle cx="${cx}" cy="${cy}" r="4" fill="${colorForLabel(item.label, index)}"><title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title></circle>`;
+  }).join("");
+  const dots = data.filter((item, index) => !item.logo_url && index % Math.max(1, Math.floor(data.length / 12)) === 0).map((item) => {
     const index = data.indexOf(item);
-    return `<circle cx="${x(index)}" cy="${y(item.value)}" r="4" fill="#be1e2d"><title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title></circle>`;
+    return `<circle cx="${x(item, index)}" cy="${y(item.value)}" r="4" fill="${colorForLabel(item.label, index)}"><title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title></circle>`;
   }).join("");
   return `
     <svg viewBox="0 0 760 340" role="img" aria-label="${escapeHtml(section.title)}">
       <line x1="55" y1="285" x2="710" y2="285" class="axis"></line>
       <line x1="55" y1="50" x2="55" y2="285" class="axis"></line>
       <polyline points="${points}" fill="none" stroke="#be1e2d" stroke-width="4"></polyline>
-      ${dots}
-      <text x="55" y="315" class="svg-label">${escapeHtml(data[0]?.label || "")}</text>
-      <text x="710" y="315" text-anchor="end" class="svg-label">${escapeHtml(data[data.length - 1]?.label || "")}</text>
+      ${markers || dots}
+      <text x="55" y="315" class="svg-label">${escapeHtml(String(data[0]?.year ?? data[0]?.label ?? ""))}</text>
+      <text x="710" y="315" text-anchor="end" class="svg-label">${escapeHtml(String(data[data.length - 1]?.year ?? data[data.length - 1]?.label ?? ""))}</text>
     </svg>`;
 }
 

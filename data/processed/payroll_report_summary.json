@@ -169,128 +169,190 @@
       "measure": "Payroll rank",
       "chart": [
         {
-          "label": "1985",
-          "value": 17
+          "label": "1985 Kansas City Royals",
+          "year": 1985,
+          "value": 17,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/kc.png"
         },
         {
-          "label": "1986",
-          "value": 4
+          "label": "1986 New York Mets",
+          "year": 1986,
+          "value": 4,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nym.png"
         },
         {
-          "label": "1987",
-          "value": 24
+          "label": "1987 Minnesota Twins",
+          "year": 1987,
+          "value": 24,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/min.png"
         },
         {
-          "label": "1988",
-          "value": 2
+          "label": "1988 Los Angeles Dodgers",
+          "year": 1988,
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png"
         },
         {
-          "label": "1989",
-          "value": 8
+          "label": "1989 Oakland Athletics",
+          "year": 1989,
+          "value": 8,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/oak.png"
         },
         {
-          "label": "1990",
-          "value": 21
+          "label": "1990 Cincinnati Reds",
+          "year": 1990,
+          "value": 21,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/cin.png"
         },
         {
-          "label": "1991",
-          "value": 12
+          "label": "1991 Minnesota Twins",
+          "year": 1991,
+          "value": 12,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/min.png"
         },
         {
-          "label": "1992",
-          "value": 1
+          "label": "1992 Toronto Blue Jays",
+          "year": 1992,
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tor.png"
         },
         {
-          "label": "1993",
-          "value": 1
+          "label": "1993 Toronto Blue Jays",
+          "year": 1993,
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tor.png"
         },
         {
-          "label": "1995",
-          "value": 3
+          "label": "1995 Atlanta Braves",
+          "year": 1995,
+          "value": 3,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/atl.png"
         },
         {
-          "label": "1996",
-          "value": 2
+          "label": "1996 New York Yankees",
+          "year": 1996,
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
-          "label": "1997",
-          "value": 8
+          "label": "1997 Florida Marlins",
+          "year": 1997,
+          "value": 8,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/mia.png"
         },
         {
-          "label": "1998",
-          "value": 2
+          "label": "1998 New York Yankees",
+          "year": 1998,
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
-          "label": "1999",
-          "value": 1
+          "label": "1999 New York Yankees",
+          "year": 1999,
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
-          "label": "2000",
-          "value": 1
+          "label": "2000 New York Yankees",
+          "year": 2000,
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
-          "label": "2001",
-          "value": 8
+          "label": "2001 Arizona Diamondbacks",
+          "year": 2001,
+          "value": 8,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/ari.png"
         },
         {
-          "label": "2002",
-          "value": 15
+          "label": "2002 Anaheim Angels",
+          "year": 2002,
+          "value": 15,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/laa.png"
         },
         {
-          "label": "2003",
-          "value": 24
+          "label": "2003 Florida Marlins",
+          "year": 2003,
+          "value": 24,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/mia.png"
         },
         {
-          "label": "2004",
-          "value": 2
+          "label": "2004 Boston Red Sox",
+          "year": 2004,
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
         },
         {
-          "label": "2005",
-          "value": 13
+          "label": "2005 Chicago White Sox",
+          "year": 2005,
+          "value": 13,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/chw.png"
         },
         {
-          "label": "2006",
-          "value": 10
+          "label": "2006 St. Louis Cardinals",
+          "year": 2006,
+          "value": 10,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/stl.png"
         },
         {
-          "label": "2007",
-          "value": 2
+          "label": "2007 Boston Red Sox",
+          "year": 2007,
+          "value": 2,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
         },
         {
-          "label": "2008",
-          "value": 12
+          "label": "2008 Philadelphia Phillies",
+          "year": 2008,
+          "value": 12,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/phi.png"
         },
         {
-          "label": "2009",
-          "value": 1
+          "label": "2009 New York Yankees",
+          "year": 2009,
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
-          "label": "2010",
-          "value": 9
+          "label": "2010 San Francisco Giants",
+          "year": 2010,
+          "value": 9,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/sf.png"
         },
         {
-          "label": "2011",
-          "value": 11
+          "label": "2011 St. Louis Cardinals",
+          "year": 2011,
+          "value": 11,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/stl.png"
         },
         {
-          "label": "2012",
-          "value": 8
+          "label": "2012 San Francisco Giants",
+          "year": 2012,
+          "value": 8,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/sf.png"
         },
         {
-          "label": "2013",
-          "value": 4
+          "label": "2013 Boston Red Sox",
+          "year": 2013,
+          "value": 4,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
         },
         {
-          "label": "2014",
-          "value": 4
+          "label": "2014 San Francisco Giants",
+          "year": 2014,
+          "value": 4,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/sf.png"
         },
         {
-          "label": "2015",
-          "value": 17
+          "label": "2015 Kansas City Royals",
+          "year": 2015,
+          "value": 17,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/kc.png"
         },
         {
-          "label": "2016",
-          "value": 8
+          "label": "2016 Chicago Cubs",
+          "year": 2016,
+          "value": 8,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/chc.png"
         }
       ]
     },
@@ -507,27 +569,33 @@
       "chart": [
         {
           "label": "2013 New York Yankees",
-          "value": 231.98
+          "value": 231.98,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
           "label": "2016 New York Yankees",
-          "value": 223.0
+          "value": 223.0,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
           "label": "2008 New York Yankees",
-          "value": 207.9
+          "value": 207.9,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
           "label": "2014 New York Yankees",
-          "value": 197.54
+          "value": 197.54,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
           "label": "2016 Detroit Tigers",
-          "value": 194.88
+          "value": 194.88,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/det.png"
         },
         {
           "label": "2015 Boston Red Sox",
-          "value": 181.1
+          "value": 181.1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
         }
       ]
     },
@@ -539,51 +607,57 @@
       "chart": [
         {
           "label": "2002 Oakland Athletics",
-          "value": 103
+          "value": 103,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/oak.png"
         },
         {
           "label": "2001 Oakland Athletics",
-          "value": 102
+          "value": 102,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/oak.png"
         },
         {
           "label": "1985 Toronto Blue Jays",
-          "value": 99
+          "value": 99,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tor.png"
         },
         {
           "label": "2015 Pittsburgh Pirates",
-          "value": 98
+          "value": 98,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/pit.png"
         },
         {
           "label": "1993 Philadelphia Phillies",
-          "value": 97
+          "value": 97,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/phi.png"
         },
         {
           "label": "2008 Tampa Bay Rays",
-          "value": 97
+          "value": 97,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tb.png"
         }
       ]
     },
     {
       "id": "top-spender-results",
-      "title": "The highest payroll team often fell short of the title",
-      "body": "Looking only at each season's top spender from 1985 through 2016 shows why payroll is an advantage, not a guarantee. Many top payroll teams still missed October or exited before winning the World Series.",
-      "measure": "Top payroll team seasons",
+      "title": "Even elite regular seasons did not guarantee top-spender titles",
+      "body": "This chart compares the average wins for each season's highest-payroll team by final postseason result. The top spender usually won plenty of regular-season games, but that success still did not reliably convert into a championship.",
+      "measure": "Average wins by top spender result",
       "chart": [
         {
           "label": "Missed playoffs",
-          "value": 13
+          "value": 79.0
         },
         {
           "label": "Playoff exit",
-          "value": 12
+          "value": 95.58
         },
         {
           "label": "Lost WS",
-          "value": 2
+          "value": 98.0
         },
         {
           "label": "Won WS",
-          "value": 5
+          "value": 95.8
         }
       ]
     },

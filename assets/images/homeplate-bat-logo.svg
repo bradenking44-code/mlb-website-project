@@ -22,5 +22,9 @@
     <path d="M13 52 C12 49 14 46 17 45 L75 24 C80 22 85 24 86 28 C87 31 85 34 80 36 L22 57 C18 58 15 56 13 52 Z" fill="url(#bat)" stroke="#4b260f" stroke-width="2"/>
     <circle cx="16" cy="51" r="5" fill="#4b260f"/>
     <path d="M27 48 L74 31" stroke="#f0c681" stroke-width="2" stroke-linecap="round" opacity=".65"/>
+    <circle cx="78" cy="15" r="11" fill="#ffffff" stroke="#c7d2df" stroke-width="2"/>
+    <path d="M72 7 C67 13 68 19 73 24" fill="none" stroke="#c82432" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M84 7 C89 13 88 19 83 24" fill="none" stroke="#c82432" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M70 14 L75 16 M70 19 L75 18 M86 14 L81 16 M86 19 L81 18" stroke="#c82432" stroke-width="1.4" stroke-linecap="round"/>
   </g>
 </svg>
