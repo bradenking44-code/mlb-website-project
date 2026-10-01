@@ -1978,13 +1978,15 @@ tbody tr:hover {
   gap: 8px;
   width: 100%;
   min-width: 0;
-  font-size: .86rem;
-  line-height: 1.2;
+  font-size: clamp(.68rem, 1.05vw, .76rem);
+  line-height: 1.18;
 }
 
 .winner-team > span:last-child {
   display: block;
+  flex: 1 1 auto;
   min-width: 0;
+  max-width: 100%;
   overflow: visible;
   overflow-wrap: anywhere;
   text-overflow: clip;
@@ -1997,6 +1999,18 @@ tbody tr:hover {
   height: 30px;
   flex: 0 0 30px;
   object-fit: contain;
+}
+
+.scroll-home {
+  left: calc(50% - 9px);
+  bottom: 8px;
+  width: 18px;
+  height: 16px;
+  background: #fff;
+  border: 1px solid var(--gold);
+  border-radius: 1px;
+  clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .28));
 }
 
 .winner-canceled {
