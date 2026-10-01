@@ -347,7 +347,7 @@ function renderExecutiveFinding(rows) {
   }
   const topRate = (100 * top.titles / top.seasons).toFixed(1);
   const bottomRate = (100 * bottom.titles / bottom.seasons).toFixed(1);
-  target.innerHTML = `<strong>Payroll is associated with October chances, but it did not guarantee a title.</strong><span>In this filtered view, the ${top.name} had a ${topRate}% title rate (${top.titles} titles in ${top.seasons} team-seasons); the ${bottom.name} had a ${bottomRate}% rate (${bottom.titles} in ${bottom.seasons}). The ladder below also shows playoff and World Series appearance rates.</span>`;
+  target.innerHTML = `<strong>Payroll is associated with playoff chances, but it did not guarantee a title.</strong><span>In this filtered view, the ${top.name} had a ${topRate}% title rate (${top.titles} titles in ${top.seasons} team-seasons); the ${bottom.name} had a ${bottomRate}% rate (${bottom.titles} in ${bottom.seasons}). The ladder below also shows playoff and World Series appearance rates.</span>`;
 }
 
 function outcomeLadderChart(rows) {

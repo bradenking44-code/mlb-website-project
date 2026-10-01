@@ -1,4 +1,4 @@
-# MLB Payroll vs October Success Website
+# MLB Payroll vs Postseason Success Website
 
 This repository is for the FDA Data Website Project. It contains a two-page static website built with plain HTML, CSS, and JavaScript.
 

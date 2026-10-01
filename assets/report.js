@@ -443,7 +443,7 @@ function initScrollRunner() {
 
 async function initReport() {
   const [summaryResponse, dashboardResponse] = await Promise.all([
-    fetch("data/processed/payroll_report_summary.json"),
+    fetch("data/processed/payroll_report_summary.json?v=20261001-2"),
     fetch("data/processed/postseason_dashboard_data.json"),
   ]);
   const summary = await summaryResponse.json();

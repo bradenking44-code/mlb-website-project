@@ -167,7 +167,7 @@ def main():
             },
             {
                 "id": "tier-playoff-rate",
-                "title": "Top payroll teams reached October more often",
+                "title": "Top payroll teams reached the postseason more often",
                 "body": "Payroll tier has a visible relationship with playoff odds, especially when comparing the top third of spending to the bottom third.",
                 "measure": "Playoff rate",
                 "chart": sorted(tier_playoff, key=lambda item: item["label"]),
@@ -175,7 +175,7 @@ def main():
             {
                 "id": "world-series-teams",
                 "title": "A few clubs collected most payroll-era titles",
-                "body": f"From 1985 through {meta['payroll_end_year']}, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
+                "body": f"From 1985 through {meta['payroll_end_year']}, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained postseason success.",
                 "measure": "World Series wins",
                 "chart": top(team_ws),
             },
@@ -196,7 +196,7 @@ def main():
             {
                 "id": "low-payroll-success",
                 "title": "Low-payroll playoff teams prove efficiency mattered",
-                "body": "Bottom-third payroll teams still reached October when player development, roster construction, and timing beat spending power.",
+                "body": "Bottom-third payroll teams still reached the postseason when player development, roster construction, and timing beat spending power.",
                 "measure": "Wins",
                 "chart": top(low_payroll_success, n=6),
             },
