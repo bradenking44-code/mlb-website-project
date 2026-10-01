@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20260930-17">
+    <link rel="stylesheet" href="assets/styles.css?v=20261001-18">
   </head>
   <body>
     <nav class="site-nav">
@@ -203,9 +203,35 @@
             </table>
           </div>
         </div>
+
+        <section class="table-panel current-payroll-panel">
+          <div class="table-heading">
+            <h2>Cot’s 2026 Club Payroll Snapshot</h2>
+            <span id="cotsPayrollCaption"></span>
+          </div>
+          <p class="dashboard-context">
+            Cash payroll and competitive-balance-tax payroll use different accounting rules. Figures are rounded to the source’s $0.1 million precision; each club’s Cot’s sheet date is listed.
+            <a href="https://legacy.baseballprospectus.com/compensation/cots/" target="_blank" rel="noreferrer">Cot’s Baseball Contracts</a> ·
+            <a href="https://www.feverbaseball.com/business/payroll" target="_blank" rel="noreferrer">club payroll table and sheet dates</a>
+          </p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Team</th>
+                  <th>Cash payroll</th>
+                  <th>CBT payroll</th>
+                  <th>Cot’s sheet date</th>
+                </tr>
+              </thead>
+              <tbody id="cotsPayrollTable"></tbody>
+            </table>
+          </div>
+        </section>
       </section>
     </main>
 
-    <script src="assets/dashboard.js?v=20260930-17"></script>
+    <script src="assets/dashboard.js?v=20261001-18"></script>
   </body>
 </html>

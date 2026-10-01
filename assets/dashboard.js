@@ -1,4 +1,4 @@
-const DATA_URL = "data/processed/postseason_dashboard_data.json";
+const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-18";
 
 const labels = {
   world_series_wins: "World Series wins",
@@ -21,6 +21,7 @@ let teamSeasons = [];
 let worldSeries = [];
 let rosters = {};
 let metadata = {};
+let currentPayrollSnapshot = null;
 let animationTimer = null;
 let selectedRosterKey = "";
 
@@ -449,6 +450,27 @@ function renderTable(rows) {
   }
 }
 
+function renderCurrentPayrollSnapshot(snapshot) {
+  if (!snapshot?.teams?.length) return;
+  const formatDate = (value) => {
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString("en-US", {
+      month: "short", day: "numeric", year: "numeric", timeZone: "UTC",
+    });
+  };
+  document.getElementById("cotsPayrollCaption").textContent =
+    `${snapshot.teams.length} teams · sheets ${formatDate(snapshot.earliest_sheet_as_of)}–${formatDate(snapshot.latest_sheet_as_of)}`;
+  document.getElementById("cotsPayrollTable").innerHTML = snapshot.teams.map((row, index) => `
+    <tr>
+      <td>#${index + 1}</td>
+      <td>${teamCell(row)}</td>
+      <td>${fmtMoney(row.payroll_millions)}</td>
+      <td>${fmtMoney(row.cbt_payroll_millions)}</td>
+      <td>${formatDate(row.cots_sheet_as_of)}</td>
+    </tr>
+  `).join("");
+}
+
 function render() {
   setReadouts();
   const rows = filteredRows();
@@ -516,6 +538,7 @@ async function init() {
   worldSeries = data.worldSeries;
   rosters = data.rosters;
   metadata = data.metadata;
+  currentPayrollSnapshot = data.currentPayrollSnapshot;
   document.getElementById("startYear").min = metadata.start_year;
   document.getElementById("startYear").max = metadata.latest_year;
   document.getElementById("endYear").min = metadata.start_year;
@@ -528,6 +551,7 @@ async function init() {
   setRosterControls(firstPayrollWinner);
   document.getElementById("loadingState").remove();
   renderTicker();
+  renderCurrentPayrollSnapshot(currentPayrollSnapshot);
   wireEvents();
   render();
 }

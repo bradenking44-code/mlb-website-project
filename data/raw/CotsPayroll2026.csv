@@ -1,0 +1,31 @@
+year,team_id,team_name,cots_abbreviation,payroll,payroll_basis,cbt_payroll,cots_sheet_as_of,source_url
+2026,ARI,Arizona Diamondbacks,AZ,188400000,Cot's cash payroll (rounded to nearest $0.1M),230300000,2026-09-26,https://legacy.baseballprospectus.com/compensation/cots/
+2026,ATH,Athletics,ATH,98100000,Cot's cash payroll (rounded to nearest $0.1M),144900000,2026-09-13,https://legacy.baseballprospectus.com/compensation/cots/
+2026,ATL,Atlanta Braves,ATL,263700000,Cot's cash payroll (rounded to nearest $0.1M),257500000,2026-09-16,https://legacy.baseballprospectus.com/compensation/cots/
+2026,BAL,Baltimore Orioles,BAL,166700000,Cot's cash payroll (rounded to nearest $0.1M),218400000,2026-09-03,https://legacy.baseballprospectus.com/compensation/cots/
+2026,BOS,Boston Red Sox,BOS,206900000,Cot's cash payroll (rounded to nearest $0.1M),273600000,2026-09-03,https://legacy.baseballprospectus.com/compensation/cots/
+2026,CHN,Chicago Cubs,CHC,248800000,Cot's cash payroll (rounded to nearest $0.1M),268000000,2026-09-26,https://legacy.baseballprospectus.com/compensation/cots/
+2026,CHA,Chicago White Sox,CWS,102100000,Cot's cash payroll (rounded to nearest $0.1M),117900000,2026-09-17,https://legacy.baseballprospectus.com/compensation/cots/
+2026,CIN,Cincinnati Reds,CIN,129000000,Cot's cash payroll (rounded to nearest $0.1M),151400000,2026-09-26,https://legacy.baseballprospectus.com/compensation/cots/
+2026,CLE,Cleveland Guardians,CLE,74900000,Cot's cash payroll (rounded to nearest $0.1M),93100000,2026-09-23,https://legacy.baseballprospectus.com/compensation/cots/
+2026,COL,Colorado Rockies,COL,121600000,Cot's cash payroll (rounded to nearest $0.1M),139300000,2026-09-19,https://legacy.baseballprospectus.com/compensation/cots/
+2026,DET,Detroit Tigers,DET,202100000,Cot's cash payroll (rounded to nearest $0.1M),234200000,2026-09-02,https://legacy.baseballprospectus.com/compensation/cots/
+2026,HOU,Houston Astros,HOU,239800000,Cot's cash payroll (rounded to nearest $0.1M),234700000,2026-09-27,https://legacy.baseballprospectus.com/compensation/cots/
+2026,KCA,Kansas City Royals,KC,150000000,Cot's cash payroll (rounded to nearest $0.1M),188200000,2026-09-04,https://legacy.baseballprospectus.com/compensation/cots/
+2026,LAA,Los Angeles Angels,LAA,181400000,Cot's cash payroll (rounded to nearest $0.1M),193700000,2026-09-02,https://legacy.baseballprospectus.com/compensation/cots/
+2026,LAN,Los Angeles Dodgers,LAD,339600000,Cot's cash payroll (rounded to nearest $0.1M),432800000,2026-09-22,https://legacy.baseballprospectus.com/compensation/cots/
+2026,MIA,Miami Marlins,MIA,83200000,Cot's cash payroll (rounded to nearest $0.1M),84200000,2026-09-05,https://legacy.baseballprospectus.com/compensation/cots/
+2026,MIL,Milwaukee Brewers,MIL,144500000,Cot's cash payroll (rounded to nearest $0.1M),154700000,2026-09-25,https://legacy.baseballprospectus.com/compensation/cots/
+2026,MIN,Minnesota Twins,MIN,116100000,Cot's cash payroll (rounded to nearest $0.1M),138000000,2026-09-23,https://legacy.baseballprospectus.com/compensation/cots/
+2026,NYN,New York Mets,NYM,346100000,Cot's cash payroll (rounded to nearest $0.1M),359500000,2026-09-25,https://legacy.baseballprospectus.com/compensation/cots/
+2026,NYA,New York Yankees,NYY,308200000,Cot's cash payroll (rounded to nearest $0.1M),341900000,2026-09-18,https://legacy.baseballprospectus.com/compensation/cots/
+2026,PHI,Philadelphia Phillies,PHI,292100000,Cot's cash payroll (rounded to nearest $0.1M),322200000,2026-09-27,https://legacy.baseballprospectus.com/compensation/cots/
+2026,PIT,Pittsburgh Pirates,PIT,106600000,Cot's cash payroll (rounded to nearest $0.1M),139800000,2026-09-24,https://legacy.baseballprospectus.com/compensation/cots/
+2026,SDN,San Diego Padres,SD,226200000,Cot's cash payroll (rounded to nearest $0.1M),265300000,2026-09-26,https://legacy.baseballprospectus.com/compensation/cots/
+2026,SEA,Seattle Mariners,SEA,168900000,Cot's cash payroll (rounded to nearest $0.1M),205300000,2026-09-11,https://legacy.baseballprospectus.com/compensation/cots/
+2026,SFN,San Francisco Giants,SF,189800000,Cot's cash payroll (rounded to nearest $0.1M),224200000,2026-09-23,https://legacy.baseballprospectus.com/compensation/cots/
+2026,SLN,St. Louis Cardinals,STL,94300000,Cot's cash payroll (rounded to nearest $0.1M),109200000,2026-09-18,https://legacy.baseballprospectus.com/compensation/cots/
+2026,TBA,Tampa Bay Rays,TB,96000000,Cot's cash payroll (rounded to nearest $0.1M),113000000,2026-09-25,https://legacy.baseballprospectus.com/compensation/cots/
+2026,TEX,Texas Rangers,TEX,191800000,Cot's cash payroll (rounded to nearest $0.1M),215400000,2026-08-25,https://legacy.baseballprospectus.com/compensation/cots/
+2026,TOR,Toronto Blue Jays,TOR,276100000,Cot's cash payroll (rounded to nearest $0.1M),317200000,2026-09-21,https://legacy.baseballprospectus.com/compensation/cots/
+2026,WAS,Washington Nationals,WSH,99400000,Cot's cash payroll (rounded to nearest $0.1M),121300000,2026-09-26,https://legacy.baseballprospectus.com/compensation/cots/

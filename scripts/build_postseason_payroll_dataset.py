@@ -21,6 +21,7 @@ SALARIES = RAW / "Salaries2025.csv"
 if not SALARIES.exists():
     SALARIES = RAW / "Salaries.csv"
 EXTERNAL_PAYROLLS = RAW / "ExternalPayrolls.csv"
+COTS_PAYROLL_2026 = RAW / "CotsPayroll2026.csv"
 
 FULL_CSV = OUT / "mlb_payroll_postseason_roster.csv"
 DASHBOARD_JSON = OUT / "postseason_dashboard_data.json"
@@ -32,6 +33,7 @@ LOGO_VERSION = "500"
 ESPN_LOGOS = {
     "ARI": "ari",
     "ANA": "laa",
+    "ATH": "oak",
     "ATL": "atl",
     "BAL": "bal",
     "BOS": "bos",
@@ -116,6 +118,40 @@ def logo_url(team_id):
     if not code:
         return ""
     return f"https://a.espncdn.com/i/teamlogos/mlb/{LOGO_VERSION}/{code}.png"
+
+
+def load_cots_payroll_snapshot():
+    if not COTS_PAYROLL_2026.exists():
+        return None
+
+    teams = []
+    for row in read_csv(COTS_PAYROLL_2026):
+        team_id = row.get("team_id", "").strip()
+        payroll = safe_int(row.get("payroll"))
+        if not team_id or not payroll:
+            continue
+        teams.append({
+            "team_id": team_id,
+            "team_name": row.get("team_name", "").strip(),
+            "cots_abbreviation": row.get("cots_abbreviation", "").strip(),
+            "payroll_millions": round(payroll / 1_000_000, 1),
+            "cbt_payroll_millions": round(safe_int(row.get("cbt_payroll")) / 1_000_000, 1),
+            "cots_sheet_as_of": row.get("cots_sheet_as_of", "").strip(),
+            "logo_url": logo_url(team_id),
+        })
+
+    if not teams:
+        return None
+
+    return {
+        "year": 2026,
+        "earliest_sheet_as_of": min(row["cots_sheet_as_of"] for row in teams),
+        "latest_sheet_as_of": max(row["cots_sheet_as_of"] for row in teams),
+        "value_precision": "$0.1 million",
+        "source_url": "https://legacy.baseballprospectus.com/compensation/cots/",
+        "reference_url": "https://www.feverbaseball.com/business/payroll",
+        "teams": sorted(teams, key=lambda row: (-row["payroll_millions"], row["team_name"])),
+    }
 
 
 def main():
@@ -340,7 +376,8 @@ def main():
         "payroll_end_year": max(salary_years) if salary_years else None,
         "external_payroll_years": sorted(set(external_payroll_years)),
         "teams": len({row["team_id"] for row in team_rows}),
-        "note": "Records, postseason results, and rosters run through 2025. Lahman salary data covers 1985-2016. Add verified rows to data/raw/ExternalPayrolls.csv to extend payroll-backed charts after 2016.",
+        "current_payroll_snapshot_year": 2026 if COTS_PAYROLL_2026.exists() else None,
+        "note": "Records, postseason results, and rosters run through 2025. Lahman salary data covers 1985-2016. The separate Cot's 2026 club payroll snapshot is available on the dashboard; it is not used in historical charts. Add verified season-matched rows to data/raw/ExternalPayrolls.csv to extend payroll-backed analysis after 2016.",
     }
 
     DASHBOARD_JSON.write_text(json.dumps({
@@ -348,6 +385,7 @@ def main():
         "teamSeasons": team_rows,
         "worldSeries": world_series,
         "rosters": compact_rosters,
+        "currentPayrollSnapshot": load_cots_payroll_snapshot(),
     }, separators=(",", ":")), encoding="utf-8")
 
     print(f"Wrote {FULL_CSV} ({len(full_rows):,} rows)")
