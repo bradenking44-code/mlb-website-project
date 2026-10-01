@@ -216,19 +216,19 @@ function makeLineChart(section, data) {
     </svg>`;
 }
 
-function mascotCard(item) {
+function mascotCard(item, payrollEndYear = 2016) {
   const initials = escapeHtml(item.label).split(" ").map((part) => part[0]).join("").slice(0, 3);
   const mark = item.logo_url
     ? `<img class="team-logo" src="${escapeHtml(item.logo_url)}" alt="" loading="lazy">`
     : `<div class="mascot-mark">${initials}</div>`;
-  const years = item.years?.length ? item.years.join(", ") : "No titles in 1985-2016";
+  const years = item.years?.length ? item.years.join(", ") : `No titles in 1985-${payrollEndYear}`;
   return `
     <article class="mascot-card">
       <div class="mascot-heading">
         ${mark}
         <div>
           <div class="mascot-name">${escapeHtml(item.label)}</div>
-          <div class="mascot-meta">1985-2016 title leader</div>
+          <div class="mascot-meta">1985-${payrollEndYear} title leader</div>
         </div>
       </div>
       <div class="mascot-stat">${formatValue(item.value)}</div>
@@ -395,7 +395,7 @@ async function initReport() {
   if (titleSection) {
     const payrollEndYear = dashboard.metadata?.payroll_end_year || 2016;
     const leaders = addPayrollEraTitleYears(titleSection.chart, dashboard.worldSeries, payrollEndYear);
-    document.getElementById("reportMascots").innerHTML = leaders.slice(0, 8).map(mascotCard).join("");
+    document.getElementById("reportMascots").innerHTML = leaders.slice(0, 8).map((item) => mascotCard(item, payrollEndYear)).join("");
   }
 
   initScrollRunner();

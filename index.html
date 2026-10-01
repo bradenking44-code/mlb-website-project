@@ -36,7 +36,7 @@
         <h1>Do MLB Payrolls Buy World Series Titles?</h1>
         <p class="byline">By Braden King</p>
         <p class="summary">
-          This project studies Major League Baseball payroll, team records, rosters, playoff results, and World Series champions from 1985 through 2025. Payroll analysis uses the reproducible salary years available in Lahman, 1985 through 2016, while records, rosters, and postseason outcomes continue through the latest season in the data.
+          This project compares Major League Baseball payroll with team records, rosters, playoff results, and World Series champions. Records, rosters, and completed postseason results run from 1985 through 2025. The payroll archive runs through 2026, using Lahman/SABR salary totals through 2016 and Opening Day payrolls after 2016.
         </p>
         <div class="hero-scoreboard" aria-label="Dataset highlights">
           <div class="score-cell"><strong>1985</strong><span>First season</span></div>
@@ -83,7 +83,7 @@
           <div class="section-heading-row trophy-heading">
             <div>
               <p class="eyebrow">Clubhouse Board</p>
-              <h2 id="clubhouse-title">World Series title leaders, 1985-2016</h2>
+              <h2 id="clubhouse-title">World Series title leaders, 1985-2025</h2>
             </div>
             <img class="trophy-art" src="assets/images/world-series-trophy.png" alt="Baseball championship trophy">
           </div>
@@ -101,16 +101,16 @@
           <div>
             <h2 id="method-title">Dataset Notes</h2>
             <p>
-              The dataset combines Lahman/SABR team, salary, postseason series, player, and appearance tables. One row in the cleaned file is one player on one MLB team roster in one season, with that team's record, payroll, playoff outcome, and World Series status attached to the row.
+              The dataset combines Lahman/SABR team, salary, postseason series, player, and appearance tables with The Baseball Cube Opening Day payroll archive. One row in the cleaned file is one player on one MLB team roster in one season, with that team's record, payroll, playoff outcome, and World Series status attached to the row.
             </p>
             <p>
-              Records, rosters, and postseason results cover AL and NL seasons from 1985 through 2025. Salary coverage is available from 1985 through 2016, so payroll filters and payroll charts use those seasons and mark newer seasons as payroll unavailable.
+              Records, rosters, and completed postseason results cover AL and NL seasons from 1985 through 2025. Payroll-backed team seasons run through 2025. The Baseball Cube archive adds every club's Opening Day payroll for 2017-2026; 2026 payroll is displayed separately because the project has no completed 2026 team-season outcome set yet.
             </p>
           </div>
           <div>
             <h3>Computed Fields</h3>
             <ul class="clean-list">
-              <li>Season payroll = sum of listed player salaries for a team-season</li>
+              <li>Season payroll = Lahman/SABR listed-salary sum through 2016 and Opening Day contracted-player payroll from 2017-2026</li>
               <li>Payroll rank = team payroll rank within that season</li>
               <li>Payroll percentile = payroll rank converted to a 0-1 within-season scale</li>
               <li>Winning percentage = team wins / completed regular-season decisions</li>

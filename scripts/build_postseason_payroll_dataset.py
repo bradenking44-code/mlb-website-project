@@ -203,27 +203,71 @@ def main():
             "world_series_winner": yn(row.get("WSWin")),
             "payroll": payrolls.get((year, team_id), 0),
             "salary_players": payroll_player_counts.get((year, team_id), 0),
+            "payroll_source": "Lahman/SABR",
+            "payroll_basis": "Sum of listed player salaries",
+            "payroll_source_url": "https://sabr.org/lahman-database/",
             "logo_url": logo_url(team_id),
         }
 
     external_payroll_years = []
+    opening_day_payrolls = []
     if EXTERNAL_PAYROLLS.exists():
-        name_index = {
-            (season["year"], normalize_name(season["team_name"])): key
-            for key, season in team_seasons.items()
-        }
         for row in read_csv(EXTERNAL_PAYROLLS):
             year = safe_int(row.get("year") or row.get("yearID"))
             team_id = (row.get("team_id") or row.get("teamID") or "").strip()
             team_name = row.get("team") or row.get("team_name") or row.get("name") or ""
             payroll = clean_money(row.get("payroll") or row.get("team payroll") or row.get("team_payroll"))
-            key = (year, team_id) if team_id else name_index.get((year, normalize_name(team_name)))
-            if key in team_seasons and payroll:
+            if not (2017 <= year <= 2026 and team_id and team_name and payroll):
+                continue
+
+            key = (year, team_id)
+            source_url = f"https://www.thebaseballcube.com/content/payroll_year/{year}/"
+            season = team_seasons.get(key)
+            reference_season = season or team_seasons.get((LATEST_YEAR, team_id))
+            canonical_name = reference_season["team_name"] if reference_season else team_name
+            opening_day_payrolls.append({
+                "year": year,
+                "team_id": team_id,
+                "team_name": canonical_name,
+                "league": reference_season["league"] if reference_season else "",
+                "division": reference_season["division"] if reference_season else "",
+                "payroll": payroll,
+                "payroll_millions": round(payroll / 1_000_000, 2),
+                "logo_url": logo_url(team_id),
+                "payroll_source": "The Baseball Cube",
+                "payroll_basis": "Opening Day contracted-player payroll; later callups and midseason trades excluded",
+                "payroll_source_url": source_url,
+            })
+
+            if key in team_seasons:
                 team_seasons[key]["payroll"] = payroll
-                team_seasons[key]["salary_players"] = safe_int(row.get("player_count") or row.get("roster"), 0)
+                team_seasons[key]["salary_players"] = None
+                team_seasons[key]["payroll_source"] = "The Baseball Cube"
+                team_seasons[key]["payroll_basis"] = "Opening Day contracted-player payroll; later callups and midseason trades excluded"
+                team_seasons[key]["payroll_source_url"] = source_url
                 payrolls[key] = payroll
                 external_payroll_years.append(year)
                 salary_years.append(year)
+
+    if opening_day_payrolls:
+        counts_by_year = defaultdict(int)
+        for item in opening_day_payrolls:
+            counts_by_year[item["year"]] += 1
+        duplicates = len({(item["year"], item["team_id"]) for item in opening_day_payrolls}) != len(opening_day_payrolls)
+        if duplicates or any(counts_by_year[year] != 30 for year in range(2017, 2027)):
+            raise ValueError("Opening Day payroll archive must contain exactly one row for every MLB team in every year from 2017 through 2026")
+
+        payrolls_by_year = defaultdict(list)
+        for item in opening_day_payrolls:
+            payrolls_by_year[item["year"]].append(item)
+        for year, entries in payrolls_by_year.items():
+            entries.sort(key=lambda item: (-item["payroll"], item["team_name"]))
+            count = len(entries)
+            for index, item in enumerate(entries, start=1):
+                item["payroll_rank"] = index
+                item["payroll_percentile"] = round(1 - ((index - 1) / max(1, count - 1)), 3)
+                item["payroll_tier"] = payroll_tier(index, count)
+        opening_day_payrolls.sort(key=lambda item: (item["year"], item["payroll_rank"]))
 
     ranks_by_year = defaultdict(list)
     for key, row in team_seasons.items():
@@ -323,6 +367,7 @@ def main():
                     "year", "team_id", "team_name", "league", "division", "wins", "losses", "games", "win_pct",
                     "runs", "runs_allowed", "run_diff", "attendance", "payroll", "payroll_millions",
                     "payroll_rank", "payroll_percentile", "payroll_tier", "cost_per_win_millions",
+                    "payroll_source", "payroll_basis", "payroll_source_url",
                     "playoff_team", "postseason_result", "world_series_winner", "league_champion",
                     "division_winner", "wild_card_winner", "roster_count"
                 ]},
@@ -331,7 +376,7 @@ def main():
 
     fieldnames = list(full_rows[0].keys())
     with FULL_CSV.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(full_rows)
 
@@ -373,11 +418,14 @@ def main():
         "start_year": START_YEAR,
         "latest_year": LATEST_YEAR,
         "payroll_start_year": min(salary_years) if salary_years else None,
-        "payroll_end_year": max(salary_years) if salary_years else None,
+        "payroll_end_year": max((row["year"] for row in team_seasons.values() if row["payroll"]), default=None),
         "external_payroll_years": sorted(set(external_payroll_years)),
+        "opening_day_payroll_start_year": min((row["year"] for row in opening_day_payrolls), default=None),
+        "opening_day_payroll_end_year": max((row["year"] for row in opening_day_payrolls), default=None),
+        "opening_day_payroll_rows": len(opening_day_payrolls),
         "teams": len({row["team_id"] for row in team_rows}),
         "current_payroll_snapshot_year": 2026 if COTS_PAYROLL_2026.exists() else None,
-        "note": "Records, postseason results, and rosters run through 2025. Lahman salary data covers 1985-2016. The separate Cot's 2026 club payroll snapshot is available on the dashboard; it is not used in historical charts. Add verified season-matched rows to data/raw/ExternalPayrolls.csv to extend payroll-backed analysis after 2016.",
+        "note": "Team records, rosters, and completed postseason results run through 2025. Payroll-backed team seasons run from 1985 through 2025: Lahman/SABR salary sums through 2016 and The Baseball Cube Opening Day payrolls for 2017-2025. The 2017-2026 Opening Day payroll archive and Cot's 2026 cash/CBT snapshot are shown separately for 2026; 2026 outcomes are not included in completed-season comparisons.",
     }
 
     DASHBOARD_JSON.write_text(json.dumps({
@@ -385,6 +433,7 @@ def main():
         "teamSeasons": team_rows,
         "worldSeries": world_series,
         "rosters": compact_rosters,
+        "openingDayPayrolls": opening_day_payrolls,
         "currentPayrollSnapshot": load_cots_payroll_snapshot(),
     }, separators=(",", ":")), encoding="utf-8")
 

@@ -1,4 +1,4 @@
-const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-18";
+const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-19";
 
 const labels = {
   world_series_wins: "World Series wins",
@@ -22,6 +22,7 @@ let worldSeries = [];
 let rosters = {};
 let metadata = {};
 let currentPayrollSnapshot = null;
+let openingDayPayrolls = [];
 let animationTimer = null;
 let selectedRosterKey = "";
 
@@ -316,7 +317,7 @@ function lineChart(id, title, data, field) {
 function scatterChart(id, title, rows) {
   const data = rows.filter((row) => row.payroll_millions && row.win_pct);
   if (!data.length) {
-    document.getElementById(id).innerHTML = `<h3 class="chart-title">${escapeHtml(title)}</h3><div class="empty-chart">Payroll scatter needs seasons from 1985-2016. Try the Payroll Era filter.</div>`;
+    document.getElementById(id).innerHTML = `<h3 class="chart-title">${escapeHtml(title)}</h3><div class="empty-chart">Payroll scatter needs team seasons with both payroll and records. Choose a range from 1985-2025.</div>`;
     return;
   }
   const maxX = Math.max(...data.map((row) => row.payroll_millions), 1);
@@ -329,6 +330,7 @@ function scatterChart(id, title, rows) {
       `Payroll: ${fmtMoney(row.payroll_millions)}`,
       `Record: ${row.wins}-${row.losses} (${fmtValue(row.win_pct, "win_pct")})`,
       `Payroll rank: ${row.payroll_rank ? `#${row.payroll_rank}` : "n/a"}`,
+      `Payroll source: ${row.payroll_source || "Unknown"}`,
       row.postseason_result,
     ]);
     return `<circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${x(row.payroll_millions)}" cy="${y(row.win_pct)}" r="${r}" fill="${fill}"></circle>`;
@@ -471,6 +473,34 @@ function renderCurrentPayrollSnapshot(snapshot) {
   `).join("");
 }
 
+function renderOpeningDayPayrollArchive() {
+  const select = document.getElementById("openingPayrollYearSelect");
+  if (!select || !openingDayPayrolls.length) return;
+  const years = [...new Set(openingDayPayrolls.map((row) => row.year))].sort((a, b) => b - a);
+  const selectedYear = Number(select.value) || years[0];
+  select.innerHTML = years.map((year) => `<option value="${year}">${year}</option>`).join("");
+  select.value = String(years.includes(selectedYear) ? selectedYear : years[0]);
+
+  const year = Number(select.value);
+  const rows = openingDayPayrolls.filter((row) => row.year === year);
+  const teamYearIndex = new Map(teamSeasons.filter((row) => row.year === year).map((row) => [row.team_id, row]));
+  const divisionName = { E: "East", C: "Central", W: "West" };
+  document.getElementById("openingPayrollCount").textContent = `${rows.length} teams`;
+  document.getElementById("openingPayrollSource").href = `https://www.thebaseballcube.com/content/payroll_year/${year}/`;
+  document.getElementById("openingPayrollTable").innerHTML = rows.map((row) => {
+    const season = teamYearIndex.get(row.team_id);
+    const record = season ? `${season.wins}-${season.losses}` : "No completed-season record";
+    return `<tr>
+      <td>#${row.payroll_rank}</td>
+      <td>${teamCell(row)}</td>
+      <td>${fmtMoney(row.payroll_millions)}</td>
+      <td>${escapeHtml(row.league || "—")}</td>
+      <td>${escapeHtml(divisionName[row.division] || row.division || "—")}</td>
+      <td>${escapeHtml(record)}</td>
+    </tr>`;
+  }).join("");
+}
+
 function render() {
   setReadouts();
   const rows = filteredRows();
@@ -484,6 +514,7 @@ function render() {
   wsPayrollChart(rows);
   scatterChart("scatterChart", "Payroll vs win percentage", rows);
   renderTable(rows);
+  renderOpeningDayPayrollArchive();
   bindChartTooltips();
 }
 
@@ -529,6 +560,7 @@ function wireEvents() {
     renderRosterFromControls();
   });
   document.getElementById("rosterYearSelect").addEventListener("change", renderRosterFromControls);
+  document.getElementById("openingPayrollYearSelect").addEventListener("change", renderOpeningDayPayrollArchive);
 }
 
 async function init() {
@@ -539,6 +571,7 @@ async function init() {
   rosters = data.rosters;
   metadata = data.metadata;
   currentPayrollSnapshot = data.currentPayrollSnapshot;
+  openingDayPayrolls = data.openingDayPayrolls || [];
   document.getElementById("startYear").min = metadata.start_year;
   document.getElementById("startYear").max = metadata.latest_year;
   document.getElementById("endYear").min = metadata.start_year;
@@ -551,6 +584,7 @@ async function init() {
   setRosterControls(firstPayrollWinner);
   document.getElementById("loadingState").remove();
   renderTicker();
+  renderOpeningDayPayrollArchive();
   renderCurrentPayrollSnapshot(currentPayrollSnapshot);
   wireEvents();
   render();

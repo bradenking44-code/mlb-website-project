@@ -17,8 +17,8 @@
       "value": 40
     },
     {
-      "label": "Payroll seasons",
-      "value": 32
+      "label": "Payroll archive seasons",
+      "value": 42
     },
     {
       "label": "Teams/franchises in data",
@@ -28,9 +28,9 @@
   "sections": [
     {
       "id": "payroll-growth",
-      "title": "Payroll rose sharply during the salary-data era",
-      "body": "Average team payroll increased heavily from 1985 to 2016, so the cleanest comparisons use payroll rank or tier inside each season.",
-      "measure": "Average payroll, $M",
+      "title": "Payroll records now span 1985 through 2026",
+      "body": "Lahman/SABR salary totals supply 1985-2016; The Baseball Cube Opening Day payrolls supply 2017-2026. The source definition changes in 2017, so within-season ranks and tiers are the strongest comparisons across that break.",
+      "measure": "Average team payroll, $M",
       "chart": [
         {
           "label": "1985",
@@ -159,13 +159,53 @@
         {
           "label": "2016",
           "value": 125.0
+        },
+        {
+          "label": "2017",
+          "value": 129.28
+        },
+        {
+          "label": "2018",
+          "value": 138.04
+        },
+        {
+          "label": "2019",
+          "value": 133.6
+        },
+        {
+          "label": "2020",
+          "value": 124.52
+        },
+        {
+          "label": "2021",
+          "value": 127.51
+        },
+        {
+          "label": "2022",
+          "value": 140.03
+        },
+        {
+          "label": "2023",
+          "value": 148.38
+        },
+        {
+          "label": "2024",
+          "value": 163.55
+        },
+        {
+          "label": "2025",
+          "value": 169.18
+        },
+        {
+          "label": "2026",
+          "value": 204.36
         }
       ]
     },
     {
       "id": "champion-rank",
       "title": "World Series winners did not always have the highest payroll",
-      "body": "Among champions with salary coverage, 21 of 31 came from the top third of payrolls. Money helped, but it did not guarantee a parade.",
+      "body": "Among World Series champions through 2025 with completed-season payroll coverage, 28 of 40 came from the top third of payrolls. Payroll rank never guaranteed a title.",
       "measure": "Payroll rank",
       "chart": [
         {
@@ -353,6 +393,60 @@
           "year": 2016,
           "value": 8,
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/chc.png"
+        },
+        {
+          "label": "2017 Houston Astros",
+          "year": 2017,
+          "value": 17,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/hou.png"
+        },
+        {
+          "label": "2018 Boston Red Sox",
+          "year": 2018,
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
+        },
+        {
+          "label": "2019 Washington Nationals",
+          "year": 2019,
+          "value": 7,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png"
+        },
+        {
+          "label": "2020 Los Angeles Dodgers",
+          "year": 2020,
+          "value": 3,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png"
+        },
+        {
+          "label": "2021 Atlanta Braves",
+          "year": 2021,
+          "value": 14,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/atl.png"
+        },
+        {
+          "label": "2022 Houston Astros",
+          "year": 2022,
+          "value": 10,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/hou.png"
+        },
+        {
+          "label": "2023 Texas Rangers",
+          "year": 2023,
+          "value": 9,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tex.png"
+        },
+        {
+          "label": "2024 Los Angeles Dodgers",
+          "year": 2024,
+          "value": 8,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png"
+        },
+        {
+          "label": "2025 Los Angeles Dodgers",
+          "year": 2025,
+          "value": 1,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png"
         }
       ]
     },
@@ -364,22 +458,22 @@
       "chart": [
         {
           "label": "Bottom third",
-          "value": 0.128
+          "value": 0.174
         },
         {
           "label": "Middle third",
-          "value": 0.202
+          "value": 0.217
         },
         {
           "label": "Top third",
-          "value": 0.401
+          "value": 0.437
         }
       ]
     },
     {
       "id": "world-series-teams",
       "title": "A few clubs collected most payroll-era titles",
-      "body": "From 1985 through 2016, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
+      "body": "From 1985 through 2025, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
       "measure": "World Series wins",
       "chart": [
         {
@@ -396,13 +490,25 @@
         },
         {
           "label": "Boston Red Sox",
-          "value": 3,
+          "value": 4,
           "years": [
             2004,
             2007,
-            2013
+            2013,
+            2018
           ],
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
+        },
+        {
+          "label": "Los Angeles Dodgers",
+          "value": 4,
+          "years": [
+            1988,
+            2020,
+            2024,
+            2025
+          ],
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/lad.png"
         },
         {
           "label": "San Francisco Giants",
@@ -413,6 +519,24 @@
             2014
           ],
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/sf.png"
+        },
+        {
+          "label": "Atlanta Braves",
+          "value": 2,
+          "years": [
+            1995,
+            2021
+          ],
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/atl.png"
+        },
+        {
+          "label": "Houston Astros",
+          "value": 2,
+          "years": [
+            2017,
+            2022
+          ],
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/hou.png"
         },
         {
           "label": "Kansas City Royals",
@@ -460,36 +584,12 @@
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/mia.png"
         },
         {
-          "label": "Atlanta Braves",
-          "value": 1,
-          "years": [
-            1995
-          ],
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/atl.png"
-        },
-        {
           "label": "Chicago White Sox",
           "value": 1,
           "years": [
             2005
           ],
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/chw.png"
-        },
-        {
-          "label": "Chicago Cubs",
-          "value": 1,
-          "years": [
-            2016
-          ],
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/chc.png"
-        },
-        {
-          "label": "Cincinnati Reds",
-          "value": 1,
-          "years": [
-            1990
-          ],
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/cin.png"
         }
       ]
     },
@@ -568,34 +668,34 @@
       "measure": "Payroll, $M",
       "chart": [
         {
+          "label": "2023 New York Mets",
+          "value": 334.23,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nym.png"
+        },
+        {
+          "label": "2025 New York Mets",
+          "value": 321.59,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nym.png"
+        },
+        {
+          "label": "2023 New York Yankees",
+          "value": 268.95,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
+        },
+        {
+          "label": "2023 San Diego Padres",
+          "value": 236.96,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/sd.png"
+        },
+        {
           "label": "2013 New York Yankees",
           "value": 231.98,
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
         },
         {
-          "label": "2016 New York Yankees",
-          "value": 223.0,
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
-        },
-        {
-          "label": "2008 New York Yankees",
-          "value": 207.9,
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
-        },
-        {
-          "label": "2014 New York Yankees",
-          "value": 197.54,
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png"
-        },
-        {
-          "label": "2016 Detroit Tigers",
-          "value": 194.88,
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/det.png"
-        },
-        {
-          "label": "2015 Boston Red Sox",
-          "value": 181.1,
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
+          "label": "2024 Texas Rangers",
+          "value": 229.97,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tex.png"
         }
       ]
     },
@@ -616,23 +716,23 @@
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/oak.png"
         },
         {
+          "label": "2023 Baltimore Orioles",
+          "value": 101,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/bal.png"
+        },
+        {
+          "label": "2021 Tampa Bay Rays",
+          "value": 100,
+          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tb.png"
+        },
+        {
           "label": "1985 Toronto Blue Jays",
           "value": 99,
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tor.png"
         },
         {
-          "label": "2015 Pittsburgh Pirates",
-          "value": 98,
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/pit.png"
-        },
-        {
-          "label": "1993 Philadelphia Phillies",
-          "value": 97,
-          "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/phi.png"
-        },
-        {
-          "label": "2008 Tampa Bay Rays",
-          "value": 97,
+          "label": "2023 Tampa Bay Rays",
+          "value": 99,
           "logo_url": "https://a.espncdn.com/i/teamlogos/mlb/500/tb.png"
         }
       ]
@@ -645,19 +745,19 @@
       "chart": [
         {
           "label": "Missed playoffs",
-          "value": 79.0
+          "value": 79.07
         },
         {
           "label": "Playoff exit",
-          "value": 95.58
+          "value": 92.88
         },
         {
           "label": "Lost WS",
-          "value": 98.0
+          "value": 100.0
         },
         {
           "label": "Won WS",
-          "value": 95.8
+          "value": 97.14
         }
       ]
     },

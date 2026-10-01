@@ -17,6 +17,7 @@ This repository is for the FDA Data Website Project. It contains a two-page stat
 - `data/raw/Appearances2025.csv` - Lahman/SABR player-team appearance table through 2025.
 - `data/raw/People2025.csv` - Lahman/SABR player name table.
 - `data/raw/Salaries2025.csv` - Lahman salary table. Salary coverage remains 1985-2016.
+- `data/raw/ExternalPayrolls.csv` - The Baseball Cube payroll rows for all 30 clubs in each season from 2017-2026.
 - `data/raw/CotsPayroll2026.csv` - Cot's cash and CBT payroll snapshot for all 30 clubs, with each sheet's update date.
 - `data/raw/ExternalPayrolls.example.csv` - template for adding verified 2017+ team payroll rows.
 
@@ -24,11 +25,11 @@ Sources come from the public Lahman/SABR CSV mirror at `https://github.com/cbwin
 
 ### Payroll Coverage After 2016
 
-The Lahman/SABR `Salaries` table is the reproducible source used in the current build, but its MLB salary coverage ends after the 2016 season. For 2017 and later dashboard payrolls, the recommended extension source is The Baseball Cube's MLB payroll history and year pages because they provide team-level payroll by season alongside team records. Spotrac's MLB payroll tracker is a useful cross-check, but its payroll categories can differ from Opening Day/team payroll totals, so the dashboard should use one definition consistently before merging newer values.
+The Lahman/SABR `Salaries` table provides listed player salaries through 2016. The Baseball Cube annual payroll pages provide one Opening Day team payroll row for every club from 2017 through 2026. These 300 rows are checked against each year's published league payroll total before the dashboard build. Opening Day payroll excludes later callups and midseason trades. Rows from 2017-2025 join completed team seasons; 2026 remains in a separate archive table because the completed outcomes dataset currently stops at 2025.
 
-To extend the dashboard, create `data/raw/ExternalPayrolls.csv` with `year`, `team_id` or `team`, and `payroll` columns, then rerun `scripts/build_postseason_payroll_dataset.py` and `scripts/build_payroll_report_summary.py`.
+To rebuild dashboard data, run `scripts/build_postseason_payroll_dataset.py`, then `scripts/build_payroll_report_summary.py`.
 
-The latest separate payroll snapshot is `data/raw/CotsPayroll2026.csv`, sourced from Cot's club contract sheets as of dates from August 25 through September 27, 2026. It records cash payroll and CBT payroll at the source's $0.1 million precision and appears in its own table on the dashboard. It stays separate from historical charts because the Lahman team, roster, and postseason tables currently end at 2025 and Cot's payroll definitions differ from the Lahman salary sum. See `README_DATA.md` for source links and field definitions.
+The separate `data/raw/CotsPayroll2026.csv` snapshot is sourced from Cot's club contract sheets dated August 25 through September 27, 2026. It records cash and CBT payroll at $0.1 million precision. These values stay separate from historical analysis because Cot's cash/CBT definitions differ from both Lahman salary totals and The Baseball Cube Opening Day payrolls. See `README_DATA.md` for source links and field definitions.
 
 ## Scripts
 

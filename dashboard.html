@@ -32,9 +32,9 @@
             <button class="chip-button" type="button" data-start="1985" data-end="2025">All seasons</button>
             <button class="chip-button" type="button" data-start="1985" data-end="1994">1985-1994</button>
             <button class="chip-button" type="button" data-start="1995" data-end="2006">Wild Card Era</button>
-            <button class="chip-button is-active" type="button" data-start="1985" data-end="2016">Payroll Era</button>
-            <button class="chip-button" type="button" data-start="2007" data-end="2016">Late Payroll Era</button>
-            <button class="chip-button" type="button" data-start="2017" data-end="2025">Recent Results</button>
+            <button class="chip-button" type="button" data-start="1985" data-end="2016">Lahman payroll</button>
+            <button class="chip-button" type="button" data-start="2007" data-end="2016">Late Lahman</button>
+            <button class="chip-button" type="button" data-start="2017" data-end="2025">TBC payroll</button>
           </div>
           <label>
             Start year
@@ -42,7 +42,7 @@
           </label>
           <label>
             End year
-            <input id="endYear" type="number" min="1985" max="2025" value="2016">
+            <input id="endYear" type="number" min="1985" max="2025" value="2025">
           </label>
         </div>
 
@@ -133,7 +133,7 @@
           </div>
         </div>
         <p class="dashboard-context">
-          Records, rosters, playoff results, and World Series winners run through 2025. This dashboard opens in the 1985-2016 payroll era so payroll charts and table values appear immediately; use Recent Results for 2017-2025 seasons without salary coverage.
+          Records, rosters, and completed postseason results run through 2025. Every team-season from 1985 through 2025 now has payroll data: Lahman/SABR salary totals through 2016 and The Baseball Cube Opening Day payrolls from 2017 onward. The complete 2017-2026 Opening Day payroll archive and Cot’s current cash/CBT snapshot appear below; 2026 results are kept separate from completed-season comparisons.
         </p>
         <div class="payroll-ticker" aria-label="Animated World Series ticker">
           <div id="payrollTicker" class="payroll-ticker-track"></div>
@@ -204,6 +204,38 @@
           </div>
         </div>
 
+        <section class="table-panel opening-payroll-panel">
+          <div class="table-heading">
+            <h2>Opening Day Payroll Archive</h2>
+            <div class="table-tools">
+              <label>
+                Payroll year
+                <select id="openingPayrollYearSelect"></select>
+              </label>
+              <span id="openingPayrollCount"></span>
+            </div>
+          </div>
+          <p class="dashboard-context">
+            The Baseball Cube Opening Day payrolls cover all 30 clubs from 2017-2026. The source counts players under contract on Opening Day and excludes later callups and midseason additions.
+            <a id="openingPayrollSource" href="https://www.thebaseballcube.com/content/payroll/" target="_blank" rel="noreferrer">Source year table</a>
+          </p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Team</th>
+                  <th>Opening Day payroll</th>
+                  <th>League</th>
+                  <th>Division</th>
+                  <th>Completed-season record</th>
+                </tr>
+              </thead>
+              <tbody id="openingPayrollTable"></tbody>
+            </table>
+          </div>
+        </section>
+
         <section class="table-panel current-payroll-panel">
           <div class="table-heading">
             <h2>Cot’s 2026 Club Payroll Snapshot</h2>
@@ -232,6 +264,6 @@
       </section>
     </main>
 
-    <script src="assets/dashboard.js?v=20261001-18"></script>
+    <script src="assets/dashboard.js?v=20261001-19"></script>
   </body>
 </html>

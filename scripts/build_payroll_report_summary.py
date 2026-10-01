@@ -30,6 +30,7 @@ def main():
     data = json.loads(DATA.read_text(encoding="utf-8"))
     rows = data["teamSeasons"]
     payroll_rows = [row for row in rows if row.get("payroll_millions")]
+    opening_day_payrolls = data.get("openingDayPayrolls", [])
     ws = data["worldSeries"]
     meta = data["metadata"]
 
@@ -48,10 +49,19 @@ def main():
         if row.get("logo_url") and row["team_name"] not in logo_by_team:
             logo_by_team[row["team_name"]] = row["logo_url"]
 
-    payroll_by_year = [
-        {"label": str(year), "value": avg([row.get("payroll_millions") for row in group])}
-        for year, group in sorted(by_year.items())
+    payroll_means = {
+        year: avg([row.get("payroll_millions") for row in group])
+        for year, group in by_year.items()
         if any(row.get("payroll_millions") for row in group)
+    }
+    archive_by_year = defaultdict(list)
+    for row in opening_day_payrolls:
+        archive_by_year[row["year"]].append(row["payroll_millions"])
+    for year, values in archive_by_year.items():
+        payroll_means.setdefault(year, avg(values))
+    payroll_by_year = [
+        {"label": str(year), "value": value}
+        for year, value in sorted(payroll_means.items())
     ]
 
     ws_rank = [
@@ -137,21 +147,21 @@ def main():
             {"label": "Team seasons", "value": meta["team_seasons"]},
             {"label": "Seasons covered", "value": meta["latest_year"] - meta["start_year"] + 1},
             {"label": "World Series champions tracked", "value": len(ws)},
-            {"label": "Payroll seasons", "value": meta["payroll_end_year"] - meta["payroll_start_year"] + 1},
+            {"label": "Payroll archive seasons", "value": len(payroll_means)},
             {"label": "Teams/franchises in data", "value": meta["teams"]},
         ],
         "sections": [
             {
                 "id": "payroll-growth",
-                "title": "Payroll rose sharply during the salary-data era",
-                "body": "Average team payroll increased heavily from 1985 to 2016, so the cleanest comparisons use payroll rank or tier inside each season.",
-                "measure": "Average payroll, $M",
+                "title": "Payroll records now span 1985 through 2026",
+                "body": "Lahman/SABR salary totals supply 1985-2016; The Baseball Cube Opening Day payrolls supply 2017-2026. The source definition changes in 2017, so within-season ranks and tiers are the strongest comparisons across that break.",
+                "measure": "Average team payroll, $M",
                 "chart": payroll_by_year,
             },
             {
                 "id": "champion-rank",
                 "title": "World Series winners did not always have the highest payroll",
-                "body": f"Among champions with salary coverage, {top_third_ws} of {len(payroll_ws)} came from the top third of payrolls. Money helped, but it did not guarantee a parade.",
+                "body": f"Among World Series champions through {meta['latest_year']} with completed-season payroll coverage, {top_third_ws} of {len(payroll_ws)} came from the top third of payrolls. Payroll rank never guaranteed a title.",
                 "measure": "Payroll rank",
                 "chart": ws_rank,
             },
@@ -165,7 +175,7 @@ def main():
             {
                 "id": "world-series-teams",
                 "title": "A few clubs collected most payroll-era titles",
-                "body": "From 1985 through 2016, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
+                "body": f"From 1985 through {meta['payroll_end_year']}, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained October success.",
                 "measure": "World Series wins",
                 "chart": top(team_ws),
             },

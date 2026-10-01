@@ -7,10 +7,10 @@
 - Group columns: `team_id`, `team_name`, `player_id`, `player_name`.
 - Periods: 41 seasons, 1985-2025.
 - Groups: 36 team IDs and thousands of player IDs.
-- Size: 54,851 rows and 34 columns in `data/processed/mlb_payroll_postseason_roster.csv`.
+- Size: 54,851 rows and 37 columns in `data/processed/mlb_payroll_postseason_roster.csv`.
 - Categorical filters: `year`, `team_name`, `league`, `division`, `payroll_tier`, `postseason_result`.
 - Numeric measures: `wins`, `losses`, `win_pct`, `payroll`, `payroll_millions`, `payroll_rank`, `payroll_percentile`, `cost_per_win_millions`, `roster_count`, `games`, `starts`.
-- Coverage note: records, postseason results, and rosters run through 2025. Lahman salary/payroll coverage runs 1985-2016, so payroll visuals use seasons with reproducible salary data and label newer seasons as payroll unavailable.
+- Coverage note: records, postseason results, and rosters run through 2025. Payroll-backed team seasons run 1985-2025; The Baseball Cube Opening Day payroll archive covers all 30 teams in 2017-2026, with 2026 shown separately from completed-season results.
 
 ## Report Page
 
