@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20261001-24">
+    <link rel="stylesheet" href="assets/styles.css?v=20261001-25">
   </head>
   <body>
     <nav class="site-nav">
@@ -116,10 +116,6 @@
               <option value="postseason_result">Postseason result</option>
             </select>
           </label>
-          <label class="currency-toggle">
-            <input id="inflationAdjusted" type="checkbox">
-            <span>Show historical payroll in 2025 dollars</span>
-          </label>
           <label>
             Top groups shown
             <input id="topN" type="range" min="5" max="30" step="1" value="12">
@@ -138,10 +134,9 @@
           </div>
         </div>
         <p class="dashboard-context">
-          Team records and completed postseason results cover 1985-2025. Payroll data uses Lahman/SABR salary totals through 2016 and The Baseball Cube Opening Day payrolls from 2017-2025; ranks and tiers are calculated within each season. The CPI option adjusts historical comparison charts to 2025 dollars. The 2017-2026 payroll archive and Cot’s current payroll snapshot remain in source-year dollars.
+          Team records and completed postseason results cover 1985-2025. Payroll data uses Lahman/SABR salary totals through 2016 and The Baseball Cube Opening Day payrolls from 2017-2025; ranks and tiers are calculated within each season. Payroll amounts are shown in source-year dollars, including the 2017-2026 archive and Cot’s current payroll snapshot.
           <a href="https://github.com/cbwinslow/lahman-database-csv" target="_blank" rel="noreferrer">Lahman/SABR</a> ·
-          <a href="https://www.thebaseballcube.com/content/payroll/" target="_blank" rel="noreferrer">The Baseball Cube</a> ·
-          <a href="https://www.bls.gov/regions/mid-atlantic/data/consumerpriceindexannualandsemiannual_table.htm" target="_blank" rel="noreferrer">BLS CPI-U annual averages</a>
+          <a href="https://www.thebaseballcube.com/content/payroll/" target="_blank" rel="noreferrer">The Baseball Cube</a>
         </p>
         <aside id="executiveFinding" class="executive-finding" aria-live="polite"></aside>
         <div class="payroll-ticker" aria-label="Recent World Series champions">
@@ -226,7 +221,7 @@
             </div>
           </div>
           <p class="dashboard-context">
-            The Baseball Cube Opening Day payrolls cover all 30 clubs from 2017-2026. The source counts players under contract on Opening Day and excludes later callups and midseason additions. This archive retains source-year dollars when the inflation adjustment is selected.
+            The Baseball Cube Opening Day payrolls cover all 30 clubs from 2017-2026. The source counts players under contract on Opening Day and excludes later callups and midseason additions. Payroll amounts are shown in source-year dollars.
             <a id="openingPayrollSource" href="https://www.thebaseballcube.com/content/payroll/" target="_blank" rel="noreferrer">Source year table</a>
           </p>
           <div class="table-scroll">
@@ -274,7 +269,6 @@
       </section>
     </main>
 
-    <script src="assets/cpi-data.js?v=20261001-2"></script>
-    <script src="assets/dashboard.js?v=20261001-26"></script>
+    <script src="assets/dashboard.js?v=20261001-28"></script>
   </body>
 </html>

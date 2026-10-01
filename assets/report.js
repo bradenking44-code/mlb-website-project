@@ -1,10 +1,7 @@
 const numberFormat = new Intl.NumberFormat("en-US");
 const decimalFormat = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const colors = ["#be1e2d", "#113b64", "#2f6f63", "#d39b2a", "#642f6c", "#0c7c90", "#8f2f1f"];
-const currencyPreferenceKey = "moneyball-show-2025-dollars";
-let reportCurrencyAdjusted = false;
 let reportUsesMoneyUnits = false;
-let reportChampionRenderers = [];
 const teamColors = [
   ["Arizona", "#a71930"], ["Atlanta", "#ce1141"], ["Baltimore", "#df4601"], ["Boston", "#bd3039"],
   ["Cubs", "#0e3386"], ["White Sox", "#27251f"], ["Cincinnati", "#c6011f"], ["Cleveland", "#e31937"],
@@ -23,50 +20,10 @@ function formatValue(value) {
   return numberFormat.format(value || 0);
 }
 
-function payrollDisplayValue(value, year) {
-  const cpi = window.MLBPayrollCPI;
-  return reportCurrencyAdjusted && cpi?.supports(year) ? cpi.toBase(value, year) : Number(value) || 0;
-}
-
-function readCurrencyPreference() {
-  try {
-    return localStorage.getItem(currencyPreferenceKey) === "true";
-  } catch {
-    return false;
-  }
-}
-
-function saveCurrencyPreference(value) {
-  try {
-    localStorage.setItem(currencyPreferenceKey, String(Boolean(value)));
-  } catch {
-    // The report remains usable without browser storage.
-  }
-}
-
-function reportSectionForView(section) {
-  if (!section.measure?.includes("$M")) return section;
-  const chart = (section.chart || []).map((item) => {
-    const labelYear = String(item.label || "").match(/\b(?:19|20)\d{2}\b/);
-    const year = Number(item.year || labelYear?.[0]);
-    return { ...item, value: payrollDisplayValue(item.value, year) };
-  });
-  const containsNominalFutureYear = chart.some((item) => {
-    const year = Number(item.year || String(item.label || "").match(/\b(?:19|20)\d{2}\b/)?.[0]);
-    return year > 2025;
-  });
-  const measure = reportCurrencyAdjusted
-    ? section.measure.replace("$M", containsNominalFutureYear ? "2025 $M (2026 nominal)" : "2025 $M")
-    : section.measure;
-  return { ...section, chart, measure };
-}
-
 function reportChartSourceNote(section, dashboard) {
   const teamSeasons = dashboard.teamSeasons || [];
   const chartCount = (section.chart || []).length;
-  const dollarBasis = reportCurrencyAdjusted
-    ? "Historical payroll through 2025 is converted with annual-average CPI-U to 2025 dollars; 2026 stays nominal."
-    : "Payroll amounts are shown in source-year dollars.";
+  const dollarBasis = "Payroll amounts are shown in source-year dollars.";
   const sourceChange = "Payroll sources: Lahman/SABR through 2016; The Baseball Cube Opening Day payrolls from 2017.";
   const notes = {
     "payroll-growth": `${chartCount} yearly averages; ${sourceChange} ${dollarBasis}`,
@@ -99,7 +56,6 @@ function renderReportExecutiveFinding(dashboard) {
 
 function renderReportSections(summary, dashboard) {
   document.getElementById("reportSections").innerHTML = summary.sections.map((section, index) => {
-    const view = reportSectionForView(section);
     return `<article class="finding" id="${escapeHtml(section.id)}">
       <div class="finding-copy">
         <p class="eyebrow">Finding ${index + 1}</p>
@@ -107,8 +63,8 @@ function renderReportSections(summary, dashboard) {
         <p>${escapeHtml(section.body)}</p>
       </div>
       <div class="chart-frame svg-report-chart">
-        <h4>${escapeHtml(view.measure)}</h4>
-        ${makeSvgChart(view)}
+        <h4>${escapeHtml(section.measure)}</h4>
+        ${makeSvgChart(section)}
         <p class="chart-source-note">${escapeHtml(reportChartSourceNote(section, dashboard))}</p>
       </div>
     </article>`;
@@ -335,23 +291,26 @@ function parseRecord(record) {
   return { wins, losses, winPct: wins / (wins + losses) };
 }
 
-function formatMoney(value, year) {
-  const adjusted = payrollDisplayValue(value, year);
-  return value || value === 0 ? `$${decimalFormat.format(adjusted)}M` : "Unavailable";
+function formatMoney(value) {
+  return value || value === 0 ? `$${decimalFormat.format(value)}M` : "Unavailable";
 }
 
 function initChampionExplorer(worldSeries) {
   const card = document.querySelector(".championship-card");
   const prev = document.getElementById("heroPrevChampion");
   const next = document.getElementById("heroNextChampion");
+  const slider = document.getElementById("heroChampionSlider");
   const year = document.getElementById("heroChampionYear");
   const name = document.getElementById("heroChampionName");
   const logo = document.getElementById("heroChampionLogo");
   const stats = document.getElementById("heroChampionStats");
-  if (!card || !prev || !next || !year || !name || !logo || !stats || !worldSeries?.length) return;
+  if (!card || !prev || !next || !slider || !year || !name || !logo || !stats || !worldSeries?.length) return;
 
   const champions = [...worldSeries].sort((a, b) => a.year - b.year);
   let index = champions.length - 1;
+  slider.min = "0";
+  slider.max = String(champions.length - 1);
+  slider.step = "1";
 
   function renderChampion() {
     const champion = champions[index];
@@ -362,20 +321,25 @@ function initChampionExplorer(worldSeries) {
     logo.src = champion.winner_logo_url || "";
     logo.alt = `${champion.winner} logo`;
     logo.hidden = !champion.winner_logo_url;
+    slider.value = String(index);
+    slider.setAttribute("aria-valuetext", String(champion.year));
     stats.innerHTML = `
       <div><span>Payroll Rank</span><strong>${payrollRank}</strong></div>
       <div><span>Win Pct</span><strong>${record ? record.winPct.toFixed(3).replace(/^0/, "") : "n/a"}</strong></div>
-      <div><span>Payroll${reportCurrencyAdjusted ? " (2025 $)" : ""}</span><strong>${formatMoney(champion.winner_payroll_millions, champion.year)}</strong></div>
+      <div><span>Payroll</span><strong>${formatMoney(champion.winner_payroll_millions)}</strong></div>
       <div><span>Record</span><strong>${escapeHtml(champion.record || "n/a")}</strong></div>`;
   }
 
-  reportChampionRenderers.push(renderChampion);
   prev.addEventListener("click", () => {
     index = index <= 0 ? champions.length - 1 : index - 1;
     renderChampion();
   });
   next.addEventListener("click", () => {
     index = index >= champions.length - 1 ? 0 : index + 1;
+    renderChampion();
+  });
+  slider.addEventListener("input", () => {
+    index = Math.max(0, Math.min(champions.length - 1, Number(slider.value) || 0));
     renderChampion();
   });
 
@@ -448,9 +412,6 @@ async function initReport() {
   ]);
   const summary = await summaryResponse.json();
   const dashboard = await dashboardResponse.json();
-  reportCurrencyAdjusted = readCurrencyPreference();
-  const currencyToggle = document.getElementById("inflationAdjusted");
-  currencyToggle.checked = reportCurrencyAdjusted;
 
   document.getElementById("headlineCards").innerHTML = summary.headlines.map((item) => `
     <div class="headline-card">
@@ -460,19 +421,6 @@ async function initReport() {
 
   renderReportExecutiveFinding(dashboard);
   renderReportSections(summary, dashboard);
-  currencyToggle.addEventListener("change", () => {
-    reportCurrencyAdjusted = currencyToggle.checked;
-    saveCurrencyPreference(reportCurrencyAdjusted);
-    renderReportSections(summary, dashboard);
-    reportChampionRenderers.forEach((renderChampion) => renderChampion());
-  });
-  window.addEventListener("storage", (event) => {
-    if (event.key !== currencyPreferenceKey) return;
-    reportCurrencyAdjusted = event.newValue === "true";
-    currencyToggle.checked = reportCurrencyAdjusted;
-    renderReportSections(summary, dashboard);
-    reportChampionRenderers.forEach((renderChampion) => renderChampion());
-  });
 
   const worldSeries = [...(dashboard.worldSeries || [])].sort((a, b) => a.year - b.year);
   const winnersByYear = new Map(worldSeries.map((row) => [Number(row.year), row]));
@@ -488,7 +436,6 @@ async function initReport() {
   document.getElementById("reportMascots").innerHTML = winnerCards.join("");
 
   initScrollRunner();
-  reportChampionRenderers = [];
   initChampionExplorer(dashboard.worldSeries);
 }
 

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20261001-24">
+    <link rel="stylesheet" href="assets/styles.css?v=20261001-25">
   </head>
   <body>
     <nav class="site-nav">
@@ -23,7 +23,9 @@
         <span class="scroll-base scroll-first">1st</span>
         <span class="scroll-base scroll-second">2nd</span>
         <span class="scroll-base scroll-third">3rd</span>
-        <span class="scroll-base scroll-home" aria-hidden="true"></span>
+        <svg class="scroll-home" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 2h18v12l-9 8-9-8z"></path>
+        </svg>
         <span class="scroll-hit">Hit!</span>
         <span class="scroll-runner" aria-hidden="true"><span></span></span>
       </div>
@@ -40,11 +42,6 @@
           This project compares Major League Baseball payroll with team records, rosters, playoff results, and World Series champions. Records, rosters, and completed postseason results run from 1985 through 2025. The payroll archive runs through 2026, using Lahman/SABR salary totals through 2016 and Opening Day payrolls after 2016.
         </p>
         <aside id="executiveFinding" class="executive-finding report-executive-finding" aria-live="polite"></aside>
-        <label class="currency-toggle report-currency-toggle">
-          <input id="inflationAdjusted" type="checkbox">
-          <span>Show historical payroll charts in 2025 dollars (2026 stays nominal)</span>
-        </label>
-        <p class="currency-note">Inflation adjustment uses annual average U.S. CPI-U. Payroll ranks and tiers stay within-season comparisons.</p>
         <div class="hero-scoreboard" aria-label="Dataset highlights">
           <div class="score-cell"><strong>1985</strong><span>First season</span></div>
           <div class="score-cell"><strong>2025</strong><span>Latest season</span></div>
@@ -55,6 +52,11 @@
           <div class="championship-card">
             <div class="broadcast-tag">Postseason Index</div>
             <img class="championship-trophy" src="assets/images/world-series-trophy.png" alt="">
+            <label class="champion-slider-control" for="heroChampionSlider">
+              <span>2025</span>
+              <input id="heroChampionSlider" type="range" min="0" max="39" step="1" value="39" orient="vertical" aria-label="Select a World Series champion by season">
+              <span>1985</span>
+            </label>
             <div class="trophy-glow"></div>
             <div class="champion-strip">
               <button id="heroPrevChampion" type="button" aria-label="Previous World Series winner">‹</button>
@@ -114,9 +116,6 @@
             <p>
               Records, rosters, and completed postseason results cover AL and NL seasons from 1985 through 2025. Payroll-backed team seasons run through 2025. The Baseball Cube archive adds every club's Opening Day payroll for 2017-2026; 2026 payroll is displayed separately because the project has no completed 2026 team-season outcome set yet.
             </p>
-            <p>
-              Historical comparison charts can convert payroll to 2025 dollars using the Bureau of Labor Statistics' annual-average CPI-U. This changes dollar values only; payroll ranks and tiers remain within-season measures. <a href="https://www.bls.gov/regions/mid-atlantic/data/consumerpriceindexannualandsemiannual_table.htm" target="_blank" rel="noreferrer">BLS CPI-U annual averages</a>
-            </p>
           </div>
           <div>
             <h3>Computed Fields</h3>
@@ -133,7 +132,6 @@
       </section>
     </main>
 
-    <script src="assets/cpi-data.js?v=20261001-2"></script>
-    <script src="assets/report.js?v=20261001-21"></script>
+    <script src="assets/report.js?v=20261001-23"></script>
   </body>
 </html>
