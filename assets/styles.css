@@ -295,6 +295,14 @@ h3 {
   line-height: 1.02;
 }
 
+.page-subtitle {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .byline {
   margin: 24px 0 0;
   font-weight: 900;
@@ -596,6 +604,13 @@ input[type="range"] {
 .dashboard-title-row h1 {
   margin-top: 5px;
   font-size: clamp(1.8rem, 3vw, 3rem);
+}
+
+.dashboard-title-row .page-subtitle {
+  position: relative;
+  z-index: 1;
+  margin-top: 7px;
+  font-size: 1rem;
 }
 
 .dashboard-context {
@@ -1490,6 +1505,10 @@ tbody tr:hover {
   font-family: Inter, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 800;
+}
+
+.bar-category-label {
+  font-size: 13px;
 }
 
 .svg-value {

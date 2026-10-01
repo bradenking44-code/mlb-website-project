@@ -1,4 +1,4 @@
-const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-21";
+const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-22";
 
 const labels = {
   world_series_wins: "World Series wins",
@@ -17,6 +17,26 @@ const labels = {
 };
 
 const colors = ["#be1e2d", "#113b64", "#2f6f63", "#d39b2a", "#642f6c", "#0c7c90", "#8f2f1f", "#435466"];
+const teamColors = {
+  ANA: "#ba0021", ARI: "#a71930", ATH: "#003831", ATL: "#ce1141", BAL: "#df4601",
+  BOS: "#bd3039", CAL: "#ba0021", CHA: "#27251f", CHN: "#0e3386", CIN: "#c6011f",
+  CLE: "#00385d", COL: "#333366", DET: "#0c2340", FLO: "#00a3e0", HOU: "#002d62",
+  KCA: "#004687", LAA: "#ba0021", LAN: "#005a9c", MIA: "#00a3e0", MIL: "#12284b",
+  ML4: "#12284b", MIN: "#002b5c", MON: "#003da5", NYA: "#0c2340", NYN: "#002d72",
+  OAK: "#003831", PHI: "#e81828", PIT: "#27251f", SDN: "#2f241d", SEA: "#0c2c56",
+  SFN: "#fd5a1e", SLN: "#c41e3a", TBA: "#092c5c", TEX: "#003278", TOR: "#134a8e",
+  WAS: "#ab0003",
+};
+const payrollTierColors = {
+  "Top third": "#2f6f63",
+  "Middle third": "#d39b2a",
+  "Bottom third": "#be1e2d",
+};
+
+function teamColor(teamId) {
+  return teamColors[teamId] || "#435466";
+}
+
 let teamSeasons = [];
 let worldSeries = [];
 let rosters = {};
@@ -195,7 +215,21 @@ function aggregate(rows, group, measure, limit) {
   rows.forEach((row) => {
     const key = row[group] ?? "Unknown";
     if (!map.has(key)) {
-      map.set(key, { label: String(key), seasons: 0, wins: 0, losses: 0, payroll: 0, payrollRows: 0, playoffs: 0, ws: 0, roster: 0, rank: 0, rankRows: 0 });
+      map.set(key, {
+        label: String(key),
+        team_id: group === "team_name" ? row.team_id : "",
+        color: group === "payroll_tier" ? payrollTierColors[key] : "",
+        seasons: 0,
+        wins: 0,
+        losses: 0,
+        payroll: 0,
+        payrollRows: 0,
+        playoffs: 0,
+        ws: 0,
+        roster: 0,
+        rank: 0,
+        rankRows: 0,
+      });
     }
     const item = map.get(key);
     item.seasons += 1;
@@ -257,8 +291,8 @@ function metricCards(rows) {
   `).join("");
 }
 
-function svgWrap(title, body, subtitle = "") {
-  return `<h3 class="chart-title">${escapeHtml(title)}</h3>${subtitle ? `<p class="chart-subtitle">${escapeHtml(subtitle)}</p>` : ""}<svg viewBox="0 0 720 330" role="img" aria-label="${escapeHtml(title)}">${body}</svg>`;
+function svgWrap(title, body, subtitle = "", height = 330) {
+  return `<h3 class="chart-title">${escapeHtml(title)}</h3>${subtitle ? `<p class="chart-subtitle">${escapeHtml(subtitle)}</p>` : ""}<svg viewBox="0 0 720 ${height}" style="height:${height}px" role="img" aria-label="${escapeHtml(title)}">${body}</svg>`;
 }
 
 function barChart(id, title, data, field) {
@@ -267,19 +301,27 @@ function barChart(id, title, data, field) {
     return;
   }
   const max = Math.max(...data.map((d) => d.value), 1);
-  const width = 640;
-  const startX = 60;
-  const rowH = Math.min(34, 250 / Math.max(1, data.length));
+  const hasTeamLabels = data.some((d) => d.team_id);
+  const labelX = hasTeamLabels ? 218 : 154;
+  const startX = hasTeamLabels ? 230 : 166;
+  const plotRight = 680;
+  const width = plotRight - startX - 74;
+  const rowH = Math.max(20, Math.min(34, 250 / Math.min(data.length, 12)));
+  const chartHeight = Math.max(330, 72 + data.length * rowH);
   const bars = data.map((d, i) => {
     const y = 42 + i * rowH;
     const barW = (d.value / max) * width;
     const tip = tooltipText(d.label, [`${labels[field] || field}: ${fmtValue(d.value, field)}`, `Seasons in group: ${d.seasons || 0}`]);
+    const fill = d.team_id ? teamColor(d.team_id) : d.color || colors[i % colors.length];
     return `
-      <text x="52" y="${y + 15}" text-anchor="end" class="svg-label">${escapeHtml(d.label).slice(0, 18)}</text>
-      <rect class="tooltip-mark" tabindex="0" data-tip="${tip}" x="${startX}" y="${y}" width="${barW}" height="${rowH - 7}" rx="5" fill="${colors[i % colors.length]}"></rect>
+      <text x="${labelX}" y="${y + 15}" text-anchor="end" class="svg-label bar-category-label">${escapeHtml(d.label)}</text>
+      <rect class="tooltip-mark" tabindex="0" data-tip="${tip}" x="${startX}" y="${y}" width="${barW}" height="${rowH - 7}" rx="5" fill="${fill}"></rect>
       <text x="${Math.min(startX + barW + 8, 690)}" y="${y + 15}" class="svg-value">${fmtValue(d.value, field)}</text>`;
   }).join("");
-  document.getElementById(id).innerHTML = svgWrap(title, bars, "Hover the filters to rebuild this chart from the current view.");
+  const subtitle = hasTeamLabels
+    ? "Club colors identify each team; hover a bar for the full value."
+    : "Hover a bar for its value; filters rebuild this chart from the current view.";
+  document.getElementById(id).innerHTML = svgWrap(title, bars, subtitle, chartHeight);
 }
 
 function lineChart(id, title, data, field) {
@@ -298,10 +340,14 @@ function lineChart(id, title, data, field) {
   const dots = clean.map((d, i) => {
     const cx = x(Number(d.label));
     const cy = y(d.value);
-    const visible = i % Math.max(1, Math.floor(clean.length / 12)) === 0;
-    const tip = tooltipText(d.label, [`${labels[field] || field}: ${fmtValue(d.value, field)}`]);
+    const visible = d.team_id || i % Math.max(1, Math.floor(clean.length / 12)) === 0;
+    const dotColor = d.team_id ? teamColor(d.team_id) : "#be1e2d";
+    const tip = tooltipText(d.team_name ? `${d.label} ${d.team_name}` : d.label, [
+      `${labels[field] || field}: ${fmtValue(d.value, field)}`,
+      ...(d.tooltipLines || []),
+    ]);
     return `
-      ${visible ? `<circle cx="${cx}" cy="${cy}" r="4" fill="#be1e2d"></circle>` : ""}
+      ${visible ? `<circle cx="${cx}" cy="${cy}" r="4" fill="${dotColor}"></circle>` : ""}
       <circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${cx}" cy="${cy}" r="10" fill="transparent"></circle>`;
   }).join("");
   const body = `
@@ -340,7 +386,7 @@ function championPayrollRankChart(id, rows) {
       `Payroll tier: ${row.payroll_tier}`,
       `Payroll source: ${row.payroll_source || "Unknown"}`,
     ]);
-    return `<circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${x(row.year)}" cy="${y(row.payroll_rank)}" r="5" fill="#d39b2a" stroke="#704d00" stroke-width="1.5"></circle>`;
+    return `<circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${x(row.year)}" cy="${y(row.payroll_rank)}" r="5" fill="${teamColor(row.team_id)}" stroke="#ffffff" stroke-width="1.5"></circle>`;
   }).join("");
   const yearLabels = minYear === maxYear
     ? `<text x="${(plotLeft + plotRight) / 2}" y="310" text-anchor="middle" class="svg-label">${minYear}</text>`
@@ -376,7 +422,9 @@ function scatterChart(id, title, rows) {
   const x = (value) => 55 + (value / maxX) * 620;
   const y = (value) => 285 - value * 390;
   const points = data.map((row) => {
-    const fill = row.world_series_winner ? "#d39b2a" : row.playoff_team ? "#be1e2d" : "rgba(17,59,100,.45)";
+    const fill = teamColor(row.team_id);
+    const stroke = row.world_series_winner ? "#d39b2a" : row.playoff_team ? "#be1e2d" : "#ffffff";
+    const strokeWidth = row.world_series_winner ? 3 : row.playoff_team ? 2 : 1;
     const r = row.world_series_winner ? 7 : row.playoff_team ? 5 : 3;
     const tip = tooltipText(`${row.year} ${row.team_name}`, [
       `Payroll: ${fmtMoney(row.payroll_millions)}`,
@@ -385,7 +433,7 @@ function scatterChart(id, title, rows) {
       `Payroll source: ${row.payroll_source || "Unknown"}`,
       row.postseason_result,
     ]);
-    return `<circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${x(row.payroll_millions)}" cy="${y(row.win_pct)}" r="${r}" fill="${fill}"></circle>`;
+    return `<circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${x(row.payroll_millions)}" cy="${y(row.win_pct)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}"></circle>`;
   }).join("");
   const body = `
     <line x1="55" y1="285" x2="680" y2="285" class="axis"></line>
@@ -395,14 +443,19 @@ function scatterChart(id, title, rows) {
     <text x="680" y="315" text-anchor="end" class="svg-label">${fmtMoney(maxX)}</text>
     <text x="18" y="70" class="svg-label">.600+</text>
     <text x="18" y="285" class="svg-label">.000</text>`;
-  document.getElementById(id).innerHTML = svgWrap(title, body, "Gold dots are World Series winners. Red dots are playoff teams.");
+  document.getElementById(id).innerHTML = svgWrap(title, body, "Team colors identify clubs; gold rings mark champions and red rings mark playoff teams.");
 }
 
 function tierChart(rows) {
   const tiers = ["Top third", "Middle third", "Bottom third"];
   const data = tiers.map((tier) => {
     const set = rows.filter((row) => row.payroll_tier === tier);
-    return { label: tier, value: set.filter((row) => row.playoff_team).length / Math.max(1, set.length) };
+    return {
+      label: tier,
+      value: set.filter((row) => row.playoff_team).length / Math.max(1, set.length),
+      seasons: set.length,
+      color: payrollTierColors[tier],
+    };
   });
   barChart("tierChart", "Playoff rate by payroll tier", data, "playoff_rate");
 }
@@ -413,6 +466,12 @@ function wsPayrollChart(rows) {
     .map((row) => ({
       label: row.year,
       value: row.winner_payroll_millions - row.league_avg_payroll_millions,
+      team_id: row.winner_id,
+      team_name: row.winner,
+      tooltipLines: [
+        `Winner payroll: ${fmtMoney(row.winner_payroll_millions)}`,
+        `League average: ${fmtMoney(row.league_avg_payroll_millions)}`,
+      ],
     }));
   lineChart("wsPayrollChart", "World Series winner payroll vs league average", data, "payroll_millions");
 }
