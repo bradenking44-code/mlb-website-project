@@ -1,4 +1,4 @@
-const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-19";
+const DATA_URL = "data/processed/postseason_dashboard_data.json?v=20261001-20";
 
 const labels = {
   world_series_wins: "World Series wins",
@@ -314,6 +314,58 @@ function lineChart(id, title, data, field) {
   document.getElementById(id).innerHTML = svgWrap(title, body);
 }
 
+function championPayrollRankChart(id, rows) {
+  const data = rows
+    .filter((row) => row.world_series_winner && row.payroll_rank)
+    .sort((a, b) => a.year - b.year);
+  if (!data.length) {
+    document.getElementById(id).innerHTML = `<h3 class="chart-title">World Series champion payroll rank by year</h3><div class="empty-chart">No champions with payroll ranks match the current filters.</div>`;
+    return;
+  }
+
+  const plotLeft = 72;
+  const plotRight = 680;
+  const plotTop = 48;
+  const plotBottom = 278;
+  const minYear = Math.min(...data.map((row) => row.year));
+  const maxYear = Math.max(...data.map((row) => row.year));
+  const x = (year) => plotLeft + ((year - minYear) / Math.max(1, maxYear - minYear)) * (plotRight - plotLeft);
+  const y = (rank) => plotTop + ((rank - 1) / 29) * (plotBottom - plotTop);
+  const topThirdCutoff = y(10);
+  const line = data.map((row) => `${x(row.year)},${y(row.payroll_rank)}`).join(" ");
+  const dots = data.map((row) => {
+    const tip = tooltipText(`${row.year} ${row.team_name}`, [
+      `Payroll rank: #${row.payroll_rank} of 30`,
+      `Payroll: ${fmtMoney(row.payroll_millions)}`,
+      `Payroll tier: ${row.payroll_tier}`,
+      `Payroll source: ${row.payroll_source || "Unknown"}`,
+    ]);
+    return `<circle class="tooltip-mark" tabindex="0" data-tip="${tip}" cx="${x(row.year)}" cy="${y(row.payroll_rank)}" r="5" fill="#d39b2a" stroke="#704d00" stroke-width="1.5"></circle>`;
+  }).join("");
+  const yearLabels = minYear === maxYear
+    ? `<text x="${(plotLeft + plotRight) / 2}" y="310" text-anchor="middle" class="svg-label">${minYear}</text>`
+    : `<text x="${plotLeft}" y="310" class="svg-label">${minYear}</text><text x="${plotRight}" y="310" text-anchor="end" class="svg-label">${maxYear}</text>`;
+  const body = `
+    <rect x="${plotLeft}" y="${plotTop}" width="${plotRight - plotLeft}" height="${topThirdCutoff - plotTop}" fill="rgba(47,111,99,.12)"></rect>
+    <line x1="${plotLeft}" y1="${y(10)}" x2="${plotRight}" y2="${y(10)}" stroke="#2f6f63" stroke-dasharray="5 4"></line>
+    <line x1="${plotLeft}" y1="${y(20)}" x2="${plotRight}" y2="${y(20)}" class="axis" stroke-dasharray="3 5"></line>
+    <line x1="${plotLeft}" y1="${plotTop}" x2="${plotLeft}" y2="${plotBottom}" class="axis"></line>
+    <line x1="${plotLeft}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" class="axis"></line>
+    <polyline points="${line}" fill="none" stroke="#be1e2d" stroke-width="2.5" opacity=".75"></polyline>
+    ${dots}
+    <text x="64" y="${plotTop + 4}" text-anchor="end" class="svg-label">#1</text>
+    <text x="64" y="${y(10) + 4}" text-anchor="end" class="svg-label">#10</text>
+    <text x="64" y="${y(20) + 4}" text-anchor="end" class="svg-label">#20</text>
+    <text x="64" y="${plotBottom + 4}" text-anchor="end" class="svg-label">#30</text>
+    <text x="${plotRight - 6}" y="${plotTop + 16}" text-anchor="end" class="svg-label">Top third</text>
+    ${yearLabels}`;
+  document.getElementById(id).innerHTML = svgWrap(
+    "World Series champion payroll rank by year",
+    body,
+    "One dot per champion; #1 is the highest payroll. Shaded band marks the top third.",
+  );
+}
+
 function scatterChart(id, title, rows) {
   const data = rows.filter((row) => row.payroll_millions && row.win_pct);
   if (!data.length) {
@@ -508,8 +560,12 @@ function render() {
   metricCards(rows);
   renderWorldSeries();
   barChart("breakdownChart", `${labels[f.measure]} by ${labels[f.breakdown]}`, aggregate(rows, f.breakdown, f.measure, f.topN), f.measure);
-  const yearly = aggregate(rows, "year", f.measure, 100).sort((a, b) => Number(a.label) - Number(b.label));
-  lineChart("trendChart", `${labels[f.measure]} trend`, yearly, f.measure);
+  if (f.measure === "world_series_wins") {
+    championPayrollRankChart("trendChart", rows);
+  } else {
+    const yearly = aggregate(rows, "year", f.measure, 100).sort((a, b) => Number(a.label) - Number(b.label));
+    lineChart("trendChart", `${labels[f.measure]} trend`, yearly, f.measure);
+  }
   tierChart(rows);
   wsPayrollChart(rows);
   scatterChart("scatterChart", "Payroll vs win percentage", rows);
