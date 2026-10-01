@@ -1,6 +1,16 @@
 const numberFormat = new Intl.NumberFormat("en-US");
 const decimalFormat = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const colors = ["#be1e2d", "#113b64", "#2f6f63", "#d39b2a", "#642f6c", "#0c7c90", "#8f2f1f"];
+const teamColors = [
+  ["Arizona", "#a71930"], ["Atlanta", "#ce1141"], ["Baltimore", "#df4601"], ["Boston", "#bd3039"],
+  ["Cubs", "#0e3386"], ["White Sox", "#27251f"], ["Cincinnati", "#c6011f"], ["Cleveland", "#e31937"],
+  ["Colorado", "#33006f"], ["Detroit", "#0c2340"], ["Houston", "#002d62"], ["Kansas City", "#004687"],
+  ["Angels", "#ba0021"], ["Dodgers", "#005a9c"], ["Marlins", "#00a3e0"], ["Milwaukee", "#12284b"],
+  ["Minnesota", "#002b5c"], ["Mets", "#002d72"], ["Yankees", "#003087"], ["Oakland", "#003831"],
+  ["Philadelphia", "#e81828"], ["Phillies", "#e81828"], ["Pittsburgh", "#fdb827"], ["San Diego", "#2f241d"],
+  ["Giants", "#fd5a1e"], ["Seattle", "#0c2c56"], ["St. Louis", "#c41e3a"], ["Tampa Bay", "#092c5c"],
+  ["Texas", "#003278"], ["Toronto", "#134a8e"], ["Washington", "#ab0003"], ["Montreal", "#0055a4"],
+];
 
 function formatValue(value) {
   if (typeof value === "number" && value > 0 && value < 1) return `${(value * 100).toFixed(1)}%`;
@@ -65,6 +75,12 @@ function abbreviateLabel(label) {
     .replace("Washington Nationals", "Washington");
 }
 
+function colorForLabel(label, index) {
+  const compact = abbreviateLabel(label);
+  const match = teamColors.find(([team]) => compact.includes(team));
+  return match ? match[1] : colors[index % colors.length];
+}
+
 function splitChartLabel(label, maxChars = 17) {
   const text = abbreviateLabel(label);
   const seasonMatch = text.match(/^(\d{4})\s+(.+)$/);
@@ -117,7 +133,7 @@ function makeVerticalBarChart(section, data) {
     const h = (item.value / max) * plotHeight;
     const y = plotBottom - h;
     return `
-      <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="7" fill="${colors[index % colors.length]}">
+      <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="7" fill="${colorForLabel(item.label, index)}">
         <title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title>
       </rect>
       <text x="${x + barW / 2}" y="${y - 10}" text-anchor="middle" class="svg-value">${formatValue(item.value)}</text>
@@ -142,16 +158,18 @@ function makeBarChart(section, data) {
     const label = item.logo_url
       ? `<image href="${escapeHtml(item.logo_url)}" x="18" y="${y - 3}" width="26" height="26" preserveAspectRatio="xMidYMid meet"></image>
          ${makeMultilineLabel(labelLines, 52, y + 8)}`
-      : makeMultilineLabel(labelLines, seasonList ? 180 : 170, y + 8, "end");
+      : makeMultilineLabel(labelLines, seasonList ? 240 : 170, y + 8, "end");
     const barX = item.logo_url ? 198 : seasonList ? 198 : 168;
-    const maxBar = item.logo_url ? 490 : seasonList ? 470 : 500;
+    const seasonBarX = 258;
+    const maxBar = item.logo_url ? 490 : seasonList ? 390 : 500;
+    const x = seasonList ? seasonBarX : barX;
     const barW = (item.value / max) * maxBar;
     return `
       ${label}
-      <rect x="${barX}" y="${y}" width="${barW}" height="${rowH - 8}" rx="5" fill="${colors[index % colors.length]}">
+      <rect x="${x}" y="${y}" width="${barW}" height="${rowH - 8}" rx="5" fill="${colorForLabel(item.label, index)}">
         <title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title>
       </rect>
-      <text x="${Math.min(710, barX + 8 + barW)}" y="${y + 16}" class="svg-value">${formatValue(item.value)}</text>`;
+      <text x="${Math.min(710, x + 8 + barW)}" y="${y + 16}" class="svg-value">${formatValue(item.value)}</text>`;
   }).join("");
   return `<svg viewBox="0 0 760 340" role="img" aria-label="${escapeHtml(section.title)}">${bars}</svg>`;
 }
