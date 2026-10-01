@@ -20,6 +20,7 @@ function escapeHtml(value) {
 
 function makeSvgChart(section) {
   const data = section.chart || [];
+  if (section.id === "tier-playoff-rate") return makeVerticalBarChart(section, data);
   const longSeries = data.length > 18;
   if (longSeries) return makeLineChart(section, data);
   return makeBarChart(section, data);
@@ -85,6 +86,14 @@ function splitChartLabel(label, maxChars = 17) {
   return lines.slice(0, 2).map((line) => (line.length > maxChars ? `${line.slice(0, maxChars - 1)}...` : line));
 }
 
+function compactSeasonLabel(label) {
+  const text = abbreviateLabel(label);
+  const seasonMatch = text.match(/^(\d{4})\s+(.+)$/);
+  if (!seasonMatch) return text.length > 22 ? `${text.slice(0, 21)}...` : text;
+  const compact = `${seasonMatch[1]} ${seasonMatch[2]}`;
+  return compact.length > 22 ? `${compact.slice(0, 21)}...` : compact;
+}
+
 function makeMultilineLabel(lines, x, y, anchor = "start") {
   const safeLines = lines.map((line) => escapeHtml(line));
   const startDy = safeLines.length > 1 ? 0 : 5;
@@ -96,19 +105,46 @@ function makeMultilineLabel(lines, x, y, anchor = "start") {
     </text>`;
 }
 
+function makeVerticalBarChart(section, data) {
+  const max = Math.max(...data.map((item) => item.value), 1);
+  const plotTop = 44;
+  const plotBottom = 272;
+  const plotHeight = plotBottom - plotTop;
+  const slot = 620 / Math.max(1, data.length);
+  const bars = data.map((item, index) => {
+    const barW = Math.min(120, slot * 0.52);
+    const x = 78 + index * slot + (slot - barW) / 2;
+    const h = (item.value / max) * plotHeight;
+    const y = plotBottom - h;
+    return `
+      <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="7" fill="${colors[index % colors.length]}">
+        <title>${escapeHtml(item.label)}: ${formatValue(item.value)}</title>
+      </rect>
+      <text x="${x + barW / 2}" y="${y - 10}" text-anchor="middle" class="svg-value">${formatValue(item.value)}</text>
+      <text x="${x + barW / 2}" y="306" text-anchor="middle" class="svg-label">${escapeHtml(item.label)}</text>`;
+  }).join("");
+  return `
+    <svg viewBox="0 0 760 340" role="img" aria-label="${escapeHtml(section.title)}">
+      <line x1="70" y1="${plotBottom}" x2="700" y2="${plotBottom}" class="axis"></line>
+      <line x1="70" y1="${plotTop}" x2="70" y2="${plotBottom}" class="axis"></line>
+      ${bars}
+    </svg>`;
+}
+
 function makeBarChart(section, data) {
   const max = Math.max(...data.map((item) => item.value), 1);
-  const rowH = Math.min(44, 280 / Math.max(1, data.length));
+  const seasonList = section.id === "expensive-misses" || section.id === "low-payroll-success";
+  const rowH = seasonList ? Math.min(50, 292 / Math.max(1, data.length)) : Math.min(44, 280 / Math.max(1, data.length));
   const bars = data.map((item, index) => {
-    const y = 34 + index * rowH;
+    const y = seasonList ? 26 + index * rowH : 34 + index * rowH;
     const hasLogo = Boolean(item.logo_url);
-    const labelLines = splitChartLabel(item.label, hasLogo ? 16 : 20);
+    const labelLines = seasonList ? [compactSeasonLabel(item.label)] : splitChartLabel(item.label, hasLogo ? 16 : 20);
     const label = item.logo_url
       ? `<image href="${escapeHtml(item.logo_url)}" x="18" y="${y - 3}" width="26" height="26" preserveAspectRatio="xMidYMid meet"></image>
          ${makeMultilineLabel(labelLines, 52, y + 8)}`
-      : makeMultilineLabel(labelLines, 170, y + 8, "end");
-    const barX = item.logo_url ? 198 : 168;
-    const maxBar = item.logo_url ? 490 : 500;
+      : makeMultilineLabel(labelLines, seasonList ? 180 : 170, y + 8, "end");
+    const barX = item.logo_url ? 198 : seasonList ? 198 : 168;
+    const maxBar = item.logo_url ? 490 : seasonList ? 470 : 500;
     const barW = (item.value / max) * maxBar;
     return `
       ${label}

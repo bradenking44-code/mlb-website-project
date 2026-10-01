@@ -528,14 +528,6 @@
         {
           "label": "2015 Boston Red Sox",
           "value": 181.1
-        },
-        {
-          "label": "2014 Philadelphia Phillies",
-          "value": 180.94
-        },
-        {
-          "label": "2012 Philadelphia Phillies",
-          "value": 174.54
         }
       ]
     },
@@ -568,14 +560,6 @@
         {
           "label": "2008 Tampa Bay Rays",
           "value": 97
-        },
-        {
-          "label": "1986 Houston Astros",
-          "value": 96
-        },
-        {
-          "label": "2003 Oakland Athletics",
-          "value": 96
         }
       ]
     },
