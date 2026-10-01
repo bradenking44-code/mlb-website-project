@@ -1,6 +1,10 @@
 const numberFormat = new Intl.NumberFormat("en-US");
 const decimalFormat = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const colors = ["#be1e2d", "#113b64", "#2f6f63", "#d39b2a", "#642f6c", "#0c7c90", "#8f2f1f"];
+const currencyPreferenceKey = "moneyball-show-2025-dollars";
+let reportCurrencyAdjusted = false;
+let reportUsesMoneyUnits = false;
+let reportChampionRenderers = [];
 const teamColors = [
   ["Arizona", "#a71930"], ["Atlanta", "#ce1141"], ["Baltimore", "#df4601"], ["Boston", "#bd3039"],
   ["Cubs", "#0e3386"], ["White Sox", "#27251f"], ["Cincinnati", "#c6011f"], ["Cleveland", "#e31937"],
@@ -13,9 +17,102 @@ const teamColors = [
 ];
 
 function formatValue(value) {
+  if (reportUsesMoneyUnits) return `$${decimalFormat.format(value)}M`;
   if (typeof value === "number" && value > 0 && value < 1) return `${(value * 100).toFixed(1)}%`;
   if (typeof value === "number" && value % 1 !== 0) return decimalFormat.format(value);
   return numberFormat.format(value || 0);
+}
+
+function payrollDisplayValue(value, year) {
+  const cpi = window.MLBPayrollCPI;
+  return reportCurrencyAdjusted && cpi?.supports(year) ? cpi.toBase(value, year) : Number(value) || 0;
+}
+
+function readCurrencyPreference() {
+  try {
+    return localStorage.getItem(currencyPreferenceKey) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function saveCurrencyPreference(value) {
+  try {
+    localStorage.setItem(currencyPreferenceKey, String(Boolean(value)));
+  } catch {
+    // The report remains usable without browser storage.
+  }
+}
+
+function reportSectionForView(section) {
+  if (!section.measure?.includes("$M")) return section;
+  const chart = (section.chart || []).map((item) => {
+    const labelYear = String(item.label || "").match(/\b(?:19|20)\d{2}\b/);
+    const year = Number(item.year || labelYear?.[0]);
+    return { ...item, value: payrollDisplayValue(item.value, year) };
+  });
+  const containsNominalFutureYear = chart.some((item) => {
+    const year = Number(item.year || String(item.label || "").match(/\b(?:19|20)\d{2}\b/)?.[0]);
+    return year > 2025;
+  });
+  const measure = reportCurrencyAdjusted
+    ? section.measure.replace("$M", containsNominalFutureYear ? "2025 $M (2026 nominal)" : "2025 $M")
+    : section.measure;
+  return { ...section, chart, measure };
+}
+
+function reportChartSourceNote(section, dashboard) {
+  const teamSeasons = dashboard.teamSeasons || [];
+  const chartCount = (section.chart || []).length;
+  const dollarBasis = reportCurrencyAdjusted
+    ? "Historical payroll through 2025 is converted with annual-average CPI-U to 2025 dollars; 2026 stays nominal."
+    : "Payroll amounts are shown in source-year dollars.";
+  const sourceChange = "Payroll sources: Lahman/SABR through 2016; The Baseball Cube Opening Day payrolls from 2017.";
+  const notes = {
+    "payroll-growth": `${chartCount} yearly averages; ${sourceChange} ${dollarBasis}`,
+    "champion-rank": `${chartCount} World Series champions with payroll ranks; ${sourceChange}`,
+    "tier-playoff-rate": `${numberFormat.format(teamSeasons.length)} team-seasons with completed outcomes, 1985-2025; payroll thirds are ranked within season.`,
+    "world-series-teams": `${chartCount} clubs, with World Series titles from completed seasons in 1985-2025.`,
+    "playoff-volume": `${chartCount} clubs, with playoff appearances from completed seasons in 1985-2025.`,
+    "expensive-misses": `${chartCount} high-payroll club-seasons that missed the playoffs; ${sourceChange} ${dollarBasis}`,
+    "low-payroll-success": `${chartCount} low-payroll playoff club-seasons; records and playoff outcomes cover 1985-2025.`,
+    "top-spender-results": `Top payroll club-seasons grouped by their completed postseason result, 1985-2025.`,
+    "roster-size": `${chartCount} seasons; one row per player appearance is used to derive team roster size.`,
+  };
+  return notes[section.id] || `${chartCount} plotted groups; results cover completed seasons from 1985-2025.`;
+}
+
+function renderReportExecutiveFinding(dashboard) {
+  const rows = dashboard.teamSeasons || [];
+  const countTier = (tier) => {
+    const set = rows.filter((row) => row.payroll_tier === tier);
+    return { seasons: set.length, titles: set.filter((row) => row.world_series_winner).length };
+  };
+  const top = countTier("Top third");
+  const bottom = countTier("Bottom third");
+  const target = document.getElementById("executiveFinding");
+  if (!target || !top.seasons || !bottom.seasons) return;
+  const topRate = (100 * top.titles / top.seasons).toFixed(1);
+  const bottomRate = (100 * bottom.titles / bottom.seasons).toFixed(1);
+  target.innerHTML = `<strong>Higher payroll correlated with postseason access, while championships remained rare.</strong><span>Across ${numberFormat.format(rows.length)} club-seasons (1985-2025), the top third had a ${topRate}% title rate (${top.titles} titles in ${top.seasons} team-seasons), while the bottom third had a ${bottomRate}% rate (${bottom.titles} in ${bottom.seasons}). These are descriptive rates, not proof that payroll caused the result.</span>`;
+}
+
+function renderReportSections(summary, dashboard) {
+  document.getElementById("reportSections").innerHTML = summary.sections.map((section, index) => {
+    const view = reportSectionForView(section);
+    return `<article class="finding" id="${escapeHtml(section.id)}">
+      <div class="finding-copy">
+        <p class="eyebrow">Finding ${index + 1}</p>
+        <h3>${escapeHtml(section.title)}</h3>
+        <p>${escapeHtml(section.body)}</p>
+      </div>
+      <div class="chart-frame svg-report-chart">
+        <h4>${escapeHtml(view.measure)}</h4>
+        ${makeSvgChart(view)}
+        <p class="chart-source-note">${escapeHtml(reportChartSourceNote(section, dashboard))}</p>
+      </div>
+    </article>`;
+  }).join("");
 }
 
 function escapeHtml(value) {
@@ -30,6 +127,7 @@ function escapeHtml(value) {
 
 function makeSvgChart(section) {
   const data = section.chart || [];
+  reportUsesMoneyUnits = section.measure?.includes("$M") || false;
   if (section.id === "tier-playoff-rate" || section.id === "top-spender-results") return makeVerticalBarChart(section, data);
   const longSeries = data.length > 18;
   if (longSeries) return makeLineChart(section, data);
@@ -237,8 +335,9 @@ function parseRecord(record) {
   return { wins, losses, winPct: wins / (wins + losses) };
 }
 
-function formatMoney(value) {
-  return value || value === 0 ? `$${decimalFormat.format(value)}M` : "Unavailable";
+function formatMoney(value, year) {
+  const adjusted = payrollDisplayValue(value, year);
+  return value || value === 0 ? `$${decimalFormat.format(adjusted)}M` : "Unavailable";
 }
 
 function initChampionExplorer(worldSeries) {
@@ -266,10 +365,11 @@ function initChampionExplorer(worldSeries) {
     stats.innerHTML = `
       <div><span>Payroll Rank</span><strong>${payrollRank}</strong></div>
       <div><span>Win Pct</span><strong>${record ? record.winPct.toFixed(3).replace(/^0/, "") : "n/a"}</strong></div>
-      <div><span>Payroll</span><strong>${formatMoney(champion.winner_payroll_millions)}</strong></div>
+      <div><span>Payroll${reportCurrencyAdjusted ? " (2025 $)" : ""}</span><strong>${formatMoney(champion.winner_payroll_millions, champion.year)}</strong></div>
       <div><span>Record</span><strong>${escapeHtml(champion.record || "n/a")}</strong></div>`;
   }
 
+  reportChampionRenderers.push(renderChampion);
   prev.addEventListener("click", () => {
     index = index <= 0 ? champions.length - 1 : index - 1;
     renderChampion();
@@ -348,6 +448,9 @@ async function initReport() {
   ]);
   const summary = await summaryResponse.json();
   const dashboard = await dashboardResponse.json();
+  reportCurrencyAdjusted = readCurrencyPreference();
+  const currencyToggle = document.getElementById("inflationAdjusted");
+  currencyToggle.checked = reportCurrencyAdjusted;
 
   document.getElementById("headlineCards").innerHTML = summary.headlines.map((item) => `
     <div class="headline-card">
@@ -355,18 +458,21 @@ async function initReport() {
       <span>${escapeHtml(item.label)}</span>
     </div>`).join("");
 
-  document.getElementById("reportSections").innerHTML = summary.sections.map((section, index) => `
-    <article class="finding" id="${escapeHtml(section.id)}">
-      <div class="finding-copy">
-        <p class="eyebrow">Finding ${index + 1}</p>
-        <h3>${escapeHtml(section.title)}</h3>
-        <p>${escapeHtml(section.body)}</p>
-      </div>
-      <div class="chart-frame svg-report-chart">
-        <h4>${escapeHtml(section.measure)}</h4>
-        ${makeSvgChart(section)}
-      </div>
-    </article>`).join("");
+  renderReportExecutiveFinding(dashboard);
+  renderReportSections(summary, dashboard);
+  currencyToggle.addEventListener("change", () => {
+    reportCurrencyAdjusted = currencyToggle.checked;
+    saveCurrencyPreference(reportCurrencyAdjusted);
+    renderReportSections(summary, dashboard);
+    reportChampionRenderers.forEach((renderChampion) => renderChampion());
+  });
+  window.addEventListener("storage", (event) => {
+    if (event.key !== currencyPreferenceKey) return;
+    reportCurrencyAdjusted = event.newValue === "true";
+    currencyToggle.checked = reportCurrencyAdjusted;
+    renderReportSections(summary, dashboard);
+    reportChampionRenderers.forEach((renderChampion) => renderChampion());
+  });
 
   const worldSeries = [...(dashboard.worldSeries || [])].sort((a, b) => a.year - b.year);
   const winnersByYear = new Map(worldSeries.map((row) => [Number(row.year), row]));
@@ -382,6 +488,7 @@ async function initReport() {
   document.getElementById("reportMascots").innerHTML = winnerCards.join("");
 
   initScrollRunner();
+  reportChampionRenderers = [];
   initChampionExplorer(dashboard.worldSeries);
 }
 

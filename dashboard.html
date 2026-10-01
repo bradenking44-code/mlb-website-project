@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20261001-21">
+    <link rel="stylesheet" href="assets/styles.css?v=20261001-23">
   </head>
   <body>
     <nav class="site-nav">
@@ -86,8 +86,8 @@
           </label>
           <label>
             Minimum payroll
-            <input id="minPayroll" type="range" min="0" max="250" step="5" value="0">
-            <span class="range-readout"><span>$0M</span><strong id="minPayrollValue">$0M</strong><span>$250M</span></span>
+            <input id="minPayroll" type="range" min="0" max="350" step="5" value="0">
+            <span class="range-readout"><span>$0M</span><strong id="minPayrollValue">$0M</strong><span id="minPayrollMax">$350M</span></span>
           </label>
         </div>
 
@@ -116,6 +116,10 @@
               <option value="postseason_result">Postseason result</option>
             </select>
           </label>
+          <label class="currency-toggle">
+            <input id="inflationAdjusted" type="checkbox">
+            <span>Show historical payroll in 2025 dollars</span>
+          </label>
           <label>
             Top groups shown
             <input id="topN" type="range" min="5" max="30" step="1" value="12">
@@ -134,9 +138,13 @@
           </div>
         </div>
         <p class="dashboard-context">
-          Records, rosters, and completed postseason results run through 2025. Every team-season from 1985 through 2025 now has payroll data: Lahman/SABR salary totals through 2016 and The Baseball Cube Opening Day payrolls from 2017 onward. The complete 2017-2026 Opening Day payroll archive and Cot’s current cash/CBT snapshot appear below; 2026 results are kept separate from completed-season comparisons.
+          Team records and completed postseason results cover 1985-2025. Payroll data uses Lahman/SABR salary totals through 2016 and The Baseball Cube Opening Day payrolls from 2017-2025; ranks and tiers are calculated within each season. The CPI option adjusts historical comparison charts to 2025 dollars. The 2017-2026 payroll archive and Cot’s current payroll snapshot remain in source-year dollars.
+          <a href="https://github.com/cbwinslow/lahman-database-csv" target="_blank" rel="noreferrer">Lahman/SABR</a> ·
+          <a href="https://www.thebaseballcube.com/content/payroll/" target="_blank" rel="noreferrer">The Baseball Cube</a> ·
+          <a href="https://www.bls.gov/regions/mid-atlantic/data/consumerpriceindexannualandsemiannual_table.htm" target="_blank" rel="noreferrer">BLS CPI-U annual averages</a>
         </p>
-        <div class="payroll-ticker" aria-label="Animated World Series ticker">
+        <aside id="executiveFinding" class="executive-finding" aria-live="polite"></aside>
+        <div class="payroll-ticker" aria-label="Recent World Series champions">
           <div id="payrollTicker" class="payroll-ticker-track"></div>
         </div>
         <div id="loadingState" class="loading-state">Loading MLB seasons, rosters, payroll, and postseason results...</div>
@@ -156,6 +164,7 @@
           <div class="chart-panel"><div id="tierChart" class="svg-chart"></div></div>
           <div class="chart-panel"><div id="trendChart" class="svg-chart"></div></div>
           <div class="chart-panel wide"><div id="scatterChart" class="svg-chart"></div></div>
+          <div class="chart-panel wide"><div id="outcomeLadder" class="svg-chart outcome-ladder"></div></div>
         </div>
 
         <div class="leaderboard-panel">
@@ -194,7 +203,7 @@
                   <th>Year</th>
                   <th>Team</th>
                   <th>Record</th>
-                  <th>Payroll</th>
+                  <th id="seasonPayrollHeading">Payroll</th>
                   <th>Rank</th>
                   <th>Postseason</th>
                   <th>Roster</th>
@@ -217,7 +226,7 @@
             </div>
           </div>
           <p class="dashboard-context">
-            The Baseball Cube Opening Day payrolls cover all 30 clubs from 2017-2026. The source counts players under contract on Opening Day and excludes later callups and midseason additions.
+            The Baseball Cube Opening Day payrolls cover all 30 clubs from 2017-2026. The source counts players under contract on Opening Day and excludes later callups and midseason additions. This archive retains source-year dollars when the inflation adjustment is selected.
             <a id="openingPayrollSource" href="https://www.thebaseballcube.com/content/payroll/" target="_blank" rel="noreferrer">Source year table</a>
           </p>
           <div class="table-scroll">
@@ -265,6 +274,7 @@
       </section>
     </main>
 
-    <script src="assets/dashboard.js?v=20261001-23"></script>
+    <script src="assets/cpi-data.js?v=20261001-2"></script>
+    <script src="assets/dashboard.js?v=20261001-25"></script>
   </body>
 </html>

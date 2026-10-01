@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20261001-21">
+    <link rel="stylesheet" href="assets/styles.css?v=20261001-23">
   </head>
   <body>
     <nav class="site-nav">
@@ -38,6 +38,12 @@
         <p class="summary">
           This project compares Major League Baseball payroll with team records, rosters, playoff results, and World Series champions. Records, rosters, and completed postseason results run from 1985 through 2025. The payroll archive runs through 2026, using Lahman/SABR salary totals through 2016 and Opening Day payrolls after 2016.
         </p>
+        <aside id="executiveFinding" class="executive-finding report-executive-finding" aria-live="polite"></aside>
+        <label class="currency-toggle report-currency-toggle">
+          <input id="inflationAdjusted" type="checkbox">
+          <span>Show historical payroll charts in 2025 dollars (2026 stays nominal)</span>
+        </label>
+        <p class="currency-note">Inflation adjustment uses annual average U.S. CPI-U. Payroll ranks and tiers stay within-season comparisons.</p>
         <div class="hero-scoreboard" aria-label="Dataset highlights">
           <div class="score-cell"><strong>1985</strong><span>First season</span></div>
           <div class="score-cell"><strong>2025</strong><span>Latest season</span></div>
@@ -107,6 +113,9 @@
             <p>
               Records, rosters, and completed postseason results cover AL and NL seasons from 1985 through 2025. Payroll-backed team seasons run through 2025. The Baseball Cube archive adds every club's Opening Day payroll for 2017-2026; 2026 payroll is displayed separately because the project has no completed 2026 team-season outcome set yet.
             </p>
+            <p>
+              Historical comparison charts can convert payroll to 2025 dollars using the Bureau of Labor Statistics' annual-average CPI-U. This changes dollar values only; payroll ranks and tiers remain within-season measures. <a href="https://www.bls.gov/regions/mid-atlantic/data/consumerpriceindexannualandsemiannual_table.htm" target="_blank" rel="noreferrer">BLS CPI-U annual averages</a>
+            </p>
           </div>
           <div>
             <h3>Computed Fields</h3>
@@ -123,6 +132,7 @@
       </section>
     </main>
 
-    <script src="assets/report.js?v=20261001-18"></script>
+    <script src="assets/cpi-data.js?v=20261001-2"></script>
+    <script src="assets/report.js?v=20261001-20"></script>
   </body>
 </html>

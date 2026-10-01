@@ -53,6 +53,33 @@ function fmtMoney(value) {
   return value || value === 0 ? `$${money.format(value)}M` : "No payroll";
 }
 
+const currencyPreferenceKey = "moneyball-show-2025-dollars";
+
+function inflationToggleIsOn() {
+  return Boolean(document.getElementById("inflationAdjusted")?.checked);
+}
+
+function payrollDisplayValue(value, year, adjusted = inflationToggleIsOn()) {
+  const cpi = window.MLBPayrollCPI;
+  return adjusted && cpi?.supports(year) ? cpi.toBase(value, year) : Number(value) || 0;
+}
+
+function readCurrencyPreference() {
+  try {
+    return localStorage.getItem(currencyPreferenceKey) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function saveCurrencyPreference(value) {
+  try {
+    localStorage.setItem(currencyPreferenceKey, String(Boolean(value)));
+  } catch {
+    // The dashboard still works when browser storage is unavailable.
+  }
+}
+
 function fmtValue(value, field) {
   if (field === "playoff_rate" || field === "win_pct") return `${(value * 100).toFixed(1)}%`;
   if (field === "payroll_millions") return fmtMoney(value);
@@ -184,6 +211,7 @@ function filters() {
     postseason: document.getElementById("postseasonFilter").value,
     payrollTier: document.getElementById("payrollTierFilter").value,
     minPayroll: Number(document.getElementById("minPayroll").value || 0),
+    inflationAdjusted: inflationToggleIsOn(),
     measure: document.getElementById("measureSelect").value,
     breakdown: document.getElementById("breakdownSelect").value,
     topN: Number(document.getElementById("topN").value || 12),
@@ -194,6 +222,7 @@ function filteredRows() {
   const f = filters();
   return teamSeasons.filter((row) => {
     const wsTeam = row.world_series_winner || row.league_champion;
+    const payroll = payrollDisplayValue(row.payroll_millions, row.year, f.inflationAdjusted);
     return row.year >= f.start &&
       row.year <= f.end &&
       (!f.teamSearch || row.team_name.toLowerCase().includes(f.teamSearch) || row.team_id.toLowerCase().includes(f.teamSearch)) &&
@@ -201,12 +230,15 @@ function filteredRows() {
       (!f.league || row.league === f.league) &&
       (!f.division || row.division === f.division) &&
       (!f.payrollTier || row.payroll_tier === f.payrollTier) &&
-      (!f.minPayroll || (row.payroll_millions || 0) >= f.minPayroll) &&
+      (!f.minPayroll || payroll >= f.minPayroll) &&
       (!f.postseason ||
         (f.postseason === "playoffs" && row.playoff_team) ||
         (f.postseason === "missed" && !row.playoff_team) ||
         (f.postseason === "world_series" && wsTeam) ||
         (f.postseason === "champions" && row.world_series_winner));
+  }).map((row) => {
+    const displayPayroll = payrollDisplayValue(row.payroll_millions, row.year, f.inflationAdjusted);
+    return displayPayroll === row.payroll_millions ? row : { ...row, payroll_millions: displayPayroll };
   });
 }
 
@@ -263,7 +295,12 @@ function aggregate(rows, group, measure, limit) {
 }
 
 function setReadouts() {
-  document.getElementById("minPayrollValue").textContent = `$${document.getElementById("minPayroll").value}M`;
+  const payrollInput = document.getElementById("minPayroll");
+  const payrollMax = filters().inflationAdjusted ? 400 : 350;
+  payrollInput.max = payrollMax;
+  if (Number(payrollInput.value) > payrollMax) payrollInput.value = payrollMax;
+  document.getElementById("minPayrollMax").textContent = `$${payrollMax}M`;
+  document.getElementById("minPayrollValue").textContent = `$${payrollInput.value}M`;
   document.getElementById("topNValue").textContent = `Top ${document.getElementById("topN").value}`;
   const f = filters();
   document.querySelectorAll(".chip-button[data-start]").forEach((button) => {
@@ -284,11 +321,86 @@ function metricCards(rows) {
     [playoffTeams, "Playoff teams"],
     [wsWinners, "World Series winners"],
     [wins / Math.max(1, wins + losses), "Win rate", "win_pct"],
-    [avgPayroll, "Avg payroll", "payroll_millions"],
+    [avgPayroll, filters().inflationAdjusted ? "Avg payroll (2025 $)" : "Avg payroll", "payroll_millions"],
   ];
   document.getElementById("dashboardMetrics").innerHTML = cards.map(([value, label, field]) => `
     <div class="metric-card"><strong>${field ? fmtValue(value, field) : number.format(Math.round(value || 0))}</strong><span>${label}</span></div>
   `).join("");
+}
+
+function renderExecutiveFinding(rows) {
+  const target = document.getElementById("executiveFinding");
+  if (!target) return;
+  const tiers = ["Top third", "Middle third", "Bottom third"].map((tier) => {
+    const set = rows.filter((row) => row.payroll_tier === tier);
+    return {
+      name: tier.toLowerCase(),
+      seasons: set.length,
+      titles: set.filter((row) => row.world_series_winner).length,
+    };
+  });
+  const top = tiers[0];
+  const bottom = tiers[2];
+  if (!top.seasons || !bottom.seasons) {
+    target.innerHTML = `<strong>Reading the current view</strong><span>Choose a wider set of payroll tiers to compare postseason outcomes.</span>`;
+    return;
+  }
+  const topRate = (100 * top.titles / top.seasons).toFixed(1);
+  const bottomRate = (100 * bottom.titles / bottom.seasons).toFixed(1);
+  target.innerHTML = `<strong>Payroll is associated with October chances, but it did not guarantee a title.</strong><span>In this filtered view, the ${top.name} had a ${topRate}% title rate (${top.titles} titles in ${top.seasons} team-seasons); the ${bottom.name} had a ${bottomRate}% rate (${bottom.titles} in ${bottom.seasons}). The ladder below also shows playoff and World Series appearance rates.</span>`;
+}
+
+function outcomeLadderChart(rows) {
+  const outcomes = [
+    ["Playoffs", "playoff_team"],
+    ["World Series appearance", "league_champion"],
+    ["Title", "world_series_winner"],
+  ];
+  const tiers = ["Top third", "Middle third", "Bottom third"];
+  const columns = tiers.map((tier) => {
+    const set = rows.filter((row) => row.payroll_tier === tier);
+    const color = payrollTierColors[tier];
+    const stages = outcomes.map(([label, field]) => {
+      const successes = set.filter((row) => row[field]).length;
+      const rate = set.length ? successes / set.length : 0;
+      return `<div class="outcome-stage">
+        <div class="outcome-stage-heading"><span>${label}</span><strong>${(rate * 100).toFixed(1)}%</strong></div>
+        <div class="outcome-track" aria-hidden="true"><span style="width:${Math.min(100, rate * 100)}%;background:${color}"></span></div>
+        <small>${number.format(successes)} of ${number.format(set.length)} team-seasons</small>
+      </div>`;
+    }).join("");
+    return `<article class="outcome-tier">
+      <h4><span class="tier-swatch" style="background:${color}"></span>${escapeHtml(tier)}</h4>
+      ${stages}
+    </article>`;
+  }).join("");
+  const target = document.getElementById("outcomeLadder");
+  target.innerHTML = `<h3 class="chart-title">Payroll tier outcome ladder</h3>
+    <p class="chart-subtitle">Share of matching club-seasons that reached each stage. Counts keep the title rates in context.</p>
+    <div class="outcome-ladder-grid">${columns}</div>
+    <p class="chart-source-note">Completed outcomes: 1985-2025. Payroll tiers rank clubs within each season; payroll sources change after 2016.</p>`;
+}
+
+function setChartSourceNote(id, text) {
+  const target = document.getElementById(id);
+  if (!target) return;
+  target.querySelector(".chart-source-note")?.remove();
+  target.insertAdjacentHTML("beforeend", `<p class="chart-source-note">${escapeHtml(text)}</p>`);
+}
+
+function updateChartSourceNotes(rows) {
+  const payrollCount = rows.filter((row) => row.payroll_millions).length;
+  const winnerCount = rows.filter((row) => row.world_series_winner && row.payroll_millions).length;
+  const source = "Payroll through 2016: Lahman/SABR salary totals; 2017-2025: The Baseball Cube Opening Day payrolls. ";
+  const dollars = filters().inflationAdjusted
+    ? "Historical amounts use annual-average CPI-U in 2025 dollars; 2026 archive amounts stay nominal."
+    : "Payroll amounts are shown in source-year dollars.";
+  const base = source + dollars;
+  setChartSourceNote("breakdownChart", `Current sample: ${number.format(rows.length)} team-seasons. ${base}`);
+  setChartSourceNote("trendChart", `Current sample: ${number.format(rows.length)} team-seasons across ${filters().start}-${filters().end}. ${base}`);
+  setChartSourceNote("tierChart", `Payroll tiers include ${number.format(rows.filter((row) => row.payroll_tier && row.payroll_tier !== "Payroll unavailable").length)} team-seasons with a within-season payroll rank.`);
+  setChartSourceNote("wsPayrollChart", `Current sample: ${number.format(winnerCount)} World Series winners represented by the active filters. Values compare each winner with that season's league average. ${base}`);
+  setChartSourceNote("scatterChart", `Current sample: ${number.format(payrollCount)} team-seasons with payroll and records. Team colors identify clubs. ${base}`);
 }
 
 function svgWrap(title, body, subtitle = "", height = 330) {
@@ -503,24 +615,34 @@ function tierChart(rows) {
 }
 
 function wsPayrollChart(rows) {
-  const f = filters();
-  const data = worldSeries.filter((row) => row.year >= f.start && row.year <= f.end && row.winner_payroll_millions)
-    .map((row) => ({
+  const winners = new Map(rows
+    .filter((row) => row.world_series_winner)
+    .map((row) => [`${row.year}-${row.team_id}`, row]));
+  const data = worldSeries.flatMap((row) => {
+    const winner = winners.get(`${row.year}-${row.winner_id}`);
+    if (!winner || !row.winner_payroll_millions) return [];
+    const winnerPayroll = winner.payroll_millions || payrollDisplayValue(row.winner_payroll_millions, row.year);
+    const leagueAverage = payrollDisplayValue(row.league_avg_payroll_millions, row.year);
+    return [{
       label: row.year,
-      value: row.winner_payroll_millions - row.league_avg_payroll_millions,
+      value: winnerPayroll - leagueAverage,
       team_id: row.winner_id,
       team_name: row.winner,
       tooltipLines: [
-        `Winner payroll: ${fmtMoney(row.winner_payroll_millions)}`,
-        `League average: ${fmtMoney(row.league_avg_payroll_millions)}`,
+        `Winner payroll: ${fmtMoney(winnerPayroll)}`,
+        `League average: ${fmtMoney(leagueAverage)}`,
       ],
-    }));
-  lineChart("wsPayrollChart", "World Series winner payroll vs league average", data, "payroll_millions");
+    }];
+  });
+  const title = `World Series winner payroll vs league average${filters().inflationAdjusted ? " (2025 $)" : ""}`;
+  lineChart("wsPayrollChart", title, data, "payroll_millions");
 }
 
-function renderWorldSeries() {
-  const f = filters();
-  const items = worldSeries.filter((row) => row.year >= f.start && row.year <= f.end).sort((a, b) => b.year - a.year);
+function renderWorldSeries(rows) {
+  const winnerKeys = new Set(rows
+    .filter((row) => row.world_series_winner)
+    .map((row) => `${row.year}-${row.team_id}`));
+  const items = worldSeries.filter((row) => winnerKeys.has(`${row.year}-${row.winner_id}`)).sort((a, b) => b.year - a.year);
   document.getElementById("wsCaption").textContent = `${items.length} champions in view`;
   document.getElementById("worldSeriesTimeline").innerHTML = items.map((row) => `
     <article class="ws-card">
@@ -532,8 +654,8 @@ function renderWorldSeries() {
 }
 
 function renderTicker() {
-  const items = worldSeries.filter((row) => row.year >= 1985).slice(-20);
-  document.getElementById("payrollTicker").innerHTML = items.concat(items).map((row) =>
+  const items = worldSeries.slice(-8).reverse();
+  document.getElementById("payrollTicker").innerHTML = items.map((row) =>
     `<span>${row.year} ${escapeHtml(row.winner)} ${row.winner_payroll_rank ? `rank #${row.winner_payroll_rank}` : "payroll n/a"}</span>`
   ).join("");
 }
@@ -547,7 +669,7 @@ function renderRoster(row) {
   const players = rosters[key] || [];
   document.getElementById("rosterCaption").textContent = `${row.year} ${row.team_name}, ${players.length} players`;
   document.getElementById("rosterSpotlight").innerHTML = `
-    <div class="roster-header">${teamCell(row)}<span>${row.wins}-${row.losses}, ${row.postseason_result}, ${fmtMoney(row.payroll_millions)}</span></div>
+    <div class="roster-header">${teamCell(row)}<span>${row.wins}-${row.losses}, ${row.postseason_result}, ${fmtMoney(payrollDisplayValue(row.payroll_millions, row.year))}${inflationToggleIsOn() && window.MLBPayrollCPI?.supports(row.year) ? " (2025 $)" : ""}</span></div>
     <div class="roster-list">
       ${players.slice(0, 36).map((player) => `<span title="${player.games} games">${escapeHtml(player.player_name)} <small>${player.games} G</small></span>`).join("")}
     </div>`;
@@ -577,6 +699,7 @@ function renderTable(rows) {
   syncTableYearSelect(rows);
   const tableYear = Number(document.getElementById("tableYearSelect").value);
   const tableRows = tableYear ? rows.filter((row) => row.year === tableYear) : rows;
+  document.getElementById("seasonPayrollHeading").textContent = filters().inflationAdjusted ? "Payroll (2025 $)" : "Payroll";
   const sorted = [...tableRows].sort((a, b) => b.wins - a.wins || a.team_name.localeCompare(b.team_name));
   document.getElementById("rowCount").textContent = `${sorted.length} teams shown from ${tableYear || "all years"} (${rows.length} match filters)`;
   document.getElementById("dataTable").innerHTML = sorted.map((row, i) => `
@@ -660,8 +783,10 @@ function render() {
   setReadouts();
   const rows = filteredRows();
   const f = filters();
+  labels.payroll_millions = f.inflationAdjusted ? "Payroll, 2025 $M" : "Payroll, $M";
   metricCards(rows);
-  renderWorldSeries();
+  renderExecutiveFinding(rows);
+  renderWorldSeries(rows);
   barChart("breakdownChart", `${labels[f.measure]} by ${labels[f.breakdown]}`, aggregate(rows, f.breakdown, f.measure, f.topN), f.measure);
   if (f.measure === "world_series_wins") {
     championPayrollRankChart("trendChart", rows);
@@ -670,15 +795,24 @@ function render() {
     lineChart("trendChart", `${labels[f.measure]} trend`, yearly, f.measure);
   }
   tierChart(rows);
+  outcomeLadderChart(rows);
   wsPayrollChart(rows);
-  scatterChart("scatterChart", "Payroll vs win percentage", rows);
+  scatterChart("scatterChart", `Payroll vs win percentage${f.inflationAdjusted ? " (2025 $)" : ""}`, rows);
   renderTable(rows);
+  updateChartSourceNotes(rows);
   renderOpeningDayPayrollArchive();
   bindChartTooltips();
 }
 
 function wireEvents() {
   document.querySelectorAll("input, select").forEach((input) => input.addEventListener("input", render));
+  const inflationToggle = document.getElementById("inflationAdjusted");
+  inflationToggle.addEventListener("change", () => saveCurrencyPreference(inflationToggle.checked));
+  window.addEventListener("storage", (event) => {
+    if (event.key !== currencyPreferenceKey) return;
+    inflationToggle.checked = event.newValue === "true";
+    render();
+  });
   document.querySelectorAll(".chip-button[data-start]").forEach((button) => {
     button.addEventListener("click", () => {
       document.getElementById("startYear").value = button.dataset.start;
@@ -692,6 +826,8 @@ function wireEvents() {
     document.getElementById("teamSearch").value = "";
     ["teamFilter", "leagueFilter", "divisionFilter", "postseasonFilter", "payrollTierFilter"].forEach((id) => document.getElementById(id).value = "");
     document.getElementById("minPayroll").value = 0;
+    document.getElementById("inflationAdjusted").checked = false;
+    saveCurrencyPreference(false);
     document.getElementById("measureSelect").value = "world_series_wins";
     document.getElementById("breakdownSelect").value = "team_name";
     document.getElementById("topN").value = 12;
@@ -731,6 +867,7 @@ async function init() {
   metadata = data.metadata;
   currentPayrollSnapshot = data.currentPayrollSnapshot;
   openingDayPayrolls = data.openingDayPayrolls || [];
+  document.getElementById("inflationAdjusted").checked = readCurrencyPreference();
   document.getElementById("startYear").min = metadata.start_year;
   document.getElementById("startYear").max = metadata.latest_year;
   document.getElementById("endYear").min = metadata.start_year;
