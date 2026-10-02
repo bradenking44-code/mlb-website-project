@@ -45,6 +45,7 @@ let currentPayrollSnapshot = null;
 let openingDayPayrolls = [];
 let animationTimer = null;
 let selectedRosterKey = "";
+let defaultRosterRow = null;
 
 const money = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
 const number = new Intl.NumberFormat("en-US");
@@ -781,6 +782,11 @@ function wireEvents() {
     });
   });
   document.getElementById("resetFilters").addEventListener("click", () => {
+    if (animationTimer) {
+      clearInterval(animationTimer);
+      animationTimer = null;
+      document.getElementById("playSeasons").textContent = "Animate seasons";
+    }
     document.getElementById("startYear").value = metadata.start_year;
     document.getElementById("endYear").value = metadata.payroll_end_year || metadata.latest_year;
     document.getElementById("teamSearch").value = "";
@@ -790,6 +796,11 @@ function wireEvents() {
     document.getElementById("breakdownSelect").value = "team_name";
     document.getElementById("topN").value = 12;
     document.getElementById("tableYearSelect").value = metadata.payroll_end_year || metadata.latest_year;
+    document.getElementById("openingPayrollYearSelect").value = metadata.opening_day_payroll_end_year || metadata.latest_year;
+    if (defaultRosterRow) {
+      setRosterControls(defaultRosterRow);
+      renderRoster(defaultRosterRow);
+    }
     render();
   });
   document.getElementById("playSeasons").addEventListener("click", () => {
@@ -833,8 +844,9 @@ async function init() {
   fillSelect("leagueFilter", "league", "All leagues");
   fillSelect("divisionFilter", "division", "All divisions");
   fillRosterTeamSelect();
-  const firstPayrollWinner = teamSeasons.find((row) => row.world_series_winner && row.payroll_millions) || teamSeasons[0];
-  setRosterControls(firstPayrollWinner);
+  defaultRosterRow = teamSeasons.find((row) => row.world_series_winner && row.payroll_millions) || teamSeasons[0];
+  setRosterControls(defaultRosterRow);
+  renderRoster(defaultRosterRow);
   document.getElementById("loadingState").remove();
   renderTicker();
   renderOpeningDayPayrollArchive();

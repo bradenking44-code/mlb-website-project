@@ -18,7 +18,8 @@
 - Includes title, author name, and summary paragraph.
 - Includes 6 headline numbers.
 - Includes 9 findings, each with explanatory text and a chart.
-- Includes data notes with source, row definition, exclusions, and computed-field definitions.
+- The introduction states the main result as well as the data coverage.
+- Includes data notes with source, row definition, exclusions, and computed-field definitions, including the reported averages and rates.
 - Uses native SVG charts so visuals work without a remote chart dependency.
 
 ## Dashboard Page
@@ -26,17 +27,22 @@
 - File: `dashboard.html`, linked from the report page.
 - Loads browser data from `postseason_dashboard_data.json`, a compact team-season and roster file derived from the full 54,851-row CSV.
 - Includes filters for time, team, league, division, postseason outcome, payroll tier, and minimum payroll.
-- Includes summary numbers that update with filters.
+- Includes at least 4 summary numbers that update with filters.
 - Includes a measure switch and a breakdown switch.
-- Includes at least 5 charts/visuals: breakdown chart, World Series payroll comparison, playoff rate by payroll tier, trend chart, and payroll/win percentage scatter plot.
+- Includes 6 charts/visuals that update with the dashboard filters: breakdown chart, World Series payroll comparison, playoff rate by payroll tier, trend chart, payroll/win percentage scatter plot, and payroll-tier outcome ladder.
 - Includes World Series winner cards by year.
 - Includes team logos next to team names.
 - Includes roster spotlight and team-season table.
-- Includes a reset button and animated season playback.
+- Includes a reset button that restores the season, team, league, division, postseason, payroll, roster, archive, table, measure, and breakdown selections, plus animated season playback.
 
 ## Repository
 
-- Public GitHub repository.
-- GitHub Pages enabled from the `main` branch root.
-- README lists files, data source, scripts, and project requirements.
+- Git remote is configured as `https://github.com/bradenking44-code/mlb-website-project.git`.
+- External check before submission: confirm the repository is public and GitHub Pages publishes from the `main` branch root. Those settings cannot be verified from the local source files.
+- README contains a complete inventory of all tracked project files, data sources, scripts, and project requirements.
 - Reproducible scripts are included for the dataset and report summary.
+
+## Separate Course Hand-In
+
+- The course also requires a separate `.txt` or `.md` file with four lines: student name, student ID, public repository URL, and live website URL.
+- Keep this submission file outside the public repository so the student ID is not published with the project source.

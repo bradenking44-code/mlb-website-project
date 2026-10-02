@@ -29,7 +29,7 @@
     {
       "id": "payroll-growth",
       "title": "Payroll records now span 1985 through 2026",
-      "body": "Lahman/SABR salary totals supply 1985-2016; The Baseball Cube Opening Day payrolls supply 2017-2026. The source definition changes in 2017, so within-season ranks and tiers are the strongest comparisons across that break.",
+      "body": "Average team payroll rose from $10.08 million in 1985 to $204.36 million in 2026, in source-year dollars. Lahman/SABR listed salary totals supply 1985-2016; The Baseball Cube Opening Day payrolls supply 2017-2026, so payroll definitions change in 2017 and within-season ranks and tiers are the strongest comparisons across that break.",
       "measure": "Average team payroll, $M",
       "chart": [
         {
@@ -453,7 +453,7 @@
     {
       "id": "tier-playoff-rate",
       "title": "Top payroll teams reached the postseason more often",
-      "body": "Payroll tier has a visible relationship with playoff odds, especially when comparing the top third of spending to the bottom third.",
+      "body": "43.7% of top-third payroll teams reached the postseason, compared with 17.4% of bottom-third teams. These pooled team-season rates describe an association; they do not show that payroll caused the results.",
       "measure": "Playoff rate",
       "chart": [
         {
@@ -473,7 +473,7 @@
     {
       "id": "world-series-teams",
       "title": "A few clubs collected most payroll-era titles",
-      "body": "From 1985 through 2025, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained postseason success.",
+      "body": "From 1985 through 2025, the Yankees led with 5 titles; the next-highest total was 4 each for Boston Red Sox and Los Angeles Dodgers. The chart shows the teams with the most titles in the period.",
       "measure": "World Series wins",
       "chart": [
         {
@@ -596,7 +596,7 @@
     {
       "id": "playoff-volume",
       "title": "Playoff appearances show consistency better than championships",
-      "body": "Because a short postseason series can swing on a few games, playoff appearances are a more stable signal than World Series wins alone.",
+      "body": "The Yankees made the postseason 26 times from 1985 through 2025, the highest total in the chart. Because a short series can swing on a few games, playoff appearances show season-to-season consistency better than titles alone.",
       "measure": "Playoff appearances",
       "chart": [
         {
@@ -664,7 +664,7 @@
     {
       "id": "expensive-misses",
       "title": "High payroll misses are the clearest counterexamples",
-      "body": "Several top-third payroll teams still missed the playoffs, which shows why payroll should be treated as a predictor, not a certainty.",
+      "body": "The chart lists the six highest-payroll teams that missed the postseason. The largest was the 2023 New York Mets at $334.23 million, illustrating why payroll is not a guarantee of success.",
       "measure": "Payroll, $M",
       "chart": [
         {
@@ -701,8 +701,8 @@
     },
     {
       "id": "low-payroll-success",
-      "title": "Low-payroll playoff teams prove efficiency mattered",
-      "body": "Bottom-third payroll teams still reached the postseason when player development, roster construction, and timing beat spending power.",
+      "title": "Bottom-third payroll teams still reached the postseason",
+      "body": "The chart highlights six bottom-third teams that reached the postseason. The highest win total among them was 103 wins by the 2002 Oakland Athletics, showing that lower payroll did not prevent a strong season.",
       "measure": "Wins",
       "chart": [
         {
@@ -740,7 +740,7 @@
     {
       "id": "top-spender-results",
       "title": "Even elite regular seasons did not guarantee top-spender titles",
-      "body": "This chart compares the average wins for each season's highest-payroll team by final postseason result. The top spender usually won plenty of regular-season games, but that success still did not reliably convert into a championship.",
+      "body": "This chart compares mean regular-season wins for each season's highest-payroll team by postseason result. Top spenders averaged 79.1 wins when they missed the postseason and 97.1 wins when they won the World Series; a strong regular season still did not assure a title.",
       "measure": "Average wins by top spender result",
       "chart": [
         {
@@ -763,8 +763,8 @@
     },
     {
       "id": "roster-size",
-      "title": "Roster records provide the player-level panel required for the project",
-      "body": "The full dataset includes every player-team-season appearance, letting the site display rosters while keeping the analysis connected to team records and payroll.",
+      "title": "Average roster size rose from 38.4 to 56.2 players",
+      "body": "The chart averages team roster sizes by season. The mean was 38.4 players per team in 1985 and 56.2 in 2025. The underlying panel retains individual player-team-season appearances so rosters can be inspected.",
       "measure": "Average roster size",
       "chart": [
         {

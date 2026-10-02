@@ -139,7 +139,27 @@ def main():
 
     recent_ws = [row for row in ws if row["year"] >= 2017]
     payroll_ws = [row for row in ws if row.get("winner_payroll_rank")]
-    top_third_ws = sum(1 for row in payroll_ws if row["winner_payroll_rank"] <= 10)
+    team_by_season = {(row["year"], row["team_id"]): row for row in rows}
+    payroll_ws = [
+        item for item in ws
+        if item.get("winner_payroll_rank") and (item["year"], item["winner_id"]) in team_by_season
+    ]
+    top_third_ws = sum(
+        1 for item in payroll_ws
+        if team_by_season[(item["year"], item["winner_id"])].get("payroll_tier") == "Top third"
+    )
+
+    top_payroll_start, top_payroll_latest = payroll_by_year[0], payroll_by_year[-1]
+    tier_rates = {item["label"]: item["value"] for item in tier_playoff}
+    ws_leaders = sorted(team_ws, key=lambda item: item["value"], reverse=True)
+    playoff_leaders = sorted(team_playoff, key=lambda item: item["value"], reverse=True)
+    highest_payroll_miss = top(expensive_misses, n=1)[0]
+    best_low_payroll_success = top(low_payroll_success, n=1)[0]
+    top_spender_averages = {
+        label: avg(top_spender_wins.get(label, []))
+        for label in ["Missed playoffs", "Playoff exit", "Lost WS", "Won WS"]
+    }
+    roster_first, roster_latest = roster_sizes[0], roster_sizes[-1]
 
     summary = {
         "headlines": [
@@ -154,7 +174,7 @@ def main():
             {
                 "id": "payroll-growth",
                 "title": "Payroll records now span 1985 through 2026",
-                "body": "Lahman/SABR salary totals supply 1985-2016; The Baseball Cube Opening Day payrolls supply 2017-2026. The source definition changes in 2017, so within-season ranks and tiers are the strongest comparisons across that break.",
+                "body": f"Average team payroll rose from ${top_payroll_start['value']:.2f} million in {top_payroll_start['label']} to ${top_payroll_latest['value']:.2f} million in {top_payroll_latest['label']}, in source-year dollars. Lahman/SABR listed salary totals supply 1985-2016; The Baseball Cube Opening Day payrolls supply 2017-2026, so payroll definitions change in 2017 and within-season ranks and tiers are the strongest comparisons across that break.",
                 "measure": "Average team payroll, $M",
                 "chart": payroll_by_year,
             },
@@ -168,52 +188,52 @@ def main():
             {
                 "id": "tier-playoff-rate",
                 "title": "Top payroll teams reached the postseason more often",
-                "body": "Payroll tier has a visible relationship with playoff odds, especially when comparing the top third of spending to the bottom third.",
+                "body": f"{tier_rates['Top third']:.1%} of top-third payroll teams reached the postseason, compared with {tier_rates['Bottom third']:.1%} of bottom-third teams. These pooled team-season rates describe an association; they do not show that payroll caused the results.",
                 "measure": "Playoff rate",
                 "chart": sorted(tier_playoff, key=lambda item: item["label"]),
             },
             {
                 "id": "world-series-teams",
                 "title": "A few clubs collected most payroll-era titles",
-                "body": f"From 1985 through {meta['payroll_end_year']}, World Series wins clustered around a smaller group of organizations, which lets the dashboard compare sustained spending to sustained postseason success.",
+                "body": f"From 1985 through {meta['payroll_end_year']}, the Yankees led with {ws_leaders[0]['value']} titles; the next-highest total was {ws_leaders[1]['value']} each for {ws_leaders[1]['label']} and {ws_leaders[2]['label']}. The chart shows the teams with the most titles in the period.",
                 "measure": "World Series wins",
                 "chart": top(team_ws),
             },
             {
                 "id": "playoff-volume",
                 "title": "Playoff appearances show consistency better than championships",
-                "body": "Because a short postseason series can swing on a few games, playoff appearances are a more stable signal than World Series wins alone.",
+                "body": f"The Yankees made the postseason {playoff_leaders[0]['value']} times from 1985 through {meta['latest_year']}, the highest total in the chart. Because a short series can swing on a few games, playoff appearances show season-to-season consistency better than titles alone.",
                 "measure": "Playoff appearances",
                 "chart": top(team_playoff),
             },
             {
                 "id": "expensive-misses",
                 "title": "High payroll misses are the clearest counterexamples",
-                "body": "Several top-third payroll teams still missed the playoffs, which shows why payroll should be treated as a predictor, not a certainty.",
+                "body": f"The chart lists the six highest-payroll teams that missed the postseason. The largest was the {highest_payroll_miss['label']} at ${highest_payroll_miss['value']:.2f} million, illustrating why payroll is not a guarantee of success.",
                 "measure": "Payroll, $M",
                 "chart": top(expensive_misses, n=6),
             },
             {
                 "id": "low-payroll-success",
-                "title": "Low-payroll playoff teams prove efficiency mattered",
-                "body": "Bottom-third payroll teams still reached the postseason when player development, roster construction, and timing beat spending power.",
+                "title": "Bottom-third payroll teams still reached the postseason",
+                "body": f"The chart highlights six bottom-third teams that reached the postseason. The highest win total among them was {best_low_payroll_success['value']} wins by the {best_low_payroll_success['label']}, showing that lower payroll did not prevent a strong season.",
                 "measure": "Wins",
                 "chart": top(low_payroll_success, n=6),
             },
             {
                 "id": "top-spender-results",
                 "title": "Even elite regular seasons did not guarantee top-spender titles",
-                "body": "This chart compares the average wins for each season's highest-payroll team by final postseason result. The top spender usually won plenty of regular-season games, but that success still did not reliably convert into a championship.",
+                "body": f"This chart compares mean regular-season wins for each season's highest-payroll team by postseason result. Top spenders averaged {top_spender_averages['Missed playoffs']:.1f} wins when they missed the postseason and {top_spender_averages['Won WS']:.1f} wins when they won the World Series; a strong regular season still did not assure a title.",
                 "measure": "Average wins by top spender result",
                 "chart": [
-                    {"label": label, "value": avg(top_spender_wins.get(label, []))}
+                    {"label": label, "value": top_spender_averages[label]}
                     for label in ["Missed playoffs", "Playoff exit", "Lost WS", "Won WS"]
                 ],
             },
             {
                 "id": "roster-size",
-                "title": "Roster records provide the player-level panel required for the project",
-                "body": "The full dataset includes every player-team-season appearance, letting the site display rosters while keeping the analysis connected to team records and payroll.",
+                "title": f"Average roster size rose from {roster_first['value']:.1f} to {roster_latest['value']:.1f} players",
+                "body": f"The chart averages team roster sizes by season. The mean was {roster_first['value']:.1f} players per team in {roster_first['label']} and {roster_latest['value']:.1f} in {roster_latest['label']}. The underlying panel retains individual player-team-season appearances so rosters can be inspected.",
                 "measure": "Average roster size",
                 "chart": roster_sizes,
             },

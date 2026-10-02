@@ -39,7 +39,7 @@
         <p class="page-subtitle">Can MLB payrolls buy World Series titles?</p>
         <p class="byline">By Braden King</p>
         <p class="summary">
-          This project compares Major League Baseball payroll with team records, rosters, playoff results, and World Series champions. Records, rosters, and completed postseason results run from 1985 through 2025. The payroll archive runs through 2026, using Lahman/SABR salary totals through 2016 and Opening Day payrolls after 2016.
+          This project compares Major League Baseball payroll with team records, rosters, playoff results, and World Series champions. Records, rosters, and completed postseason results run from 1985 through 2025. The payroll archive runs through 2026, using Lahman/SABR salary totals through 2016 and Opening Day payrolls after 2016. In completed seasons, teams in the top payroll third reached the postseason more often than teams in the bottom third, but payroll did not guarantee a title: 28 of 40 champions with payroll data ranked in the top third.
         </p>
         <aside id="executiveFinding" class="executive-finding report-executive-finding" aria-live="polite"></aside>
         <div class="hero-scoreboard" aria-label="Dataset highlights">
@@ -102,7 +102,7 @@
       </section>
 
       <section class="report-sections section-inner" aria-labelledby="findings-title">
-        <h2 id="findings-title">Eight Findings</h2>
+        <h2 id="findings-title">Nine Findings</h2>
         <div id="reportSections" class="findings-list"></div>
       </section>
 
@@ -116,22 +116,46 @@
             <p>
               Records, rosters, and completed postseason results cover AL and NL seasons from 1985 through 2025. Payroll-backed team seasons run through 2025. The Baseball Cube archive adds every club's Opening Day payroll for 2017-2026; 2026 payroll is displayed separately because the project has no completed 2026 team-season outcome set yet.
             </p>
+            <h3>Included rows and exclusions</h3>
+            <p>
+              The roster source contains 128,512 player-appearance rows. The project keeps the 54,851 rows that match an AL or NL team-season from 1985 through 2025; the other 73,661 rows fall outside that selected season range. Every in-range appearance matched an included team-season by year and team ID. Team records outside those leagues or years, and salary rows without an included team-season, are not used in the analysis. Cot's 2026 cash and CBT snapshot stays separate because its accounting definitions differ from historical salary totals and Opening Day payroll.
+            </p>
+            <p>
+              Payroll values remain in source-year dollars. Lahman/SABR player salary rows are summed by team and season through 2016. From 2017 onward, the Baseball Cube team Opening Day contracted-player total is used; it excludes later callups and midseason trades. The separate 2026 Opening Day archive contains 30 clubs, but it has no completed-season outcomes to join yet.
+            </p>
           </div>
           <div>
             <h3>Computed Fields</h3>
             <ul class="clean-list">
               <li>Season payroll = Lahman/SABR listed-salary sum through 2016 and Opening Day contracted-player payroll from 2017-2026</li>
-              <li>Payroll rank = team payroll rank within that season</li>
-              <li>Payroll percentile = payroll rank converted to a 0-1 within-season scale</li>
+              <li>Payroll rank = rank teams from highest payroll (1) to lowest within each season; equal payrolls use a stable team-key or team-name tie-breaker</li>
+              <li>Payroll percentile = 1 - (rank - 1) / (team count - 1), so the highest payroll is 1 and the lowest is 0</li>
+              <li>Payroll tier = Top third for ranks up to team count / 3, Middle third through 2 × team count / 3, and Bottom third for remaining teams; integer rank boundaries can make a tier differ by one club</li>
               <li>Winning percentage = team wins / completed regular-season decisions</li>
               <li>Playoff team = appeared in Lahman postseason series or won division/wild card/pennant/title</li>
               <li>World Series winner = team marked as the winner of the WS round</li>
+              <li>Cost per win = team payroll in millions / regular-season wins</li>
             </ul>
+            <h3>Reported rates, averages, and counts</h3>
+            <ul class="clean-list">
+              <li>Playoff rate by payroll tier and the dashboard outcome ladder = team-seasons reaching the named stage / all team-seasons in that tier; payroll tiers are assigned within each year before pooling seasons.</li>
+              <li>The top-third champion finding = World Series winners with a Top third payroll tier / winners with payroll coverage. Team tier is used directly, so the definition works in seasons with fewer than 30 clubs.</li>
+              <li>Dashboard title rate by payroll tier = filtered World Series winner team-seasons in a tier / all filtered team-seasons in that tier.</li>
+              <li>Average payroll by year = arithmetic mean of available team payrolls for that season, expressed in source-year millions; the 2026 value averages its 30 Opening Day payrolls.</li>
+              <li>Average wins by top-spender result = arithmetic mean of regular-season wins among each season's rank-1 payroll team, grouped by its postseason result.</li>
+              <li>Average roster size by year = arithmetic mean of roster counts across team-seasons; a roster count is the number of player-appearance rows for that team and year.</li>
+              <li>Dashboard win rate = total wins / (total wins + total losses) across the filtered team-seasons. Average payroll is the mean of filtered team-seasons with payroll values.</li>
+              <li>World Series winner payroll versus league average = winner payroll minus the average payroll of all clubs with payroll data in the same season.</li>
+              <li>Headline counts, team titles, and playoff appearances are direct counts of the labeled rows or outcomes; chart samples are noted next to each chart.</li>
+            </ul>
+            <p>
+              The source tables are available from <a href="https://github.com/cbwinslow/lahman-database-csv" target="_blank" rel="noreferrer">Lahman/SABR</a>, <a href="https://www.thebaseballcube.com/content/payroll/" target="_blank" rel="noreferrer">The Baseball Cube</a>, and <a href="https://legacy.baseballprospectus.com/compensation/cots/" target="_blank" rel="noreferrer">Cot's Baseball Contracts</a>.
+            </p>
           </div>
         </div>
       </section>
     </main>
 
-    <script src="assets/report.js?v=20261001-23"></script>
+    <script src="assets/report.js?v=20261002-24"></script>
   </body>
 </html>
