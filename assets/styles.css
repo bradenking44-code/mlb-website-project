@@ -3064,6 +3064,28 @@ tbody tr:hover {
   stroke-width: 1.5;
 }
 
+.practice-field-base {
+  fill: #fff;
+  stroke: #557063;
+  stroke-width: 2;
+  transition: fill 140ms ease, filter 140ms ease;
+}
+
+.practice-field-base.is-occupied {
+  fill: #f1bd55;
+  stroke: #fff5d7;
+  filter: drop-shadow(0 0 8px rgba(241, 189, 85, .9));
+}
+
+.practice-bat-trail {
+  fill: none;
+  stroke: rgba(241, 189, 85, .68);
+  stroke-width: 17;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
 .practice-zone-label {
   fill: rgba(255, 255, 255, .84);
   font-size: 8px;

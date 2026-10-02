@@ -2,6 +2,7 @@
   const scene = document.getElementById("practiceScene");
   const ball = document.getElementById("practiceBall");
   const bat = document.getElementById("practiceBat");
+  const batTrail = document.getElementById("practiceBatTrail");
   const aim = document.getElementById("practiceAim");
   const trail = document.getElementById("practiceTrail");
   const outcomeBadge = document.getElementById("practiceOutcome");
@@ -14,10 +15,13 @@
   const firstBase = document.getElementById("practiceFirst");
   const secondBase = document.getElementById("practiceSecond");
   const thirdBase = document.getElementById("practiceThird");
+  const fieldFirst = document.getElementById("practiceFieldFirst");
+  const fieldSecond = document.getElementById("practiceFieldSecond");
+  const fieldThird = document.getElementById("practiceFieldThird");
   const swingButton = document.getElementById("practiceSwing");
   const replayButton = document.getElementById("practiceReplay");
 
-  if (!scene || !ball || !bat || !aim || !trail || !outcomeBadge || !outcomeText || !outsReadout || !runsReadout || !strikesReadout || !message || !roundStatus || !firstBase || !secondBase || !thirdBase || !swingButton || !replayButton) return;
+  if (!scene || !ball || !bat || !batTrail || !aim || !trail || !outcomeBadge || !outcomeText || !outsReadout || !runsReadout || !strikesReadout || !message || !roundStatus || !firstBase || !secondBase || !thirdBase || !fieldFirst || !fieldSecond || !fieldThird || !swingButton || !replayButton) return;
 
   const pitchDuration = 1900;
   const pitchInterval = 2550;
@@ -38,6 +42,7 @@
   let lastNow = performance.now();
   let finalAnimationUntil = 0;
   let animationFrame = null;
+  let swingTrailPoints = [];
 
   function scheduleAnimation() {
     if (animationFrame !== null) return;
@@ -62,6 +67,9 @@
     firstBase.classList.toggle("is-occupied", bases[0]);
     secondBase.classList.toggle("is-occupied", bases[1]);
     thirdBase.classList.toggle("is-occupied", bases[2]);
+    fieldFirst.classList.toggle("is-occupied", bases[0]);
+    fieldSecond.classList.toggle("is-occupied", bases[1]);
+    fieldThird.classList.toggle("is-occupied", bases[2]);
     roundStatus.textContent = gameOver
       ? "THREE OUTS · INNING OVER"
       : gameStarted ? `LIVE · PITCH ${pitchNumber}` : "PRACTICE · READY";
@@ -206,12 +214,12 @@
     const side = pointer.x < 480 ? -1 : 1;
 
     if (roll < outChance * 0.52) {
-      hitFlight(pose, "groundout", side);
+      hitFlight(pose, "groundout", side, now);
       recordOut("Ground ball to the infield", "GROUNDOUT");
       return;
     }
     if (roll < outChance) {
-      hitFlight(pose, "flyout", side);
+      hitFlight(pose, "flyout", side, now);
       recordOut("Fly ball caught in the outfield", "FLYOUT");
       return;
     }
@@ -271,6 +279,8 @@
     bases = [false, false, false];
     flight = null;
     swingStart = 0;
+    swingTrailPoints = [];
+    batTrail.setAttribute("visibility", "hidden");
     swingButton.disabled = false;
     swingButton.textContent = "Swing";
     replayButton.hidden = true;
@@ -309,13 +319,26 @@
       trail.setAttribute("visibility", "hidden");
     }
 
-    if (swingStart && now - swingStart < 420) {
-      const swingProgress = clamp((now - swingStart) / 420, 0, 1);
+    if (swingStart && now - swingStart < 560) {
+      const swingProgress = clamp((now - swingStart) / 560, 0, 1);
       const eased = 1 - Math.pow(1 - swingProgress, 2);
-      const angle = 48 - 70 * eased;
+      const angle = 36 - 74 * eased;
       bat.setAttribute("transform", `translate(770 424) rotate(${angle.toFixed(1)})`);
+      const radians = angle * Math.PI / 180;
+      const tipX = 770 - 250 * Math.cos(radians) + 45 * Math.sin(radians);
+      const tipY = 424 - 250 * Math.sin(radians) - 45 * Math.cos(radians);
+      swingTrailPoints.push([tipX, tipY]);
+      if (swingTrailPoints.length > 14) swingTrailPoints.shift();
+      batTrail.setAttribute("d", swingTrailPoints.map(([x, y], index) => `${index ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" "));
+      batTrail.setAttribute("opacity", String(0.82 * (1 - swingProgress * 0.62)));
+      batTrail.setAttribute("visibility", "visible");
     } else {
-      bat.setAttribute("transform", "translate(770 424) rotate(48)");
+      bat.setAttribute("transform", "translate(770 424) rotate(36)");
+      if (swingStart) {
+        swingStart = 0;
+        swingTrailPoints = [];
+        batTrail.setAttribute("visibility", "hidden");
+      }
     }
 
     if (gameStarted && elapsed >= pitchDuration && !pitchResolved) recordStrike("called");
@@ -326,6 +349,8 @@
       pitchTarget = newPitchTarget();
       flight = null;
       swingStart = 0;
+      swingTrailPoints = [];
+      batTrail.setAttribute("visibility", "hidden");
       hideOutcome();
       updateScore();
       setMessage("New pitch. Track it from the mound to the plate.");
