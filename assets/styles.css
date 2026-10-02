@@ -2833,3 +2833,265 @@ tbody tr:hover {
     white-space: normal;
   }
 }
+
+.practice-band {
+  padding: 42px 0;
+  background: linear-gradient(135deg, #e9eff4 0%, #f8fafc 52%, #e7f1eb 100%);
+  border-top: 1px solid #d9e2eb;
+  border-bottom: 1px solid #d9e2eb;
+}
+
+.practice-card {
+  display: grid;
+  grid-template-columns: minmax(260px, .68fr) minmax(0, 1.32fr);
+  overflow: hidden;
+  border: 1px solid rgba(7, 29, 58, .16);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 22px 52px rgba(7, 29, 58, .17);
+}
+
+.practice-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(24px, 4vw, 42px);
+  color: #fff;
+  background:
+    radial-gradient(circle at 12% 100%, rgba(215, 164, 59, .2), transparent 34%),
+    linear-gradient(145deg, #071d3a, #10395a 72%, #14503f);
+}
+
+.practice-copy .eyebrow {
+  margin-bottom: 12px;
+}
+
+.practice-copy h2 {
+  max-width: 360px;
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  line-height: 1.1;
+}
+
+.practice-copy > p:not(.eyebrow):not(.practice-message):not(.practice-help) {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, .82);
+  line-height: 1.65;
+}
+
+.practice-scoreboard {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 22px;
+}
+
+.practice-scoreboard > div {
+  display: grid;
+  gap: 3px;
+  min-width: 92px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .08);
+}
+
+.practice-scoreboard span {
+  color: rgba(255, 255, 255, .68);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.practice-scoreboard strong {
+  color: #fff;
+  font-size: 1.34rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.practice-message {
+  min-height: 46px;
+  margin: 16px 0 0;
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.practice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 8px;
+}
+
+.practice-actions [hidden] {
+  display: none !important;
+}
+
+.practice-swing-button,
+.practice-replay-button {
+  min-height: 42px;
+  padding: 0 17px;
+  border-radius: 6px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.practice-swing-button {
+  color: #071d3a;
+  border: 1px solid #f1bd55;
+  background: #f1bd55;
+}
+
+.practice-replay-button {
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .3);
+  background: rgba(255, 255, 255, .1);
+}
+
+.practice-swing-button:hover,
+.practice-replay-button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.practice-swing-button:focus-visible,
+.practice-replay-button:focus-visible,
+.practice-scene:focus-visible {
+  outline: 3px solid #f1bd55;
+  outline-offset: 3px;
+}
+
+.practice-swing-button:disabled {
+  cursor: default;
+  opacity: .62;
+  transform: none;
+}
+
+.practice-help {
+  margin: auto 0 0;
+  padding-top: 18px;
+  color: rgba(255, 255, 255, .62);
+  font-size: .72rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.practice-stage {
+  min-width: 0;
+  padding: clamp(16px, 3vw, 28px);
+  background:
+    radial-gradient(circle at 50% 100%, rgba(35, 93, 67, .55), transparent 55%),
+    #071b31;
+}
+
+.practice-stage-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, .64);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.practice-stage-heading span:last-child {
+  color: #f1bd55;
+  font-variant-numeric: tabular-nums;
+}
+
+.practice-scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 9px;
+  background: #aac7d7;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.practice-wall-text {
+  fill: rgba(255, 255, 255, .72);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 4px;
+}
+
+.practice-strike-zone {
+  fill: rgba(255, 255, 255, .025);
+  stroke: rgba(255, 255, 255, .62);
+  stroke-dasharray: 6 6;
+  stroke-width: 1.5;
+}
+
+.practice-zone-label {
+  fill: rgba(255, 255, 255, .84);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.practice-ball-trail {
+  stroke: rgba(255, 255, 255, .84);
+  stroke-dasharray: 5 8;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.practice-aim {
+  opacity: .92;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(7, 29, 58, .65));
+}
+
+.practice-aim circle,
+.practice-aim path {
+  fill: none;
+  stroke: #f1bd55;
+  stroke-width: 2.2;
+}
+
+.practice-aim circle:first-child {
+  stroke-dasharray: 3 4;
+}
+
+.practice-scene-note {
+  margin: 10px 2px 0;
+  color: rgba(255, 255, 255, .66);
+  font-size: .73rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .practice-card {
+    grid-template-columns: 1fr;
+  }
+
+  .practice-help {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .practice-band {
+    padding: 24px 0;
+  }
+
+  .practice-card {
+    border-radius: 10px;
+  }
+
+  .practice-stage {
+    padding: 12px;
+  }
+
+  .practice-wall-text,
+  .practice-zone-label {
+    display: none;
+  }
+}

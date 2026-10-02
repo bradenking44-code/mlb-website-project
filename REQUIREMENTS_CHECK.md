@@ -20,6 +20,7 @@
 - Includes 9 findings, each with explanatory text and a chart.
 - The introduction states the main result as well as the data coverage.
 - Includes data notes with source, row definition, exclusions, and computed-field definitions, including the reported averages and rates.
+- Adds an interactive batting-practice visual with cursor/touch aiming, keyboard controls, a five-pitch round, and a hit counter.
 - Uses native SVG charts so visuals work without a remote chart dependency.
 
 ## Dashboard Page

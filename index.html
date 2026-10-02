@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20261001-25">
+    <link rel="stylesheet" href="assets/styles.css?v=20261002-26">
   </head>
   <body>
     <nav class="site-nav">
@@ -80,6 +80,109 @@
     </header>
 
     <main>
+      <section class="practice-band" aria-labelledby="practice-title">
+        <div class="section-inner">
+          <div class="practice-card">
+            <div class="practice-copy">
+              <p class="eyebrow">Interactive batting practice</p>
+              <h2 id="practice-title">Can you square one up?</h2>
+              <p>Track the pitch with your cursor and click or tap to swing as it reaches the plate. You get five pitches.</p>
+              <div class="practice-scoreboard" aria-label="Batting practice score">
+                <div><span>Hits</span><strong id="practiceHits">0</strong></div>
+                <div><span>Pitch</span><strong id="practicePitch">1 / 5</strong></div>
+              </div>
+              <p id="practiceMessage" class="practice-message" aria-live="polite">Move your cursor over the ball, then swing near the plate.</p>
+              <div class="practice-actions">
+                <button id="practiceSwing" class="practice-swing-button" type="button">Swing</button>
+                <button id="practiceReplay" class="practice-replay-button" type="button" hidden>Play again</button>
+              </div>
+              <p class="practice-help">Mouse or tap to aim · Arrow keys to move · Space to swing</p>
+            </div>
+            <div class="practice-stage">
+              <div class="practice-stage-heading">
+                <span>THE CAGE</span>
+                <span id="practiceRoundStatus">LIVE · PITCH 1</span>
+              </div>
+              <svg id="practiceScene" viewBox="0 0 880 360" role="application" tabindex="0" aria-label="Interactive batting practice. Move the cursor to the ball and click to swing. Use arrow keys to aim and Space to swing.">
+                <defs>
+                  <linearGradient id="practiceSky" x2="0" y2="1">
+                    <stop offset="0" stop-color="#9bc0d5"></stop>
+                    <stop offset="1" stop-color="#e2edf1"></stop>
+                  </linearGradient>
+                  <linearGradient id="practiceGrass" x2="0" y2="1">
+                    <stop offset="0" stop-color="#2f805a"></stop>
+                    <stop offset="1" stop-color="#12523d"></stop>
+                  </linearGradient>
+                  <linearGradient id="practiceDirt" x2="0" y2="1">
+                    <stop offset="0" stop-color="#c58a5d"></stop>
+                    <stop offset="1" stop-color="#9d6043"></stop>
+                  </linearGradient>
+                  <pattern id="practiceSeats" width="36" height="18" patternUnits="userSpaceOnUse">
+                    <path d="M0 3h36M0 12h36" stroke="#d5e0e5" stroke-opacity=".34" stroke-width="3"></path>
+                    <circle cx="8" cy="8" r="2" fill="#f4f2df" fill-opacity=".8"></circle>
+                    <circle cx="25" cy="17" r="2" fill="#d7a43b" fill-opacity=".8"></circle>
+                  </pattern>
+                  <filter id="practiceBallShadow" x="-80%" y="-80%" width="260%" height="260%">
+                    <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#06162c" flood-opacity=".45"></feDropShadow>
+                  </filter>
+                </defs>
+                <rect width="880" height="360" fill="url(#practiceSky)"></rect>
+                <path d="M0 70Q190 33 410 67T880 61V178H0Z" fill="#25394d"></path>
+                <path d="M0 77Q190 40 410 74T880 68V171H0Z" fill="url(#practiceSeats)"></path>
+                <path d="M0 168Q205 135 440 155T880 163V192Q440 176 0 202Z" fill="#122c45"></path>
+                <g class="practice-lights" fill="#fff8dc">
+                  <path d="M80 35v76M67 35h26M800 28v76M786 28h28" stroke="#34485b" stroke-width="5"></path>
+                  <circle cx="70" cy="37" r="5"></circle><circle cx="82" cy="37" r="5"></circle><circle cx="94" cy="37" r="5"></circle>
+                  <circle cx="789" cy="30" r="5"></circle><circle cx="801" cy="30" r="5"></circle><circle cx="813" cy="30" r="5"></circle>
+                </g>
+                <path d="M0 192Q220 145 440 168T880 185V360H0Z" fill="url(#practiceGrass)"></path>
+                <path d="M0 223Q200 180 390 202T880 209M0 275Q240 230 430 251T880 251M40 330Q290 278 490 302T880 292" fill="none" stroke="#8dc28a" stroke-opacity=".14" stroke-width="19"></path>
+                <path d="M42 203Q440 137 838 196" fill="none" stroke="#d7a43b" stroke-width="5"></path>
+                <path d="M42 203Q440 137 838 196V210Q440 154 42 218Z" fill="#183b38"></path>
+                <text x="440" y="190" class="practice-wall-text" text-anchor="middle">PLAY BALL</text>
+                <path d="M396 360L576 203Q642 187 704 217L838 360Z" fill="url(#practiceDirt)" opacity=".95"></path>
+                <path d="M760 286L674 247L596 213L526 250Z" fill="#2d784f" stroke="#f4ead1" stroke-opacity=".85" stroke-width="2"></path>
+                <path d="M760 286L674 247L596 213L526 250Z" fill="none" stroke="#fff2d8" stroke-width="2"></path>
+                <ellipse cx="596" cy="215" rx="25" ry="9" fill="#c58a5d" opacity=".8"></ellipse>
+                <path d="M753 283l7-5 7 5-7 7z" fill="#fff" stroke="#dfe8e9" stroke-width="1.5"></path>
+                <path d="M667 244l7-5 7 5-7 7zM589 210l7-5 7 5-7 7zM519 247l7-5 7 5-7 7z" fill="#fff" stroke="#e5ece9" stroke-width="1.2"></path>
+                <rect x="704" y="203" width="84" height="93" rx="5" class="practice-strike-zone"></rect>
+                <text x="746" y="198" class="practice-zone-label" text-anchor="middle">STRIKE ZONE</text>
+                <g class="practice-player practice-pitcher" aria-hidden="true">
+                  <circle cx="580" cy="180" r="10" fill="#d9a77a"></circle>
+                  <path d="M568 177q12-18 25 0v5h-25z" fill="#f4f2e9"></path>
+                  <path d="M569 193q12-6 23 0l9 28h-39z" fill="#f4f2e9"></path>
+                  <path d="M570 218l-11 20m29-19 10 18" stroke="#102c45" stroke-width="8" stroke-linecap="round"></path>
+                  <path d="M570 198l-19 6m32-7 13 8" stroke="#d9a77a" stroke-width="6" stroke-linecap="round"></path>
+                </g>
+                <g class="practice-player practice-batter" aria-hidden="true">
+                  <circle cx="790" cy="216" r="11" fill="#c78e68"></circle>
+                  <path d="M779 214q1-17 23-11l4 10h-27z" fill="#c82432"></path>
+                  <path d="M779 229q13-6 23 3l8 25-29 5-9-23z" fill="#f4f2e9"></path>
+                  <path d="M782 255l-7 27m25-24 12 24" stroke="#102c45" stroke-width="9" stroke-linecap="round"></path>
+                  <path d="M783 235l-17 9m29-8 12 8" stroke="#c78e68" stroke-width="6" stroke-linecap="round"></path>
+                </g>
+                <g id="practiceBat" transform="rotate(-42 784 244)">
+                  <path d="M784 244L731 200" stroke="#a95e32" stroke-width="10" stroke-linecap="round"></path>
+                  <path d="M731 200L718 189" stroke="#d6a15d" stroke-width="15" stroke-linecap="round"></path>
+                  <path d="M784 244l-9-8" stroke="#f2e5cc" stroke-width="4" stroke-linecap="round"></path>
+                </g>
+                <line id="practiceTrail" x1="0" y1="0" x2="0" y2="0" class="practice-ball-trail" visibility="hidden"></line>
+                <g id="practiceBall" class="practice-ball" transform="translate(590 200) scale(.7)" filter="url(#practiceBallShadow)">
+                  <circle r="11" fill="#fffdf5" stroke="#c6d3d6" stroke-width="1.4"></circle>
+                  <path d="M-6-8q11 8 12 16M6-8q-11 8-12 16" fill="none" stroke="#c82432" stroke-width="1.8" stroke-linecap="round"></path>
+                </g>
+                <g id="practiceAim" class="practice-aim" transform="translate(742 247)" aria-hidden="true">
+                  <circle r="19"></circle><circle r="4"></circle>
+                  <path d="M-27 0h12m30 0h12M0-27v12m0 30v12"></path>
+                </g>
+              </svg>
+              <p class="practice-scene-note">Aim at the moving ball. The bat connects when your timing and cursor line up.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="headline-band" aria-labelledby="headline-title">
         <div class="section-inner">
           <h2 id="headline-title">Headline Numbers</h2>
@@ -157,5 +260,6 @@
     </main>
 
     <script src="assets/report.js?v=20261002-24"></script>
+    <script src="assets/batting-practice.js?v=20261002-1"></script>
   </body>
 </html>
