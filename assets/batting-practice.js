@@ -18,16 +18,17 @@
   const fieldFirst = document.getElementById("practiceFieldFirst");
   const fieldSecond = document.getElementById("practiceFieldSecond");
   const fieldThird = document.getElementById("practiceFieldThird");
-  const pitcherArm = document.getElementById("practicePitcherArm");
+  const wheelLeft = document.getElementById("practiceWheelLeft");
+  const wheelRight = document.getElementById("practiceWheelRight");
   const lightGreen = document.getElementById("practiceLightGreen");
   const lightRed = document.getElementById("practiceLightRed");
   const cueText = document.getElementById("practiceCueText");
   const swingButton = document.getElementById("practiceSwing");
   const replayButton = document.getElementById("practiceReplay");
 
-  if (!scene || !ball || !bat || !batTrail || !aim || !trail || !outcomeBadge || !outcomeText || !outsReadout || !runsReadout || !strikesReadout || !message || !roundStatus || !firstBase || !secondBase || !thirdBase || !fieldFirst || !fieldSecond || !fieldThird || !pitcherArm || !lightGreen || !lightRed || !cueText || !swingButton || !replayButton) return;
+  if (!scene || !ball || !bat || !batTrail || !aim || !trail || !outcomeBadge || !outcomeText || !outsReadout || !runsReadout || !strikesReadout || !message || !roundStatus || !firstBase || !secondBase || !thirdBase || !fieldFirst || !fieldSecond || !fieldThird || !wheelLeft || !wheelRight || !lightGreen || !lightRed || !cueText || !swingButton || !replayButton) return;
 
-  const windupDuration = 470;
+  const windupDuration = 620;
   const pitchDuration = 1950;
   const pitchInterval = 2700;
   const flightDuration = pitchDuration - windupDuration;
@@ -76,27 +77,12 @@
     cueText.textContent = isComing ? "RED · PITCH COMING" : "GREEN · READY";
   }
 
-  function updatePitcher(elapsed) {
-    let angle = -20;
-    if (elapsed < windupDuration) {
-      const windup = clamp(elapsed / 180, 0, 1);
-      angle = -20 - 112 * (1 - Math.pow(1 - windup, 2));
-      if (elapsed > 180) {
-        const release = clamp((elapsed - 180) / (windupDuration - 180), 0, 1);
-        angle = -132 + 176 * (release * release * (3 - 2 * release));
-      }
-    } else if (elapsed < windupDuration + 360) {
-      const followThrough = clamp((elapsed - windupDuration) / 360, 0, 1);
-      angle = 44 + 38 * (followThrough * followThrough * (3 - 2 * followThrough));
-    } else if (elapsed < pitchInterval - 280) {
-      angle = 82;
-    } else {
-      const reset = clamp((elapsed - (pitchInterval - 280)) / 280, 0, 1);
-      angle = 82 - 102 * (reset * reset * (3 - 2 * reset));
-    }
-    pitcherArm.setAttribute("transform", `rotate(${angle.toFixed(1)} 493 250)`);
-    setPitchCue(elapsed >= windupDuration - 210 && elapsed < pitchDuration ? "coming" : "ready");
-    return angle;
+  function updateMachine(elapsed) {
+    const coming = elapsed >= windupDuration - 240 && elapsed < pitchDuration;
+    setPitchCue(coming ? "coming" : "ready");
+    const wheelRotation = coming ? (elapsed - (windupDuration - 240)) * 1.6 : 0;
+    wheelLeft.setAttribute("transform", `rotate(${wheelRotation.toFixed(1)} 467 239)`);
+    wheelRight.setAttribute("transform", `rotate(${-wheelRotation.toFixed(1)} 493 239)`);
   }
 
   function updateScore() {
@@ -154,21 +140,11 @@
     };
   }
 
-  function pitcherHandPosition(angle) {
-    const radians = angle * Math.PI / 180;
-    const handX = 37;
-    const handY = -4;
-    return {
-      x: 493 + handX * Math.cos(radians) - handY * Math.sin(radians),
-      y: 250 + handX * Math.sin(radians) + handY * Math.cos(radians),
-    };
-  }
-
   function pitchPose(progress) {
     const eased = 1 - Math.pow(1 - progress, 2.2);
     return {
-      x: 522 + (pitchTarget.x - 522) * eased,
-      y: 273 + (pitchTarget.y - 273) * eased,
+      x: 480 + (pitchTarget.x - 480) * eased,
+      y: 266 + (pitchTarget.y - 266) * eased,
       scale: 0.34 + 1.18 * progress,
     };
   }
@@ -180,7 +156,8 @@
   function finishRound() {
     gameStarted = false;
     gameOver = true;
-    pitcherArm.setAttribute("transform", "rotate(-20 493 250)");
+    wheelLeft.setAttribute("transform", "rotate(0 467 239)");
+    wheelRight.setAttribute("transform", "rotate(0 493 239)");
     setPitchCue("ready");
     finalAnimationUntil = performance.now() + 850;
     swingButton.disabled = true;
@@ -337,8 +314,9 @@
     replayButton.hidden = true;
     hideOutcome();
     setPitchCue("ready");
-    pitcherArm.setAttribute("transform", "rotate(-20 493 250)");
-    setMessage("Track the ball from the pitcher's hand. Click it as it reaches the strike zone.");
+    wheelLeft.setAttribute("transform", "rotate(0 467 239)");
+    wheelRight.setAttribute("transform", "rotate(0 493 239)");
+    setMessage("Watch the lights. Track the ball from the machine to the strike zone.");
     updateScore();
     scheduleAnimation();
   }
@@ -354,7 +332,7 @@
 
     const elapsed = now - pitchStart;
     const progress = clamp((elapsed - windupDuration) / flightDuration, 0, 1);
-    const pitcherAngle = gameStarted ? updatePitcher(elapsed) : -20;
+    if (gameStarted) updateMachine(elapsed);
     if (flight) {
       const flightProgress = clamp((now - flight.start) / flight.duration, 0, 1);
       const x = flight.fromX + (flight.x - flight.fromX) * flightProgress;
@@ -370,8 +348,7 @@
     } else {
       const pose = pitchPose(progress);
       if (elapsed < windupDuration) {
-        const hand = pitcherHandPosition(pitcherAngle);
-        placeBall(hand.x, hand.y, 0.34);
+        placeBall(480, 266, 0.34);
       } else placeBall(pose.x, pose.y, pose.scale);
       trail.setAttribute("visibility", "hidden");
     }
@@ -382,8 +359,8 @@
       const angle = 36 - 74 * eased;
       bat.setAttribute("transform", `translate(770 424) rotate(${angle.toFixed(1)})`);
       const radians = angle * Math.PI / 180;
-      const tipX = 770 - 258 * Math.cos(radians) + 42 * Math.sin(radians);
-      const tipY = 424 - 258 * Math.sin(radians) - 42 * Math.cos(radians);
+      const tipX = 770 - 263 * Math.cos(radians);
+      const tipY = 424 - 263 * Math.sin(radians);
       swingTrailPoints.push([tipX, tipY]);
       if (swingTrailPoints.length > 14) swingTrailPoints.shift();
       batTrail.setAttribute("d", swingTrailPoints.map(([x, y], index) => `${index ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" "));
@@ -410,7 +387,7 @@
       batTrail.setAttribute("visibility", "hidden");
       hideOutcome();
       updateScore();
-      setMessage("New pitch. Track it from the mound to the plate.");
+      setMessage("New pitch. Watch for the red light, then track the ball.");
     }
     if (gameStarted || (gameOver && now < finalAnimationUntil)) scheduleAnimation();
   }
@@ -449,6 +426,6 @@
   });
   replayButton.addEventListener("click", replayGame);
 
-  placeBall(530, 246, 0.34);
+  placeBall(480, 266, 0.34);
   updateScore();
 })();
