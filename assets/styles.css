@@ -3107,6 +3107,47 @@ tbody tr:hover {
   letter-spacing: 1.2px;
 }
 
+.practice-pitch-cue {
+  pointer-events: none;
+}
+
+.practice-cue-frame {
+  fill: rgba(7, 29, 58, .92);
+  stroke: rgba(255, 255, 255, .35);
+  stroke-width: 1.5;
+}
+
+.practice-cue-heading {
+  fill: rgba(255, 255, 255, .7);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+}
+
+.practice-light {
+  fill: #33495a;
+  stroke: rgba(255, 255, 255, .5);
+  stroke-width: 1.5;
+  transition: fill 100ms ease, filter 100ms ease;
+}
+
+.practice-light-green.is-active {
+  fill: #37db8d;
+  filter: drop-shadow(0 0 7px rgba(55, 219, 141, .95));
+}
+
+.practice-light-red.is-active {
+  fill: #ff4756;
+  filter: drop-shadow(0 0 8px rgba(255, 71, 86, .95));
+}
+
+.practice-cue-text {
+  fill: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
 .practice-ball-trail {
   stroke: rgba(255, 255, 255, .84);
   stroke-dasharray: 5 8;

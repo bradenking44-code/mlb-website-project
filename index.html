@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20261002-28">
+    <link rel="stylesheet" href="assets/styles.css?v=20261002-29">
   </head>
   <body>
     <nav class="site-nav">
@@ -163,16 +163,22 @@
                   <path d="M466 223q2-19 29-13l4 11h-33z" fill="#f4f2e9"></path>
                   <path d="M465 242q15-9 30 1l12 34h-53z" fill="#f4f2e9"></path>
                   <path d="M471 270l-12 25m31-24 13 24" stroke="#102c45" stroke-width="10" stroke-linecap="round"></path>
-                  <path d="M470 247l-20 16m40-15 18 7" stroke="#d9a77a" stroke-width="7" stroke-linecap="round"></path>
+                  <path d="M470 247l-20 16" stroke="#d9a77a" stroke-width="7" stroke-linecap="round"></path>
+                  <g id="practicePitcherArm" transform="rotate(-20 493 250)">
+                    <path d="M493 250L515 240L530 246" fill="none" stroke="#d9a77a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <circle cx="530" cy="246" r="5" fill="#d9a77a"></circle>
+                  </g>
                 </g>
                 <path id="practiceBatTrail" class="practice-bat-trail" d="" visibility="hidden"></path>
                 <g id="practiceBat" transform="translate(770 424) rotate(36)">
-                  <path d="M0 0L-18-11L-207-61Q-232-69-258-55L-261-30Q-232-21-203-34L-12 8Z" fill="#d6a15d" stroke="#744528" stroke-width="5" stroke-linejoin="round"></path>
-                  <path d="M-35-18L-215-54" stroke="#f3d7a3" stroke-opacity=".75" stroke-width="4" stroke-linecap="round"></path>
-                  <path d="M-10-4L-30-9" stroke="#f2e5cc" stroke-width="9" stroke-linecap="round"></path>
+                  <path d="M8-7Q11-13 5-16L-10-17L-57-16Q-76-16-96-21L-213-37Q-240-41-260-30Q-272-23-270-10Q-268 3-254 8Q-235 14-213 8L-96 22Q-76 17-57 17L-10 17L5 16Q11 13 8 7L1 5L1-5Z" fill="#c98645" stroke="#60391f" stroke-width="4" stroke-linejoin="round"></path>
+                  <path d="M-18-12L-56-11L-93-15L-210-31Q-237-35-259-22" fill="none" stroke="#e9bd7c" stroke-opacity=".86" stroke-width="3" stroke-linecap="round"></path>
+                  <path d="M-10-12L-56-11L-82-14L-96-16L-95 16L-80 13L-56 11L-10 12Z" fill="#6a422e" stroke="#4b3025" stroke-width="1.5"></path>
+                  <path d="M-15-13L-75-13M-15-8L-75-8M-15-3L-75-3M-15 2L-75 2M-15 7L-75 7M-15 12L-75 12" fill="none" stroke="#d9bd91" stroke-width="1.5" stroke-linecap="round" opacity=".9"></path>
+                  <ellipse cx="-263" cy="-11" rx="5" ry="17" transform="rotate(-8 -263 -11)" fill="#e8b875" stroke="#744528" stroke-width="2"></ellipse>
                 </g>
                 <line id="practiceTrail" x1="0" y1="0" x2="0" y2="0" class="practice-ball-trail" visibility="hidden"></line>
-                <g id="practiceBall" class="practice-ball" transform="translate(480 258) scale(.38)" filter="url(#practiceBallShadow)">
+                <g id="practiceBall" class="practice-ball" transform="translate(530 246) scale(.34)" filter="url(#practiceBallShadow)">
                   <circle r="11" fill="#fffdf5" stroke="#c6d3d6" stroke-width="1.4"></circle>
                   <path d="M-6-8q11 8 12 16M6-8q-11 8-12 16" fill="none" stroke="#c82432" stroke-width="1.8" stroke-linecap="round"></path>
                 </g>
@@ -184,8 +190,15 @@
                   <rect x="350" y="26" width="260" height="46" rx="8"></rect>
                   <text id="practiceOutcomeText" x="480" y="56" text-anchor="middle"></text>
                 </g>
+                <g class="practice-pitch-cue" aria-label="Pitch timing cue">
+                  <rect x="22" y="24" width="232" height="74" rx="9" class="practice-cue-frame"></rect>
+                  <text x="40" y="48" class="practice-cue-heading">PITCH TIMING</text>
+                  <circle id="practiceLightGreen" cx="47" cy="72" r="8" class="practice-light practice-light-green is-active"></circle>
+                  <circle id="practiceLightRed" cx="73" cy="72" r="8" class="practice-light practice-light-red"></circle>
+                  <text id="practiceCueText" x="94" y="77" class="practice-cue-text">GREEN · READY</text>
+                </g>
               </svg>
-              <p class="practice-scene-note">Watch it leave the pitcher's hand, click its location near the plate, and swing. Three outs end your inning.</p>
+              <p class="practice-scene-note">Green means set; red means the pitch is coming. Watch the pitcher, click the ball near the plate, and swing.</p>
             </div>
           </div>
         </div>
@@ -268,6 +281,6 @@
     </main>
 
     <script src="assets/report.js?v=20261002-24"></script>
-    <script src="assets/batting-practice.js?v=20261002-3"></script>
+    <script src="assets/batting-practice.js?v=20261002-4"></script>
   </body>
 </html>
