@@ -20,13 +20,14 @@
   const fieldThird = document.getElementById("practiceFieldThird");
   const wheelLeft = document.getElementById("practiceWheelLeft");
   const wheelRight = document.getElementById("practiceWheelRight");
+  const crowd = document.getElementById("practiceCrowd");
   const lightGreen = document.getElementById("practiceLightGreen");
   const lightRed = document.getElementById("practiceLightRed");
   const cueText = document.getElementById("practiceCueText");
   const swingButton = document.getElementById("practiceSwing");
   const replayButton = document.getElementById("practiceReplay");
 
-  if (!scene || !ball || !bat || !batTrail || !aim || !trail || !outcomeBadge || !outcomeText || !outsReadout || !runsReadout || !strikesReadout || !message || !roundStatus || !firstBase || !secondBase || !thirdBase || !fieldFirst || !fieldSecond || !fieldThird || !wheelLeft || !wheelRight || !lightGreen || !lightRed || !cueText || !swingButton || !replayButton) return;
+  if (!scene || !ball || !bat || !batTrail || !aim || !trail || !outcomeBadge || !outcomeText || !outsReadout || !runsReadout || !strikesReadout || !message || !roundStatus || !firstBase || !secondBase || !thirdBase || !fieldFirst || !fieldSecond || !fieldThird || !wheelLeft || !wheelRight || !crowd || !lightGreen || !lightRed || !cueText || !swingButton || !replayButton) return;
 
   const windupDuration = 620;
   const pitchDuration = 1950;
@@ -50,6 +51,8 @@
   let finalAnimationUntil = 0;
   let animationFrame = null;
   let swingTrailPoints = [];
+  let crowdResetTimer = null;
+  const crowdFans = [];
   let cueMode = "ready";
 
   function scheduleAnimation() {
@@ -83,6 +86,76 @@
     const wheelRotation = coming ? (elapsed - (windupDuration - 240)) * 1.6 : 0;
     wheelLeft.setAttribute("transform", `rotate(${wheelRotation.toFixed(1)} 467 239)`);
     wheelRight.setAttribute("transform", `rotate(${-wheelRotation.toFixed(1)} 493 239)`);
+  }
+
+  function crowdShape(parent, tag, attributes) {
+    const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, String(value)));
+    parent.appendChild(element);
+    return element;
+  }
+
+  function buildCrowd() {
+    const jerseys = ["#c94843", "#e4b14e", "#327c8a", "#f1eee2", "#495f9b", "#69a36c", "#b96b39"];
+    const skinTones = ["#e4b99a", "#bf815f", "#88583f", "#f0ceb0", "#a86f53"];
+    const rows = [
+      { y: 70, offset: 4 },
+      { y: 103, offset: 23 },
+      { y: 136, offset: 4 },
+    ];
+
+    rows.forEach((row, rowIndex) => {
+      for (let x = 22 + row.offset; x <= 938; x += 42) {
+        const fanIndex = crowdFans.length;
+        const fan = crowdShape(crowd, "g", { class: "practice-fan", transform: `translate(${x} ${row.y})` });
+        const motion = crowdShape(fan, "g", { class: "practice-fan-motion" });
+        const jersey = jerseys[(fanIndex * 5 + rowIndex) % jerseys.length];
+        const skin = skinTones[(fanIndex * 3 + rowIndex) % skinTones.length];
+        const cap = jerseys[(fanIndex * 2 + 2) % jerseys.length];
+        const leftArm = crowdShape(motion, "path", {
+          class: "fan-arm fan-arm-left", d: "M-4 7L-8 15", fill: "none", stroke: skin,
+          "stroke-width": 2.6, "stroke-linecap": "round",
+        });
+        const rightArm = crowdShape(motion, "path", {
+          class: "fan-arm fan-arm-right", d: "M4 7L8 15", fill: "none", stroke: skin,
+          "stroke-width": 2.6, "stroke-linecap": "round",
+        });
+        crowdShape(motion, "path", {
+          d: "M-3 18L-4 25M3 18L4 25", fill: "none", stroke: "#28384b",
+          "stroke-width": 2.4, "stroke-linecap": "round",
+        });
+        crowdShape(motion, "path", {
+          d: "M-5 5Q0 3 5 5L7 19L-7 19Z", fill: jersey, stroke: "rgba(16, 42, 67, .5)",
+          "stroke-width": 1,
+        });
+        crowdShape(motion, "circle", { cx: 0, cy: 1, r: 4.2, fill: skin });
+        crowdShape(motion, "path", { d: "M-5 0Q-4-6 0-6Q5-6 5 0Z", fill: cap });
+        crowdShape(motion, "path", { d: "M-5 0Q0-2 6 0", fill: "none", stroke: cap, "stroke-width": 2 });
+        crowdFans.push({ motion, leftArm, rightArm });
+      }
+    });
+  }
+
+  function setCrowdReaction(reaction) {
+    crowd.classList.remove("is-cheering", "is-home-run", "is-disappointed");
+    const moodClass = reaction === "homer" ? "is-home-run" : reaction === "cheer" ? "is-cheering" : reaction === "groan" ? "is-disappointed" : "";
+    if (moodClass) crowd.classList.add(moodClass);
+    const armsUp = reaction === "cheer" || reaction === "homer";
+    crowdFans.forEach(({ leftArm, rightArm }) => {
+      leftArm.setAttribute("d", armsUp ? (reaction === "homer" ? "M-4 7L-12-8" : "M-4 7L-11-3") : "M-4 7L-8 15");
+      rightArm.setAttribute("d", armsUp ? (reaction === "homer" ? "M4 7L12-8" : "M4 7L11-3") : "M4 7L8 15");
+    });
+    if (crowdResetTimer !== null) window.clearTimeout(crowdResetTimer);
+    crowdResetTimer = null;
+    if (!moodClass) return;
+    crowdResetTimer = window.setTimeout(() => {
+      crowd.classList.remove("is-cheering", "is-home-run", "is-disappointed");
+      crowdFans.forEach(({ leftArm, rightArm }) => {
+        leftArm.setAttribute("d", "M-4 7L-8 15");
+        rightArm.setAttribute("d", "M4 7L8 15");
+      });
+      crowdResetTimer = null;
+    }, reaction === "homer" ? 1700 : 1050);
   }
 
   function updateScore() {
@@ -168,6 +241,7 @@
   }
 
   function recordOut(label, badge) {
+    setCrowdReaction("groan");
     outs += 1;
     strikes = 0;
     showOutcome(`${badge} · ${outs} ${outs === 1 ? "OUT" : "OUTS"}`);
@@ -183,6 +257,7 @@
     if (pitchResolved || !gameStarted) return;
     pitchResolved = true;
     flight = null;
+    setCrowdReaction("groan");
     if (strikes < 2) {
       strikes += 1;
       const name = strikes === 1 ? "Strike one" : "Strike two";
@@ -266,6 +341,7 @@
       hitType = "homer"; basesAwarded = 4; outcome = "HOME RUN";
     }
 
+    setCrowdReaction(hitType === "homer" ? "homer" : "cheer");
     hitFlight(pose, hitType, side, now);
     const runsScored = advanceRunners(basesAwarded);
     strikes = 0;
@@ -308,6 +384,7 @@
     flight = null;
     swingStart = 0;
     swingTrailPoints = [];
+    setCrowdReaction("neutral");
     batTrail.setAttribute("visibility", "hidden");
     swingButton.disabled = false;
     swingButton.textContent = "Swing";
@@ -427,5 +504,6 @@
   replayButton.addEventListener("click", replayGame);
 
   placeBall(480, 266, 0.34);
+  buildCrowd();
   updateScore();
 })();

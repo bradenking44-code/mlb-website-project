@@ -3184,6 +3184,53 @@ tbody tr:hover {
   filter: drop-shadow(0 3px 3px rgba(5, 20, 34, .4));
 }
 
+.practice-crowd {
+  pointer-events: none;
+}
+
+.practice-fan-motion {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
+.practice-crowd.is-cheering .practice-fan-motion {
+  animation: crowd-cheer .62s ease-in-out both;
+}
+
+.practice-crowd.is-home-run .practice-fan-motion {
+  animation: crowd-home-run .9s cubic-bezier(.2, .7, .3, 1) both;
+}
+
+.practice-crowd.is-disappointed .practice-fan-motion {
+  animation: crowd-groan .5s ease-in both;
+}
+
+.practice-crowd.is-cheering .practice-fan:nth-child(4n + 1) .practice-fan-motion,
+.practice-crowd.is-home-run .practice-fan:nth-child(4n + 1) .practice-fan-motion { animation-delay: 35ms; }
+.practice-crowd.is-cheering .practice-fan:nth-child(4n + 2) .practice-fan-motion,
+.practice-crowd.is-home-run .practice-fan:nth-child(4n + 2) .practice-fan-motion { animation-delay: 70ms; }
+.practice-crowd.is-cheering .practice-fan:nth-child(4n + 3) .practice-fan-motion,
+.practice-crowd.is-home-run .practice-fan:nth-child(4n + 3) .practice-fan-motion { animation-delay: 105ms; }
+
+@keyframes crowd-cheer {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-5px) scale(1.1); }
+  68% { transform: translateY(-2px) scale(1.04); }
+}
+
+@keyframes crowd-home-run {
+  0%, 100% { transform: translateY(0) scale(1); }
+  28% { transform: translateY(-9px) scale(1.16); }
+  56% { transform: translateY(-3px) scale(1.07); }
+  80% { transform: translateY(-7px) scale(1.12); }
+}
+
+@keyframes crowd-groan {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  38% { transform: translateY(3px) rotate(-3deg); }
+  72% { transform: translateY(1px) rotate(2deg); }
+}
+
 .trivia-card {
   position: relative;
   isolation: isolate;
@@ -3407,6 +3454,10 @@ tbody tr:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .practice-crowd .practice-fan-motion {
+    animation: none !important;
+  }
+
   .trivia-celebration span {
     animation: none;
     opacity: 1;
