@@ -20,7 +20,8 @@
 - Includes 9 findings, each with explanatory text and a chart.
 - The introduction states the main result as well as the data coverage.
 - Includes data notes with source, row definition, exclusions, and computed-field definitions, including the reported averages and rates.
-- Adds an interactive batting-practice visual viewed from behind home plate, with cursor/touch pitch aiming, a foreground bat swing, displayed play outcomes, runner and run tracking, and a three-out inning.
+- Adds an interactive batting-practice visual viewed from behind home plate, with a pitching machine, red/green timing lights, a swinging bat, reacting fans, play outcomes, runner and run tracking, and a three-out inning.
+- Adds a randomized ten-question, four-choice baseball trivia round based on the project's champions, records, and payroll data, with a score summary and 70% pass threshold.
 - Uses native SVG charts so visuals work without a remote chart dependency.
 
 ## Dashboard Page

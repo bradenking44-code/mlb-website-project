@@ -4,7 +4,7 @@ This repository is for the FDA Data Website Project. It contains a two-page stat
 
 ## Pages
 
-- `index.html` - report page with a title, author, summary, headline numbers, charted findings, dataset notes, and a behind-home-plate batting game with cursor swings and three-out innings.
+- `index.html` - report page with a title, author, summary, headline numbers, charted findings, dataset notes, behind-home-plate batting practice, and randomized baseball trivia.
 - `dashboard.html` - interactive dashboard with season filters, team filters, postseason filters, payroll filters, animated visuals, World Series winner cards, team logos, roster spotlight, SVG charts, and a team-season table.
 
 ## Data
@@ -84,7 +84,8 @@ This inventory covers every tracked project file; `.git` internals are Git's loc
 | `assets/chart.umd.js` | Locally vendored Chart.js library retained for legacy chart tooling. |
 | `assets/dashboard.js` | Loads dashboard data and renders filters, metrics, charts, tables, and roster views. |
 | `assets/report.js` | Builds report charts, champion explorer, clubhouse cards, and scroll-progress widget. |
-| `assets/batting-practice.js` | Runs the behind-home-plate pitch, swing, play-outcome, base-runner, and three-out inning interaction on the report page. |
+| `assets/batting-practice.js` | Runs the pitching machine, swing, reactive crowd, play outcomes, base runners, and three-out inning interaction on the report page. |
+| `assets/trivia.js` | Builds randomized four-choice quiz rounds from postseason and payroll data and displays the final score. |
 | `assets/styles.css` | Shared layout, typography, colors, responsive styling, and animation rules for both pages. |
 | `assets/images/cartoon-baseball-field.svg` | Baseball-field illustration asset. |
 | `assets/images/cartoon-baseball.svg` | Baseball illustration asset. |
