@@ -2886,10 +2886,11 @@ tbody tr:hover {
 }
 
 .practice-scoreboard > div {
+  flex: 1 1 0;
   display: grid;
   gap: 3px;
-  min-width: 92px;
-  padding: 11px 14px;
+  min-width: 0;
+  padding: 10px 12px;
   border: 1px solid rgba(255, 255, 255, .16);
   border-radius: 7px;
   background: rgba(255, 255, 255, .08);
@@ -2897,7 +2898,7 @@ tbody tr:hover {
 
 .practice-scoreboard span {
   color: rgba(255, 255, 255, .68);
-  font-size: .68rem;
+  font-size: .62rem;
   font-weight: 900;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -2978,6 +2979,40 @@ tbody tr:hover {
   line-height: 1.5;
 }
 
+.practice-base-state {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, .68);
+  font-size: .7rem;
+  font-weight: 800;
+}
+
+.practice-base-state > span:first-child {
+  margin-right: 2px;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.practice-base {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 27px;
+  color: rgba(255, 255, 255, .74);
+  background: rgba(255, 255, 255, .08);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  font-size: .55rem;
+  font-weight: 900;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.practice-base.is-occupied {
+  color: #071d3a;
+  background: #f1bd55;
+}
+
 .practice-stage {
   min-width: 0;
   padding: clamp(16px, 3vw, 28px);
@@ -3034,6 +3069,20 @@ tbody tr:hover {
   font-size: 8px;
   font-weight: 900;
   letter-spacing: 1.5px;
+}
+
+.practice-outcome rect {
+  fill: rgba(7, 29, 58, .94);
+  stroke: #f1bd55;
+  stroke-width: 2;
+  filter: drop-shadow(0 5px 12px rgba(7, 29, 58, .35));
+}
+
+.practice-outcome text {
+  fill: #fff;
+  font-size: 15px;
+  font-weight: 1000;
+  letter-spacing: 1.2px;
 }
 
 .practice-ball-trail {

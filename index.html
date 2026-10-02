@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css?v=20261002-26">
+    <link rel="stylesheet" href="assets/styles.css?v=20261002-27">
   </head>
   <body>
     <nav class="site-nav">
@@ -86,36 +86,43 @@
             <div class="practice-copy">
               <p class="eyebrow">Interactive batting practice</p>
               <h2 id="practice-title">Can you square one up?</h2>
-              <p>Track the pitch with your cursor and click or tap to swing as it reaches the plate. You get five pitches.</p>
+              <p>Take your place behind home plate. Click or tap where the pitch crosses the plate to swing; build a rally before three outs end the round.</p>
               <div class="practice-scoreboard" aria-label="Batting practice score">
-                <div><span>Hits</span><strong id="practiceHits">0</strong></div>
-                <div><span>Pitch</span><strong id="practicePitch">1 / 5</strong></div>
+                <div><span>Outs</span><strong id="practiceOuts">0 / 3</strong></div>
+                <div><span>Runs</span><strong id="practiceRuns">0</strong></div>
+                <div><span>Strikes</span><strong id="practiceStrikes">0 / 2</strong></div>
               </div>
-              <p id="practiceMessage" class="practice-message" aria-live="polite">Move your cursor over the ball, then swing near the plate.</p>
+              <div class="practice-base-state" aria-label="Runners on base">
+                <span>Runners</span>
+                <span id="practiceFirst" class="practice-base">1B</span>
+                <span id="practiceSecond" class="practice-base">2B</span>
+                <span id="practiceThird" class="practice-base">3B</span>
+              </div>
+              <p id="practiceMessage" class="practice-message" aria-live="polite">Click Play ball, then track the pitch toward you.</p>
               <div class="practice-actions">
-                <button id="practiceSwing" class="practice-swing-button" type="button">Swing</button>
+                <button id="practiceSwing" class="practice-swing-button" type="button">Play ball</button>
                 <button id="practiceReplay" class="practice-replay-button" type="button" hidden>Play again</button>
               </div>
-              <p class="practice-help">Mouse or tap to aim · Arrow keys to move · Space to swing</p>
+              <p class="practice-help">Click or tap at the pitch · Arrow keys to aim · Space to swing</p>
             </div>
             <div class="practice-stage">
               <div class="practice-stage-heading">
-                <span>THE CAGE</span>
-                <span id="practiceRoundStatus">LIVE · PITCH 1</span>
+                <span>FROM BEHIND HOME PLATE</span>
+                <span id="practiceRoundStatus">PRACTICE · READY</span>
               </div>
-              <svg id="practiceScene" viewBox="0 0 880 360" role="application" tabindex="0" aria-label="Interactive batting practice. Move the cursor to the ball and click to swing. Use arrow keys to aim and Space to swing.">
+              <svg id="practiceScene" viewBox="0 0 960 500" role="application" tabindex="0" aria-label="Interactive batting practice from behind home plate. Click where the incoming pitch crosses the strike zone to swing. Use arrow keys to aim and Space to swing.">
                 <defs>
                   <linearGradient id="practiceSky" x2="0" y2="1">
-                    <stop offset="0" stop-color="#9bc0d5"></stop>
-                    <stop offset="1" stop-color="#e2edf1"></stop>
+                    <stop offset="0" stop-color="#86abc2"></stop>
+                    <stop offset="1" stop-color="#d9e8ed"></stop>
                   </linearGradient>
                   <linearGradient id="practiceGrass" x2="0" y2="1">
-                    <stop offset="0" stop-color="#2f805a"></stop>
-                    <stop offset="1" stop-color="#12523d"></stop>
+                    <stop offset="0" stop-color="#3a8b5f"></stop>
+                    <stop offset="1" stop-color="#15543d"></stop>
                   </linearGradient>
                   <linearGradient id="practiceDirt" x2="0" y2="1">
-                    <stop offset="0" stop-color="#c58a5d"></stop>
-                    <stop offset="1" stop-color="#9d6043"></stop>
+                    <stop offset="0" stop-color="#c58d61"></stop>
+                    <stop offset="1" stop-color="#9b5f43"></stop>
                   </linearGradient>
                   <pattern id="practiceSeats" width="36" height="18" patternUnits="userSpaceOnUse">
                     <path d="M0 3h36M0 12h36" stroke="#d5e0e5" stroke-opacity=".34" stroke-width="3"></path>
@@ -126,58 +133,61 @@
                     <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#06162c" flood-opacity=".45"></feDropShadow>
                   </filter>
                 </defs>
-                <rect width="880" height="360" fill="url(#practiceSky)"></rect>
-                <path d="M0 70Q190 33 410 67T880 61V178H0Z" fill="#25394d"></path>
-                <path d="M0 77Q190 40 410 74T880 68V171H0Z" fill="url(#practiceSeats)"></path>
-                <path d="M0 168Q205 135 440 155T880 163V192Q440 176 0 202Z" fill="#122c45"></path>
-                <g class="practice-lights" fill="#fff8dc">
-                  <path d="M80 35v76M67 35h26M800 28v76M786 28h28" stroke="#34485b" stroke-width="5"></path>
-                  <circle cx="70" cy="37" r="5"></circle><circle cx="82" cy="37" r="5"></circle><circle cx="94" cy="37" r="5"></circle>
-                  <circle cx="789" cy="30" r="5"></circle><circle cx="801" cy="30" r="5"></circle><circle cx="813" cy="30" r="5"></circle>
+                <rect width="960" height="500" fill="url(#practiceSky)"></rect>
+                <path d="M0 48Q225 10 482 46T960 43V185Q730 151 480 171T0 187Z" fill="#23394f"></path>
+                <path d="M0 58Q225 20 482 56T960 53V177Q730 143 480 163T0 179Z" fill="url(#practiceSeats)"></path>
+                <path d="M0 174Q236 143 480 159T960 170V198Q715 171 480 185T0 207Z" fill="#102a43"></path>
+                <g fill="#fff8dc">
+                  <path d="M80 20v95M66 20h28M880 20v95M866 20h28" stroke="#34485b" stroke-width="5"></path>
+                  <circle cx="68" cy="22" r="5"></circle><circle cx="80" cy="22" r="5"></circle><circle cx="92" cy="22" r="5"></circle>
+                  <circle cx="868" cy="22" r="5"></circle><circle cx="880" cy="22" r="5"></circle><circle cx="892" cy="22" r="5"></circle>
                 </g>
-                <path d="M0 192Q220 145 440 168T880 185V360H0Z" fill="url(#practiceGrass)"></path>
-                <path d="M0 223Q200 180 390 202T880 209M0 275Q240 230 430 251T880 251M40 330Q290 278 490 302T880 292" fill="none" stroke="#8dc28a" stroke-opacity=".14" stroke-width="19"></path>
-                <path d="M42 203Q440 137 838 196" fill="none" stroke="#d7a43b" stroke-width="5"></path>
-                <path d="M42 203Q440 137 838 196V210Q440 154 42 218Z" fill="#183b38"></path>
-                <text x="440" y="190" class="practice-wall-text" text-anchor="middle">PLAY BALL</text>
-                <path d="M396 360L576 203Q642 187 704 217L838 360Z" fill="url(#practiceDirt)" opacity=".95"></path>
-                <path d="M760 286L674 247L596 213L526 250Z" fill="#2d784f" stroke="#f4ead1" stroke-opacity=".85" stroke-width="2"></path>
-                <path d="M760 286L674 247L596 213L526 250Z" fill="none" stroke="#fff2d8" stroke-width="2"></path>
-                <ellipse cx="596" cy="215" rx="25" ry="9" fill="#c58a5d" opacity=".8"></ellipse>
-                <path d="M753 283l7-5 7 5-7 7z" fill="#fff" stroke="#dfe8e9" stroke-width="1.5"></path>
-                <path d="M667 244l7-5 7 5-7 7zM589 210l7-5 7 5-7 7zM519 247l7-5 7 5-7 7z" fill="#fff" stroke="#e5ece9" stroke-width="1.2"></path>
-                <rect x="704" y="203" width="84" height="93" rx="5" class="practice-strike-zone"></rect>
-                <text x="746" y="198" class="practice-zone-label" text-anchor="middle">STRIKE ZONE</text>
+                <path d="M0 195Q240 159 480 177T960 190V500H0Z" fill="url(#practiceGrass)"></path>
+                <path d="M0 271Q235 224 480 238T960 262M0 350Q240 294 480 314T960 343M0 438Q240 380 480 400T960 434" fill="none" stroke="#a2d095" stroke-opacity=".13" stroke-width="23"></path>
+                <path d="M0 293L480 463L960 293" fill="none" stroke="#f5e9c9" stroke-opacity=".85" stroke-width="3"></path>
+                <path d="M0 293Q480 168 960 293" fill="none" stroke="#d7a43b" stroke-width="5"></path>
+                <path d="M0 293Q480 168 960 293V309Q480 190 0 309Z" fill="#183b38"></path>
+                <text x="480" y="221" class="practice-wall-text" text-anchor="middle">HOME OF THE GAME</text>
+                <path d="M480 466L675 344Q480 237 285 344Z" fill="url(#practiceDirt)" opacity=".95"></path>
+                <path d="M480 449L608 352L480 284L352 352Z" fill="#2d784f" stroke="#f4ead1" stroke-opacity=".85" stroke-width="2"></path>
+                <path d="M480 449L608 352L480 284L352 352Z" fill="none" stroke="#fff2d8" stroke-width="3"></path>
+                <ellipse cx="480" cy="300" rx="37" ry="13" fill="#c58a5d" opacity=".9"></ellipse>
+                <path d="M474 458l6-5 6 5-6 8z" fill="#fff" stroke="#dfe8e9" stroke-width="1.5"></path>
+                <path d="M602 352l6-5 6 5-6 8zM474 284l6-5 6 5-6 8zM346 352l6-5 6 5-6 8z" fill="#fff" stroke="#e5ece9" stroke-width="1.4"></path>
+                <rect x="408" y="324" width="144" height="104" rx="5" class="practice-strike-zone"></rect>
+                <text x="480" y="316" class="practice-zone-label" text-anchor="middle">STRIKE ZONE</text>
                 <g class="practice-player practice-pitcher" aria-hidden="true">
-                  <circle cx="580" cy="180" r="10" fill="#d9a77a"></circle>
-                  <path d="M568 177q12-18 25 0v5h-25z" fill="#f4f2e9"></path>
-                  <path d="M569 193q12-6 23 0l9 28h-39z" fill="#f4f2e9"></path>
-                  <path d="M570 218l-11 20m29-19 10 18" stroke="#102c45" stroke-width="8" stroke-linecap="round"></path>
-                  <path d="M570 198l-19 6m32-7 13 8" stroke="#d9a77a" stroke-width="6" stroke-linecap="round"></path>
+                  <circle cx="480" cy="226" r="13" fill="#d9a77a"></circle>
+                  <path d="M466 223q2-19 29-13l4 11h-33z" fill="#f4f2e9"></path>
+                  <path d="M465 242q15-9 30 1l12 34h-53z" fill="#f4f2e9"></path>
+                  <path d="M471 270l-12 25m31-24 13 24" stroke="#102c45" stroke-width="10" stroke-linecap="round"></path>
+                  <path d="M470 247l-20 16m40-15 18 7" stroke="#d9a77a" stroke-width="7" stroke-linecap="round"></path>
                 </g>
-                <g class="practice-player practice-batter" aria-hidden="true">
-                  <circle cx="790" cy="216" r="11" fill="#c78e68"></circle>
-                  <path d="M779 214q1-17 23-11l4 10h-27z" fill="#c82432"></path>
-                  <path d="M779 229q13-6 23 3l8 25-29 5-9-23z" fill="#f4f2e9"></path>
-                  <path d="M782 255l-7 27m25-24 12 24" stroke="#102c45" stroke-width="9" stroke-linecap="round"></path>
-                  <path d="M783 235l-17 9m29-8 12 8" stroke="#c78e68" stroke-width="6" stroke-linecap="round"></path>
+                <g aria-hidden="true">
+                  <path d="M944 500L786 429" stroke="#c82432" stroke-width="48" stroke-linecap="round"></path>
+                  <path d="M944 500L786 429" stroke="#f4f2e9" stroke-opacity=".82" stroke-width="18" stroke-linecap="round"></path>
+                  <path d="M774 424l-21-11 12-19 25 14z" fill="#f4f2e9" stroke="#c5d0d4" stroke-width="2"></path>
                 </g>
-                <g id="practiceBat" transform="rotate(-42 784 244)">
-                  <path d="M784 244L731 200" stroke="#a95e32" stroke-width="10" stroke-linecap="round"></path>
-                  <path d="M731 200L718 189" stroke="#d6a15d" stroke-width="15" stroke-linecap="round"></path>
-                  <path d="M784 244l-9-8" stroke="#f2e5cc" stroke-width="4" stroke-linecap="round"></path>
+                <g id="practiceBat" transform="translate(770 424) rotate(48)">
+                  <path d="M0 0L-222-42" stroke="#a95e32" stroke-width="15" stroke-linecap="round"></path>
+                  <path d="M-222-42L-246-47" stroke="#d6a15d" stroke-width="22" stroke-linecap="round"></path>
+                  <path d="M0 0l-19-4" stroke="#f2e5cc" stroke-width="7" stroke-linecap="round"></path>
                 </g>
                 <line id="practiceTrail" x1="0" y1="0" x2="0" y2="0" class="practice-ball-trail" visibility="hidden"></line>
-                <g id="practiceBall" class="practice-ball" transform="translate(590 200) scale(.7)" filter="url(#practiceBallShadow)">
+                <g id="practiceBall" class="practice-ball" transform="translate(480 258) scale(.38)" filter="url(#practiceBallShadow)">
                   <circle r="11" fill="#fffdf5" stroke="#c6d3d6" stroke-width="1.4"></circle>
                   <path d="M-6-8q11 8 12 16M6-8q-11 8-12 16" fill="none" stroke="#c82432" stroke-width="1.8" stroke-linecap="round"></path>
                 </g>
-                <g id="practiceAim" class="practice-aim" transform="translate(742 247)" aria-hidden="true">
-                  <circle r="19"></circle><circle r="4"></circle>
-                  <path d="M-27 0h12m30 0h12M0-27v12m0 30v12"></path>
+                <g id="practiceAim" class="practice-aim" transform="translate(480 370)" visibility="hidden" aria-hidden="true">
+                  <circle r="22"></circle><circle r="4"></circle>
+                  <path d="M-31 0h13m36 0h13M0-31v13m0 36v13"></path>
+                </g>
+                <g id="practiceOutcome" class="practice-outcome" visibility="hidden" aria-hidden="true">
+                  <rect x="350" y="26" width="260" height="46" rx="8"></rect>
+                  <text id="practiceOutcomeText" x="480" y="56" text-anchor="middle"></text>
                 </g>
               </svg>
-              <p class="practice-scene-note">Aim at the moving ball. The bat connects when your timing and cursor line up.</p>
+              <p class="practice-scene-note">Watch it leave the pitcher's hand, click its location near the plate, and swing. Three outs end your inning.</p>
             </div>
           </div>
         </div>
@@ -260,6 +270,6 @@
     </main>
 
     <script src="assets/report.js?v=20261002-24"></script>
-    <script src="assets/batting-practice.js?v=20261002-1"></script>
+    <script src="assets/batting-practice.js?v=20261002-2"></script>
   </body>
 </html>
